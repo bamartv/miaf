@@ -6,7 +6,9 @@ Aggiunta gestione Preferiti con stellina e filtro multi-genere.
 - Stellina sulle locandine: solo visuale (non cliccabile)
 - Stellina cliccabile dentro la card info
 - Possibilità di selezionare più generi
-- Correzione back button: chiude il player prima di tornare alla card o griglia
+- Correzione back button: chiude il player prima di tornare alla card,
+  e dalla card torna sempre direttamente alla griglia.
+  Dalla griglia, se premi indietro, esci dalla pagina.
 """
 
 import os
@@ -24,6 +26,7 @@ VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
 
+
 def get_api_key():
     key = os.getenv("TMDB_API_KEY")
     if not key:
@@ -31,10 +34,12 @@ def get_api_key():
         sys.exit(1)
     return key
 
+
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
+
 
 def extract_ids(data):
     ids = []
@@ -48,6 +53,7 @@ def extract_ids(data):
                 break
     return ids
 
+
 def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
@@ -59,6 +65,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
         return None
     r.raise_for_status()
     return r.json()
+
 
 def build_html(entries, latest_entries):
     html = f"""<!doctype html>
@@ -168,7 +175,7 @@ const infoCast=document.getElementById('infoCast');
 
 closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
-  history.pushState({{page:"grid"}}, "", "#grid");
+  history.replaceState({{page:"grid"}}, "", "#grid");
 }};
 
 function showLatest(){{
@@ -184,7 +191,6 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-    infoCard.style.backgroundImage = "none";
     infoCard.style.backgroundColor = "rgba(0,0,0,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + item.genres.join(", ");
@@ -220,7 +226,7 @@ function openInfo(item, push=true) {{
     playBtn.onclick = () => openPlayer(item);
 
     if(push) {{
-        history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
+        history.replaceState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
     }}
 
     function updateEpisodes() {{
@@ -266,13 +272,10 @@ function closePlayer(push=true) {{
 
     if(currentItem) {{
         infoCard.style.display = 'block';
-        if(push) {{
-            history.pushState({{page:"info", itemId:currentItem.id}}, "", "#info-"+currentItem.id);
-        }}
+        history.replaceState({{page:"info", itemId:currentItem.id}}, "", "#info-"+currentItem.id);
     }}
 }}
 
-/* Gestione popstate corretta */
 window.addEventListener("popstate", function(e) {{
     const state = e.state;
 
@@ -280,29 +283,25 @@ window.addEventListener("popstate", function(e) {{
         overlay.style.display='none';
         iframe.src='';
         infoCard.style.display='none';
+        history.replaceState({{page:"grid"}}, "", "#grid");
         return;
     }}
 
     const itemId = state.itemId;
     const item = allData.find(x => String(x.id) === String(itemId));
-    if(!item) {{
-        overlay.style.display='none';
-        iframe.src='';
-        infoCard.style.display='none';
-        return;
-    }}
 
-    if(state.page === "player") {{
+    if(state.page === "player" && item) {{
         openPlayer(item, false);
-    }} else if(state.page === "info") {{
+    }} else if(state.page === "info" && item) {{
         if(overlay.style.display==='flex') {{
-            closePlayer(false); // prima chiudi il player se è aperto
+            closePlayer(false);
         }}
         openInfo(item, false);
     }} else {{
         overlay.style.display='none';
         iframe.src='';
         infoCard.style.display='none';
+        history.replaceState({{page:"grid"}}, "", "#grid");
     }}
 }});
 
@@ -358,13 +357,11 @@ function updateType(t){{
     render(true);
 }}
 
-/* Eventi UI */
 document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
 document.getElementById('genreSelect').onchange=()=>render(true);
 document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 
-/* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
 
 updateType('movie');
@@ -374,6 +371,7 @@ showLatest();
 </html>
 """
     return html
+
 
 def main():
     api_key = get_api_key()
@@ -399,34 +397,35 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
-            duration = info.get("runtime", 0) if type_=="movie" else 0
+            episodes = {{str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", [])}} if type_=="tv" else {{}}
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+            runtime = info.get("runtime") if type_=="movie" else None
+            cast = [c["name"] for c in info.get("credits", {{}}).get("cast", [])[:10]]
 
-            entries.append({
-                "id": tmdb_id,
+            entry = {{
+                "id": str(tmdb_id),
                 "title": title,
                 "poster": poster,
                 "genres": genres,
-                "vote": vote,
+                "vote": round(vote,1),
                 "overview": overview,
                 "link": link,
                 "type": type_,
                 "seasons": seasons,
                 "episodes": episodes,
-                "duration": duration or 0,
-                "year": year or "",
-            "cast": cast
-            })
+                "year": year,
+                "duration": runtime,
+                "cast": cast
+            }}
+            entries.append(entry)
 
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+            if idx < 20:
+                latest_entries += f"<img class='poster' src='{poster}' alt='{title}'>"
 
     html = build_html(entries, latest_entries)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
+
 
 if __name__ == "__main__":
     main()
