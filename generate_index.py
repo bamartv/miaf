@@ -138,6 +138,16 @@ const allData = {entries};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let currentItem = null;
 
+function toggleFavorite(id) {{
+  if(favorites.includes(id)) {{
+    favorites = favorites.filter(f=>f!==id);
+  }} else {{
+    favorites.push(id);
+  }}
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  render(true);
+}}
+
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
 const iframe=overlay.querySelector('iframe');
@@ -158,12 +168,25 @@ const infoCast=document.getElementById('infoCast');
 
 closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
-  history.replaceState({{page:"grid"}}, "", "#grid"); // reset su griglia
+  // QUI: non aggiungiamo una nuova entry, sostituiamo l'attuale con "grid"
+  history.replaceState({{page:"grid"}}, "", "#grid");
 }};
+
+function showLatest(){{
+    let scrollPos = 0;
+    function scroll() {{
+        scrollPos += 1;
+        if(scrollPos > latestDiv.scrollWidth - latestDiv.clientWidth) scrollPos = 0;
+        latestDiv.scrollTo({{ left: scrollPos, behavior: 'smooth' }});
+    }}
+    setInterval(scroll, 30);
+}}
 
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
+    infoCard.style.backgroundImage = "none";
+    infoCard.style.backgroundColor = "rgba(0,0,0,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + item.genres.join(", ");
     infoVote.textContent = "★ " + item.vote;
@@ -178,20 +201,60 @@ function openInfo(item, push=true) {{
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
     }};
 
+    seasonSelect.style.display = 'none';
+    episodeSelect.style.display = 'none';
+
+    if(item.type==='tv') {{
+        seasonSelect.style.display = 'inline';
+        episodeSelect.style.display = 'inline';
+        seasonSelect.innerHTML = "";
+        for(let s=1;s<=item.seasons;s++) {{
+            let o = document.createElement('option');
+            o.value = s;
+            o.textContent = "Stagione " + s;
+            seasonSelect.appendChild(o);
+        }}
+        seasonSelect.onchange = updateEpisodes;
+        updateEpisodes();
+    }}
+
     playBtn.onclick = () => openPlayer(item);
 
     if(push) {{
         history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
+    }}
+
+    function updateEpisodes() {{
+        let season = parseInt(seasonSelect.value);
+        let epCount = item.episodes[season] || 1;
+        episodeSelect.innerHTML = "";
+        for(let e=1;e<=epCount;e++) {{
+            let o = document.createElement('option');
+            o.value = e;
+            o.textContent = "Episodio " + e;
+            episodeSelect.appendChild(o);
+        }}
     }}
 }}
 
 function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
     overlay.style.display='flex';
-    let link = item.type==='tv'
-        ? `https://vixsrc.to/tv/${{item.id}}/1/1?lang=it&autoplay=1`
-        : `https://vixsrc.to/movie/${{item.id}}/?lang=it&autoplay=1`;
+    let link = item.link;
+    if(item.type==='tv') {{
+        let season = parseInt(seasonSelect.value) || 1;
+        let episode = parseInt(episodeSelect.value) || 1;
+        link = `https://vixsrc.to/tv/${{item.id}}/${{season}}/${{episode}}?lang=it&sottotitoli=off&autoplay=1`;
+    }} else {{
+        link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1`;
+    }}
     iframe.src = link;
+
+    // (opzionale) fullscreen invariato
+    if (overlay.requestFullscreen) overlay.requestFullscreen();
+    else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
+    else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
+
     if(push) {{
         history.pushState({{page:"player", itemId:item.id}}, "", "#player-"+item.id);
     }}
@@ -200,6 +263,10 @@ function openPlayer(item, push=true) {{
 function closePlayer(push=true) {{
     overlay.style.display='none';
     iframe.src='';
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+    else if (document.msFullscreenElement) document.msExitFullscreen();
+
     if(currentItem) {{
         infoCard.style.display = 'block';
         if(push) {{
@@ -211,25 +278,107 @@ function closePlayer(push=true) {{
 /* Gestione popstate corretta */
 window.addEventListener("popstate", function(e) {{
     const state = e.state;
-    if(!state || state.page==="grid") {{
+
+    /* SKIP stati INFO quando siamo già in griglia:
+       dalla griglia premendo indietro non devono riaprirsi vecchie card */
+    if(state && state.page === "info" && overlay.style.display !== 'flex' && infoCard.style.display === 'none') {{
+        history.back();
+        return;
+    }}
+
+    if(!state || state.page==="grid" || state.page==="home") {{
         overlay.style.display='none';
         iframe.src='';
         infoCard.style.display='none';
         return;
     }}
+
     const itemId = state.itemId;
     const item = allData.find(x => String(x.id) === String(itemId));
-    if(!item) return;
-    if(state.page==="info") {{
-        closePlayer(false);
-        openInfo(item, false);
-    }} else if(state.page==="player") {{
+    if(!item) {{
+        overlay.style.display='none';
+        iframe.src='';
+        infoCard.style.display='none';
+        return;
+    }}
+
+    if(state.page === "player") {{
         openPlayer(item, false);
+    }} else if(state.page === "info") {{
+        if(overlay.style.display==='flex') {{
+            closePlayer(false); // prima chiudi il player se è aperto
+        }}
+        openInfo(item, false);
+    }} else {{
+        overlay.style.display='none';
+        iframe.src='';
+        infoCard.style.display='none';
     }}
 }});
 
-/* stato iniziale */
+let currentType='movie', currentList=[], shown=0;
+
+function render(reset=false) {{
+    if(reset){{ grid.innerHTML=''; shown=0; }}
+    let count=0;
+    let s = document.getElementById('searchBox').value.toLowerCase();
+    let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
+    while(shown<currentList.length && count<40) {{
+        let m = currentList[shown++];
+        let isFav = favorites.includes(m.id);
+        let genreMatch = 
+    gSel.length===0 
+    || gSel.includes('all') 
+    || (gSel.includes('favorites') && isFav) 
+    || gSel.every(g => m.genres.includes(g));
+        if(genreMatch && m.title.toLowerCase().includes(s)) {{
+            const card = document.createElement('div');
+            card.className='card';
+            card.innerHTML = `
+                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+                <div class='badge'>${{m.vote}}</div>
+                <p style="margin:2px 0;font-size:12px;color:#ccc;">
+                    ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
+                </p>
+                <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
+            `;
+            card.onclick = () => openInfo(m);
+            grid.appendChild(card);
+            count++;
+        }}
+    }}
+}}
+
+function populateGenres(){{
+    const set=new Set();
+    currentList.forEach(m=>m.genres.forEach(g=>set.add(g)));
+    const sel=document.getElementById('genreSelect');
+    sel.innerHTML='<option value="all">Tutti i generi</option><option value="favorites">★ Preferiti</option>';
+    [...set].sort().forEach(g=>{{
+        const o=document.createElement('option');
+        o.value=o.textContent=g;
+        sel.appendChild(o);
+    }});
+}}
+
+function updateType(t){{
+    currentType=t;
+    currentList=allData.filter(x=>x.type===t);
+    populateGenres();
+    render(true);
+}}
+
+/* Eventi UI */
+document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
+document.getElementById('genreSelect').onchange=()=>render(true);
+document.getElementById('searchBox').oninput=()=>render(true);
+document.getElementById('loadMore').onclick=()=>render(false);
+
+/* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
+
+updateType('movie');
+showLatest();
 </script>
 </body>
 </html>
@@ -244,6 +393,7 @@ def main():
     for type_, url in SRC_URLS.items():
         data = fetch_list(url)
         ids = extract_ids(data)
+
         for idx, tmdb_id in enumerate(ids):
             try:
                 info = tmdb_get(api_key, type_, tmdb_id)
@@ -259,12 +409,12 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {{str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")}} if type_=="tv" else {{}}
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
             duration = info.get("runtime", 0) if type_=="movie" else 0
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-            cast = [c["name"] for c in info.get("credits", {{}}).get("cast", [])] if info.get("credits") else []
+            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
 
-            entries.append({{
+            entries.append({
                 "id": tmdb_id,
                 "title": title,
                 "poster": poster,
@@ -278,15 +428,15 @@ def main():
                 "duration": duration or 0,
                 "year": year or "",
                 "cast": cast
-            }})
+            })
 
             if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\\n"
+                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
     html = build_html(entries, latest_entries)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {{len(entries)}} elementi")
+    print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
 
 if __name__ == "__main__":
     main()
