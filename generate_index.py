@@ -5,9 +5,12 @@ generate_index.py
 Aggiunta gestione Preferiti spostati nella tendina principale e Visti recentemente.
 - Preferiti e Visti recentemente in typeSelect (insieme a Film/Serie TV)
 - Gestione recenti tramite localStorage (max 20)
-- Stellina sui preferiti rimane invariata
-- Back button invariato
+- Stellina sulle locandine: solo visuale (non cliccabile)
+- Stellina cliccabile dentro la card info
+- Possibilità di selezionare più generi
+- Correzione back button: chiude il player prima di tornare alla card o griglia
 """
+
 
 import os
 import sys
@@ -24,6 +27,7 @@ VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
 
+
 def get_api_key():
     key = os.getenv("TMDB_API_KEY")
     if not key:
@@ -31,10 +35,12 @@ def get_api_key():
         sys.exit(1)
     return key
 
+
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
+
 
 def extract_ids(data):
     ids = []
@@ -48,6 +54,7 @@ def extract_ids(data):
                 break
     return ids
 
+
 def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
@@ -59,6 +66,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
         return None
     r.raise_for_status()
     return r.json()
+
 
 def build_html(entries, latest_entries):
     html = f"""<!doctype html>
@@ -198,8 +206,10 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
+    infoCard.style.backgroundImage = "none";
+    infoCard.style.backgroundColor = "rgba(0,0,0,0.85)";
     infoTitle.textContent = item.title;
-    infoGenres.textContent = "Generi: " + item.genres.join(", ");
+    infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
@@ -288,16 +298,19 @@ function closePlayer(push=true) {{
 
 window.addEventListener("popstate", function(e) {{
     const state = e.state;
+
     if(state && state.page === "info" && overlay.style.display !== 'flex' && infoCard.style.display === 'none') {{
         history.back();
         return;
     }}
+
     if(!state || state.page==="grid" || state.page==="home") {{
         overlay.style.display='none';
         iframe.src='';
         infoCard.style.display='none';
         return;
     }}
+
     const itemId = state.itemId;
     const item = allData.find(x => String(x.id) === String(itemId));
     if(!item) {{
@@ -306,6 +319,7 @@ window.addEventListener("popstate", function(e) {{
         infoCard.style.display='none';
         return;
     }}
+
     if(state.page === "player") {{
         openPlayer(item, false);
     }} else if(state.page === "info") {{
@@ -352,11 +366,12 @@ function render(reset=false) {{
 function populateGenres(){{
     const set=new Set();
     currentList.forEach(m=>m.genres.forEach(g=>set.add(g)));
-    genreSelect.innerHTML='<option value="all">Tutti i generi</option>';
+    const sel=document.getElementById('genreSelect');
+    sel.innerHTML='<option value="all">Tutti i generi</option>';
     [...set].sort().forEach(g=>{{
         const o=document.createElement('option');
         o.value=o.textContent=g;
-        genreSelect.appendChild(o);
+        sel.appendChild(o);
     }});
 }}
 
@@ -376,11 +391,13 @@ function updateType(t){{
     render(true);
 }}
 
+/* Eventi UI */
 document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
 document.getElementById('genreSelect').onchange=()=>render(true);
 document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 
+/* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
 
 updateType('movie');
@@ -391,6 +408,7 @@ showLatest();
 """
     return html
 
+
 def main():
     api_key = get_api_key()
     entries = []
@@ -399,6 +417,7 @@ def main():
     for type_, url in SRC_URLS.items():
         data = fetch_list(url)
         ids = extract_ids(data)
+
         for idx, tmdb_id in enumerate(ids):
             try:
                 info = tmdb_get(api_key, type_, tmdb_id)
@@ -406,6 +425,7 @@ def main():
                 info = None
             if not info:
                 continue
+
             title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
             poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
             genres = [g["name"] for g in info.get("genres", [])]
@@ -413,42 +433,39 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {str(s.get("season_number")): s.get("episode_count", 1)
-                        for s in info.get("seasons", [])} if type_ == "tv" else {}
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
             runtime_list = info.get("episode_run_time") or []
             duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])]
+            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
 
             entries.append({
                 "id": str(tmdb_id),
-                "title": title.replace("'", "\\'"),
+                "title": title,
                 "poster": poster,
                 "genres": genres,
-                "vote": round(vote, 1),
-                "overview": overview.replace("'", "\\'"),
+                "vote": vote,
+                "overview": overview,
                 "link": link,
                 "type": type_,
                 "seasons": seasons,
                 "episodes": episodes,
-                "year": year,
-                "duration": duration,
+                "duration": duration or 0,
+                "year": year or "",
                 "cast": cast
             })
 
-            # le prime 10 locandine vanno nella sezione "Ultime Novità"
             if idx < 10:
-                latest_entries += f"""
-                <img class='poster' src='{poster}' title="{title}" onclick="openInfo({{id:'{tmdb_id}'}})">
-                """
+                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
     html = build_html(entries, latest_entries)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"✅ File generato: {OUTPUT_HTML}")
+    print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
+
 
 if __name__ == "__main__":
     main()
