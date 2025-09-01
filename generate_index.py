@@ -417,7 +417,10 @@ def main():
                         for s in info.get("seasons", [])} if type_ == "tv" else {}
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-            duration = info.get("runtime") or (info.get("episode_run_time", [None])[0])
+
+            runtime_list = info.get("episode_run_time") or []
+            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
+
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])]
 
             entries.append({
