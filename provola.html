@@ -11,55 +11,61 @@ h1{color:#fff;text-align:center;margin-bottom:20px;}
 .card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
 .card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
 .poster{width:100%;border-radius:0;display:block;}
-#infoCard{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;box-sizing:border-box;}
-#infoCard h2{margin-top:0;color:#e50914;}
-#playerContainer{width:100%;max-width:800px;margin:10px auto;}
-#playerContainer iframe{width:100%;height:450px;border:none;}
-#correlati{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;justify-content:center;}
-#correlati img{width:100px;border-radius:8px;cursor:pointer;transition: transform 0.2s;}
-#correlati img:hover{transform:scale(1.05);}
+#infoCard{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;color:#fff;padding:20px;overflow:auto;box-sizing:border-box;background-size:cover;background-position:center;background-repeat:no-repeat;}
+#infoOverlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);}
+#infoContent{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:20px;background:rgba(0,0,0,0.6);border-radius:10px;}
+#playerContainer{width:100%;max-width:700px;margin:10px auto;}
+#playerContainer iframe{width:100%;height:350px;border:none;}
+#correlati{display:flex;overflow-x:auto;gap:10px;margin-top:20px;padding-bottom:10px;scroll-behavior:smooth;}
+#correlati::-webkit-scrollbar{display:none;}
+#correlati img{width:120px;border-radius:8px;cursor:pointer;flex-shrink:0;}
+#correlati div{flex-shrink:0;width:120px;text-align:center;font-size:12px;margin-top:4px;}
 button{padding:8px 12px;margin:5px;background:#e50914;color:#fff;border:none;border-radius:5px;cursor:pointer;}
 </style>
 </head>
 <body>
 <h1>Movies & Series</h1>
 <div class='grid'>
-  <div class='card' onclick="openInfo('1')">
+  <div class='card' onclick="openInfo('1','https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg')">
     <img class='poster' src='https://image.tmdb.org/t/p/w300/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg' alt='Joker'>
   </div>
-  <div class='card' onclick="openInfo('2')">
+  <div class='card' onclick="openInfo('2','https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg')">
     <img class='poster' src='https://image.tmdb.org/t/p/w300/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg' alt='Avengers: Infinity War'>
   </div>
-  <div class='card' onclick="openInfo('3')">
+  <div class='card' onclick="openInfo('3','https://image.tmdb.org/t/p/w500/6KErczPBROQty7QoIsaa6wJYXZi.jpg')">
     <img class='poster' src='https://image.tmdb.org/t/p/w300/6KErczPBROQty7QoIsaa6wJYXZi.jpg' alt='The Batman'>
   </div>
 </div>
 
 <div id='infoCard'>
-  <button onclick="closeInfo()">Chiudi</button>
-  <h2 id="infoTitle">Joker</h2>
-  <p id="infoOverview">Un film drammatico su Arthur Fleck, un uomo trascurato dalla società...</p>
-  <div id="playerContainer">
-    <iframe src="https://www.youtube.com/embed/zAGVQLHvwOY" allowfullscreen></iframe>
-  </div>
-  <h3>Film correlati</h3>
-  <div id="correlati">
-    <img src="https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker 2">
-    <img src="https://image.tmdb.org/t/p/w200/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers">
-    <img src="https://image.tmdb.org/t/p/w200/6KErczPBROQty7QoIsaa6wJYXZi.jpg" alt="The Batman">
-    <img src="https://image.tmdb.org/t/p/w200/cezWGskPY5x7GaglTTRN4Fugfb8.jpg" alt="Iron Man">
-    <img src="https://image.tmdb.org/t/p/w200/9kg73Mg8WJKlB9Y2SAJzeDKAnuB.jpg" alt="Captain Marvel">
-    <img src="https://image.tmdb.org/t/p/w200/l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg" alt="Wonder Woman">
-    <img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Avengers Endgame">
-    <img src="https://image.tmdb.org/t/p/w200/xBKGJQsAIeweesB79KC89FpBrVr.jpg" alt="The Dark Knight">
-    <img src="https://image.tmdb.org/t/p/w200/rjbNpRMoVvqHmhmksbokcyCr7wn.jpg" alt="Aquaman">
-    <img src="https://image.tmdb.org/t/p/w200/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg" alt="Black Panther">
+  <div id="infoOverlay"></div>
+  <div id="infoContent">
+    <button onclick="closeInfo()">Chiudi</button>
+    <h2 id="infoTitle">Joker</h2>
+    <p id="infoOverview">Un film drammatico su Arthur Fleck, un uomo trascurato dalla società...</p>
+    <div id="playerContainer">
+      <iframe src="https://www.youtube.com/embed/zAGVQLHvwOY" allowfullscreen></iframe>
+    </div>
+    <h3>Film correlati</h3>
+    <div id="correlati">
+      <div><img src="https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker"><br>Joker 2</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers"><br>Avengers</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/6KErczPBROQty7QoIsaa6wJYXZi.jpg" alt="The Batman"><br>The Batman</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/cezWGskPY5x7GaglTTRN4Fugfb8.jpg" alt="Iron Man"><br>Iron Man</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/9kg73Mg8WJKlB9Y2SAJzeDKAnuB.jpg" alt="Captain Marvel"><br>Captain Marvel</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg" alt="Wonder Woman"><br>Wonder Woman</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Avengers Endgame"><br>Avengers Endgame</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/xBKGJQsAIeweesB79KC89FpBrVr.jpg" alt="The Dark Knight"><br>The Dark Knight</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/rjbNpRMoVvqHmhmksbokcyCr7wn.jpg" alt="Aquaman"><br>Aquaman</div>
+      <div><img src="https://image.tmdb.org/t/p/w200/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg" alt="Black Panther"><br>Black Panther</div>
+    </div>
   </div>
 </div>
 
 <script>
-function openInfo(id){
+function openInfo(id,bg){
   document.getElementById('infoCard').style.display='block';
+  document.getElementById('infoCard').style.backgroundImage = `url(${bg})`;
   window.scrollTo(0,0);
 }
 
