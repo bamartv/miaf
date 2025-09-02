@@ -3,111 +3,116 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Film Detail Demo</title>
+<title>Film Detail</title>
 <style>
-body {
-    margin:0;
+  body {
+    margin: 0;
     font-family: Arial, sans-serif;
-    background:#000;
-    color:#fff;
-}
-#infoCard {
+    color: #fff;
+    background-color: #000;
+  }
+  .detail-container {
     position: relative;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 20px;
-    box-sizing: border-box;
-    /* Nuova locandina di sfondo con dissolvenza dal 35% al 50% */
-    background:
-        linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 100%),
-        url('https://image.tmdb.org/t/p/w500/6Wdl9N6dL0Hi0T1qJLWSz6gMLbd.jpg') center/cover no-repeat;
-    background-size: cover;
-}
-#infoText {
-    margin-top: 40vh; /* posiziona le scritte nella parte nera */
-    background: rgba(0,0,0,0); /* trasparente perché la dissolvenza fa il lavoro */
-}
-h1 {
-    margin-top: 0;
-    color: #e50914;
-}
-p {
-    margin:5px 0;
-}
-#buttons {
-    display: flex;
-    gap: 10px;
-    margin: 10px 0 20px;
-}
-.button {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-}
-#playBtn { background: #e50914; color: #fff; }
-#favoriteBtn { background: gold; color: #000; }
-#trailer {
+  }
+  .fade-black {
+    position: absolute;
     width: 100%;
-    max-width: 500px;
-    height: 280px;
+    height: 100%;
+    top: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 100%);
+    z-index: 1;
+  }
+  .info {
+    position: relative;
+    z-index: 2;
+    padding: 20px;
+  }
+  .info h1 {
+    margin: 0 0 10px 0;
+    font-size: 2rem;
+  }
+  .info p {
+    margin: 5px 0;
+  }
+  .trailer-container {
+    margin: 20px 0;
+  }
+  iframe {
+    width: 100%;
+    max-width: 640px;
+    height: 360px;
     border: none;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-#related {
+  }
+  .related {
     display: flex;
     overflow-x: auto;
     gap: 10px;
-    padding-bottom: 10px;
-}
-#related::-webkit-scrollbar { display: none; }
-.related-item {
-    flex: 0 0 auto;
+    padding: 10px 0;
+  }
+  .related::-webkit-scrollbar { display: none; }
+  .related img {
     width: 120px;
-    border-radius: 6px;
-}
-.related-item img {
-    width: 100%;
-    border-radius: 6px;
-}
+    flex-shrink: 0;
+    border-radius: 8px;
+  }
+  .btns {
+    margin: 15px 0;
+  }
+  .btn {
+    padding: 10px 16px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .btn-watch { background: #e50914; color: #fff; }
+  .btn-fav { background: gold; color: #000; }
+  .btn-back { background: #555; color: #fff; }
 </style>
 </head>
 <body>
 
-<div id="infoCard">
-    <div id="infoText">
-        <h1>Black Panther</h1>
-        <div id="buttons">
-            <button id="playBtn" class="button">Guarda</button>
-            <button id="favoriteBtn" class="button">★ Preferiti</button>
-        </div>
-        <p><strong>Anno:</strong> 2018</p>
-        <p><strong>Durata:</strong> 134 min</p>
-        <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
-        <p><strong>Cast:</strong> Chadwick Boseman, Michael B. Jordan, Lupita Nyong'o, Danai Gurira</p>
-        <p><strong>Descrizione:</strong> T’Challa ritorna a casa, Wakanda, dopo la morte del padre. Mentre governa come nuovo re, un nemico emerge per minacciare il destino del suo regno e del mondo intero.</p>
+<div class="detail-container" style="background-image: url('https://image.tmdb.org/t/p/w780/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg');">
+  <div class="fade-black"></div>
+  <div class="info">
+    <h1>Shazam! Fury of the Gods</h1>
+    <p><strong>Anno:</strong> 2023 | <strong>Durata:</strong> 130 min</p>
+    <p><strong>Genere:</strong> Azione, Avventura, Fantasy</p>
+    <p><strong>Cast:</strong> Zachary Levi, Asher Angel, Jack Dylan Grazer</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tincidunt, lorem non ultricies porta, metus lorem ultricies purus, nec iaculis eros purus non turpis.</p>
 
-        <iframe id="trailer" src="https://www.youtube.com/embed/xjDjIWPwcPU" allowfullscreen></iframe>
-
-        <h2>Film correlati</h2>
-        <div id="related">
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/uW0FWp0Eh6H3jATlXv3UQmChwfn.jpg" alt="Film 1"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/kz4s9N7xq1sz6Z0G1F5T7xMZ8pT.jpg" alt="Film 2"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4q2hz2m8hubgvijz8Ez0T2Os2Yv.jpg" alt="Film 3"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg" alt="Film 4"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9I4cG2EDVXuZpKQLN8tBrXC6lqZ.jpg" alt="Film 5"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Film 6"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2X7m8I9O4rJqXHJzTovWqFhX5Lc.jpg" alt="Film 7"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/5WJt6k5j9fYBuhSvn2th6CEhWhf.jpg" alt="Film 8"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3bOGNsHlrswhyW79uvIHH1V43JI.jpg" alt="Film 9"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/lqN5qPn0DR3jNDeK6sIz34p9XH2.jpg" alt="Film 10"></div>
-        </div>
+    <div class="btns">
+      <button class="btn btn-watch" onclick="alert('Guarda film')">Guarda</button>
+      <button class="btn btn-fav" onclick="alert('Aggiunto ai preferiti')">★ Preferiti</button>
+      <button class="btn btn-back" onclick="alert('Torna indietro')">← Indietro</button>
     </div>
+
+    <div class="trailer-container">
+      <iframe src="https://www.youtube.com/embed/1Tt5u4g6MPE?autoplay=1&mute=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <h3>Film correlati</h3>
+    <div class="related">
+      <img src="https://image.tmdb.org/t/p/w200/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers">
+      <img src="https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker">
+      <img src="https://image.tmdb.org/t/p/w200/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg" alt="Spider-Man">
+      <img src="https://image.tmdb.org/t/p/w200/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Shazam">
+      <img src="https://image.tmdb.org/t/p/w200/6ELJEzQJ3Y45HczvreC3dg0GV5R.jpg" alt="Inception">
+      <img src="https://image.tmdb.org/t/p/w200/fEe5fe82qHzjW5uoGgtU2H7UCh8.jpg" alt="Black Panther">
+      <img src="https://image.tmdb.org/t/p/w200/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg" alt="Ad Astra">
+      <img src="https://image.tmdb.org/t/p/w200/5BwqwxMEjeFtdknRV792Svo0K1v.jpg" alt="Venom">
+      <img src="https://image.tmdb.org/t/p/w200/tGb0cP0dQeHgZH7sPImF1AFflb6.jpg" alt="Guardians">
+      <img src="https://image.tmdb.org/t/p/w200/q719jXXEzOoYaps6babgKnONONX.jpg" alt="Avengers 2">
+    </div>
+  </div>
 </div>
 
 </body>
