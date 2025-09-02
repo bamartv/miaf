@@ -1,143 +1,71 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movies & Series - Demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movies & Series</title>
 <style>
-body {font-family: Arial,sans-serif; background:#141414; color:#fff; margin:0; padding:20px;}
-h1 {text-align:center; margin-bottom:20px;}
-.grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px;}
-.card {position:relative; cursor:pointer; transition: transform 0.2s; border-radius:12px; overflow:hidden; border:2px solid #444; background:#1f1f1f;}
-.card:hover {transform:scale(1.05); border-color:#e50914; background:#2a2a2a;}
-.poster {width:100%; display:block;}
-.badge {position:absolute; top:8px; right:8px; background:#e50914; color:#fff; padding:4px 6px; font-size:14px; font-weight:bold; border-radius:8px;}
-.favorite-btn {position:absolute; top:8px; left:8px; font-size:20px; color:#fff; text-shadow:0 0 4px #000;}
-.favorite-btn.active {color:gold;}
-#infoCard {
-  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.80); display:none;
-  z-index:1001; color:#fff; overflow:auto; backdrop-filter: blur(8px); padding:40px; box-sizing:border-box;
-}
-#infoCardContent {max-width:900px; margin:0 auto; position:relative; z-index:2;}
-#infoCard h2 {margin-top:0; color:#e50914;}
-#infoCard .poster-bg {
-  position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; filter:blur(12px) brightness(0.3); z-index:1;
-}
-#infoCard iframe {width:100%; max-height:400px; margin-top:20px; border:none; border-radius:12px;}
-#infoCard button {padding:8px 12px; margin-right:10px; background:#e50914; border:none; color:#fff; border-radius:5px; cursor:pointer;}
+body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
+h1{color:#fff;text-align:center;margin-bottom:20px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
+.card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
+.card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
+.poster{width:100%;border-radius:0;display:block;}
+#infoCard{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;box-sizing:border-box;}
+#infoCard h2{margin-top:0;color:#e50914;}
+#playerContainer{width:100%;max-width:800px;margin:10px auto;}
+#playerContainer iframe{width:100%;height:450px;border:none;}
+#correlati{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;justify-content:center;}
+#correlati img{width:100px;border-radius:8px;cursor:pointer;transition: transform 0.2s;}
+#correlati img:hover{transform:scale(1.05);}
+button{padding:8px 12px;margin:5px;background:#e50914;color:#fff;border:none;border-radius:5px;cursor:pointer;}
 </style>
 </head>
 <body>
+<h1>Movies & Series</h1>
+<div class='grid'>
+  <div class='card' onclick="openInfo('1')">
+    <img class='poster' src='https://image.tmdb.org/t/p/w300/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg' alt='Joker'>
+  </div>
+  <div class='card' onclick="openInfo('2')">
+    <img class='poster' src='https://image.tmdb.org/t/p/w300/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg' alt='Avengers: Infinity War'>
+  </div>
+  <div class='card' onclick="openInfo('3')">
+    <img class='poster' src='https://image.tmdb.org/t/p/w300/6KErczPBROQty7QoIsaa6wJYXZi.jpg' alt='The Batman'>
+  </div>
+</div>
 
-<h1>Movies & Series Demo</h1>
-<div class="grid" id="grid"></div>
-
-<div id="infoCard">
-  <img id="posterBg" class="poster-bg">
-  <div id="infoCardContent">
-    <h2 id="infoTitle"></h2>
-    <div>
-      <button id="playBtn">Guarda</button>
-      <button id="closeCardBtn">Chiudi</button>
-      <span id="favoriteInCard" class="favorite-btn">★</span>
-    </div>
-    <p id="infoGenres"></p>
-    <p id="infoVote"></p>
-    <p id="infoOverview"></p>
-    <p id="infoYear"></p>
-    <p id="infoDuration"></p>
-    <p id="infoCast"></p>
-    <iframe id="trailerFrame" allow="autoplay; fullscreen" allowfullscreen></iframe>
+<div id='infoCard'>
+  <button onclick="closeInfo()">Chiudi</button>
+  <h2 id="infoTitle">Joker</h2>
+  <p id="infoOverview">Un film drammatico su Arthur Fleck, un uomo trascurato dalla società...</p>
+  <div id="playerContainer">
+    <iframe src="https://www.youtube.com/embed/zAGVQLHvwOY" allowfullscreen></iframe>
+  </div>
+  <h3>Film correlati</h3>
+  <div id="correlati">
+    <img src="https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker 2">
+    <img src="https://image.tmdb.org/t/p/w200/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Avengers">
+    <img src="https://image.tmdb.org/t/p/w200/6KErczPBROQty7QoIsaa6wJYXZi.jpg" alt="The Batman">
+    <img src="https://image.tmdb.org/t/p/w200/cezWGskPY5x7GaglTTRN4Fugfb8.jpg" alt="Iron Man">
+    <img src="https://image.tmdb.org/t/p/w200/9kg73Mg8WJKlB9Y2SAJzeDKAnuB.jpg" alt="Captain Marvel">
+    <img src="https://image.tmdb.org/t/p/w200/l1yltvzILaZcx2jYvc5sEMkM7Eh.jpg" alt="Wonder Woman">
+    <img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Avengers Endgame">
+    <img src="https://image.tmdb.org/t/p/w200/xBKGJQsAIeweesB79KC89FpBrVr.jpg" alt="The Dark Knight">
+    <img src="https://image.tmdb.org/t/p/w200/rjbNpRMoVvqHmhmksbokcyCr7wn.jpg" alt="Aquaman">
+    <img src="https://image.tmdb.org/t/p/w200/hm58Jw4Lw8OIeECIq5qyPYhAeRJ.jpg" alt="Black Panther">
   </div>
 </div>
 
 <script>
-const entries = [
-  {
-    id: "1",
-    title: "Inception",
-    poster: "https://image.tmdb.org/t/p/w300/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg",
-    genres: ["Azione","Fantascienza"],
-    vote: 8.8,
-    overview: "Un ladro che ruba segreti attraverso i sogni è incaricato di impiantare un'idea in un mente.",
-    year: "2010",
-    duration: 148,
-    cast: ["Leonardo DiCaprio","Joseph Gordon-Levitt","Elliot Page"],
-    trailer: "https://www.youtube.com/embed/YoHD9XEInc0"
-  },
-  {
-    id: "2",
-    title: "The Matrix",
-    poster: "https://image.tmdb.org/t/p/w300/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg",
-    genres: ["Azione","Fantascienza"],
-    vote: 8.7,
-    overview: "Un hacker scopre la verità sulla realtà e la guerra contro le macchine.",
-    year: "1999",
-    duration: 136,
-    cast: ["Keanu Reeves","Laurence Fishburne","Carrie-Anne Moss"],
-    trailer: "https://www.youtube.com/embed/vKQi3bBA1y8"
-  },
-  {
-    id: "3",
-    title: "Interstellar",
-    poster: "https://image.tmdb.org/t/p/w300/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
-    genres: ["Avventura","Fantascienza","Drammatico"],
-    vote: 8.6,
-    overview: "Un gruppo di astronauti viaggia attraverso un wormhole alla ricerca di un nuovo pianeta abitabile.",
-    year: "2014",
-    duration: 169,
-    cast: ["Matthew McConaughey","Anne Hathaway","Jessica Chastain"],
-    trailer: "https://www.youtube.com/embed/zSWdZVtXT7E"
-  }
-];
-
-const grid = document.getElementById("grid");
-const infoCard = document.getElementById("infoCard");
-const infoTitle = document.getElementById("infoTitle");
-const infoGenres = document.getElementById("infoGenres");
-const infoVote = document.getElementById("infoVote");
-const infoOverview = document.getElementById("infoOverview");
-const infoYear = document.getElementById("infoYear");
-const infoDuration = document.getElementById("infoDuration");
-const infoCast = document.getElementById("infoCast");
-const posterBg = document.getElementById("posterBg");
-const trailerFrame = document.getElementById("trailerFrame");
-const closeCardBtn = document.getElementById("closeCardBtn");
-const favoriteInCard = document.getElementById("favoriteInCard");
-
-let favorites = [];
-
-function openInfo(item){
-  infoCard.style.display = "block";
-  infoTitle.textContent = item.title;
-  infoGenres.textContent = "Generi: " + item.genres.join(", ");
-  infoVote.textContent = "★ " + item.vote;
-  infoOverview.textContent = item.overview;
-  infoYear.textContent = "Anno: " + item.year;
-  infoDuration.textContent = "Durata: " + item.duration + " min";
-  infoCast.textContent = "Cast: " + item.cast.join(", ");
-  posterBg.src = item.poster;
-  trailerFrame.src = item.trailer || "";
-  favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-  favoriteInCard.onclick = ()=>{
-    if(favorites.includes(item.id)){
-      favorites = favorites.filter(f=>f!==item.id);
-    } else {favorites.push(item.id);}
-    favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-  };
+function openInfo(id){
+  document.getElementById('infoCard').style.display='block';
+  window.scrollTo(0,0);
 }
 
-closeCardBtn.onclick = ()=>{infoCard.style.display="none"; trailerFrame.src="";};
-
-entries.forEach(item=>{
-  const card = document.createElement("div");
-  card.className = "card";
-  card.innerHTML = `<img class="poster" src="${item.poster}" alt="${item.title}">
-                    <div class="badge">${item.vote}</div>`;
-  card.onclick = ()=>openInfo(item);
-  grid.appendChild(card);
-});
+function closeInfo(){
+  document.getElementById('infoCard').style.display='none';
+}
 </script>
-
 </body>
 </html>
