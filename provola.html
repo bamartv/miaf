@@ -15,11 +15,12 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 40%, rgba(0,0,0,0.95) 100%), 
+    /* Gradiente netto verso nero nella parte bassa */
+    background: linear-gradient(to bottom, rgba(0,0,0,0.0) 60%, rgba(0,0,0,1) 100%), 
                 url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end; /* testo in basso */
+    justify-content: flex-end;
     align-items: center;
     padding: 40px 20px;
     box-sizing: border-box;
@@ -30,6 +31,7 @@ body {
     max-width:800px;
     width:100%;
     text-align:left;
+    color:#fff;
 }
 h1 { margin:0 0 10px 0; font-size:32px; }
 p { margin:5px 0; font-size:16px; line-height:1.4; }
@@ -39,8 +41,8 @@ button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font
 #favoriteBtn { background:gold; color:#000; }
 #trailer {
     width:100%;
-    max-width:640px;
-    height:360px;
+    max-width:560px;
+    height:315px;
     margin:20px 0;
 }
 #related {
