@@ -8,7 +8,7 @@
 body {
     margin:0;
     font-family: Arial, sans-serif;
-    background:#141414;
+    background:#000;
     color:#fff;
 }
 #infoCard {
@@ -18,40 +18,25 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: center;
-    padding: 40px 20px;
+    padding: 20px;
     box-sizing: border-box;
-    /* Dissolvenza locandina verso nero */
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%),
-                url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
+    /* Locandina di sfondo con dissolvenza netta verso nero dalla metà */
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%),
+        url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
     background-size: cover;
 }
-#infoContent {
-    width: 100%;
-    max-width: 800px;
-    background: rgba(0,0,0,0.9);
-    padding: 20px;
-    border-radius: 8px;
-}
-#infoContent h1 {
+h1 {
     margin-top: 0;
     color: #e50914;
 }
-#infoContent p {
-    line-height: 1.4;
-}
-#trailer {
-    width: 100%;
-    max-width: 640px;
-    height: 360px;
-    margin: 20px 0;
-    border: none;
-    border-radius: 8px;
+p {
+    margin:5px 0;
 }
 #buttons {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin: 10px 0 20px;
 }
 .button {
     padding: 10px 16px;
@@ -62,6 +47,14 @@ body {
 }
 #playBtn { background: #e50914; color: #fff; }
 #favoriteBtn { background: gold; color: #000; }
+#trailer {
+    width: 100%;
+    max-width: 640px;
+    height: 360px;
+    border: none;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
 #related {
     display: flex;
     overflow-x: auto;
@@ -83,11 +76,10 @@ body {
 <body>
 
 <div id="infoCard">
-  <div id="infoContent">
     <h1>Wonder Woman 1984</h1>
     <div id="buttons">
-      <button id="playBtn" class="button">Guarda</button>
-      <button id="favoriteBtn" class="button">★ Preferiti</button>
+        <button id="playBtn" class="button">Guarda</button>
+        <button id="favoriteBtn" class="button">★ Preferiti</button>
     </div>
     <p><strong>Anno:</strong> 2020</p>
     <p><strong>Durata:</strong> 151 min</p>
@@ -99,18 +91,17 @@ body {
 
     <h2>Film correlati</h2>
     <div id="related">
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6S2VnKxGvFThsI3O0fVQ7pCD8Q7.jpg" alt="Film 2"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2qvKytGNnb7HKGw2YpX2iyz4U76.jpg" alt="Film 3"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg" alt="Film 4"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/jlA9y5nqHrZ1Qkx3dTrJqVnW5tJ.jpg" alt="Film 5"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4EFCsO9M4gCZ8zgi0U5VBrVnHQ5.jpg" alt="Film 6"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/wZ91gTa7g6C1Tj0xD38U95F5Zyo.jpg" alt="Film 7"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6n0N0I4DqL5l3nUKhG7ieKqtG6S.jpg" alt="Film 8"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3IhNkvpmN6QdkifQ1M2dLSiUR7V.jpg" alt="Film 9"></div>
-      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7E9MqU1xY0m9xP5gYJ2k7TyRrLz.jpg" alt="Film 10"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6S2VnKxGvFThsI3O0fVQ7pCD8Q7.jpg" alt="Film 2"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2qvKytGNnb7HKGw2YpX2iyz4U76.jpg" alt="Film 3"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg" alt="Film 4"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/jlA9y5nqHrZ1Qkx3dTrJqVnW5tJ.jpg" alt="Film 5"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4EFCsO9M4gCZ8zgi0U5VBrVnHQ5.jpg" alt="Film 6"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/wZ91gTa7g6C1Tj0xD38U95F5Zyo.jpg" alt="Film 7"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6n0N0I4DqL5l3nUKhG7ieKqtG6S.jpg" alt="Film 8"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3IhNkvpmN6QdkifQ1M2dLSiUR7V.jpg" alt="Film 9"></div>
+        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7E9MqU1xY0m9xP5gYJ2k7TyRrLz.jpg" alt="Film 10"></div>
     </div>
-  </div>
 </div>
 
 </body>
