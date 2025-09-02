@@ -3,54 +3,124 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dettaglio Film/Serie</title>
+<title>Dettaglio Film</title>
 <style>
-body { font-family: Arial, sans-serif; background:#141414; color:#fff; margin:0; padding:20px; }
-h1 { color:#e50914; }
-.container { display:flex; gap:30px; }
-.poster { width:300px; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,.6); }
-.details { flex:1; }
-iframe { width:100%; max-width:560px; height:315px; margin-top:20px; border-radius:8px; }
-button { margin-top:20px; padding:10px 20px; font-size:16px; background:#e50914; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-button:hover { background:#b00610; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  background-color: #141414;
+}
+.hero {
+  position: relative;
+  height: 70vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end;
+  padding: 40px;
+  box-sizing: border-box;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  left:0; top:0; right:0; bottom:0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.2));
+}
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+}
+.hero h1 {
+  margin: 0;
+  font-size: 48px;
+  color: #e50914;
+}
+.meta {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #ddd;
+}
+.container {
+  padding: 40px;
+  max-width: 1000px;
+  margin: auto;
+}
+iframe {
+  width: 100%;
+  max-width: 800px;
+  height: 450px;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: none;
+}
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover { background: #b00610; }
 </style>
 </head>
 <body>
+
 <div id="content"></div>
+
 <script>
-// Recupera ID dalla query string
+// Recupera parametri dalla query string
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
-const type = params.get("type");
 
-// Dati finti (in realtà qui useresti fetch a TMDb con API key)
+// Dati demo (con immagini reali da TMDb)
 const fakeDB = {
-  "1": {title:"Film A", poster:"https://via.placeholder.com/300x450?text=Film+A", overview:"Trama di Film A", year:2022, vote:7.5, trailer:"https://www.youtube.com/embed/dQw4w9WgXcQ"},
-  "2": {title:"Film B", poster:"https://via.placeholder.com/300x450?text=Film+B", overview:"Trama di Film B", year:2021, vote:8.1, trailer:"https://www.youtube.com/embed/oHg5SJYRHA0"},
-  "3": {title:"Serie C", poster:"https://via.placeholder.com/300x450?text=Serie+C", overview:"Trama di Serie C", year:2020, vote:7.8, trailer:"https://www.youtube.com/embed/9bZkp7q19f0"},
-  "4": {title:"Film D", poster:"https://via.placeholder.com/300x450?text=Film+D", overview:"Trama di Film D", year:2023, vote:8.0, trailer:"https://www.youtube.com/embed/3JZ_D3ELwOQ"}
+  "1": {
+    title: "Inception",
+    year: 2010,
+    duration: "148 min",
+    cast: "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
+    overview: "Un ladro che ruba segreti attraverso l'uso della tecnologia dei sogni viene incaricato di impiantare un'idea nella mente di un CEO.",
+    backdrop: "https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg",
+    trailer: "https://www.youtube.com/embed/YoHD9XEInc0"
+  },
+  "2": {
+    title: "Interstellar",
+    year: 2014,
+    duration: "169 min",
+    cast: "Matthew McConaughey, Anne Hathaway, Jessica Chastain",
+    overview: "Un gruppo di esploratori parte attraverso un wormhole nello spazio per garantire la sopravvivenza dell'umanità.",
+    backdrop: "https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
+    trailer: "https://www.youtube.com/embed/zSWdZVtXT7E"
+  }
 };
 
-const item = fakeDB[id];
+const item = fakeDB[id] || fakeDB["1"]; // fallback
 
-if(item){
-  document.getElementById("content").innerHTML = `
-    <div class="container">
-      <img src="${item.poster}" alt="${item.title}" class="poster">
-      <div class="details">
-        <h1>${item.title}</h1>
-        <p><strong>Anno:</strong> ${item.year}</p>
-        <p><strong>Voto:</strong> ★ ${item.vote}</p>
-        <p>${item.overview}</p>
-        <iframe src="${item.trailer}" allowfullscreen></iframe>
-        <br>
-        <button onclick="window.history.back()">← Torna indietro</button>
+document.getElementById("content").innerHTML = `
+  <div class="hero" style="background-image:url('${item.backdrop}')">
+    <div class="hero-content">
+      <h1>${item.title}</h1>
+      <div class="meta">
+        <span><strong>Anno:</strong> ${item.year}</span> • 
+        <span><strong>Durata:</strong> ${item.duration}</span>
       </div>
+      <div class="meta"><strong>Cast:</strong> ${item.cast}</div>
     </div>
-  `;
-}else{
-  document.getElementById("content").innerHTML = "<p>Film/serie non trovato.</p>";
-}
+  </div>
+
+  <div class="container">
+    <h2>Trama</h2>
+    <p>${item.overview}</p>
+    <iframe src="${item.trailer}" allowfullscreen></iframe>
+    <br>
+    <button onclick="window.history.back()">← Torna indietro</button>
+  </div>
+`;
 </script>
 </body>
 </html>
