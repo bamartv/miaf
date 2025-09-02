@@ -3,32 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Movies & Series - Prova</title>
+<title>Movies & Series - Demo</title>
 <style>
-body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
-h1{text-align:center;margin-bottom:20px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
-.card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
-.card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
-.poster{width:100%;display:block;}
-.badge{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;}
-.favorite-btn{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}
-.favorite-btn.active{color:gold;}
-#infoCard{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(34,34,34,0.95);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;display:flex;align-items:center;justify-content:center;}
-#infoContent{position:relative;background:#222;border-radius:10px;padding:20px;max-width:800px;width:90%;}
-#infoContent h2{margin-top:0;color:#e50914;display:inline-block;}
-#infoContent button{margin-left:10px;padding:8px 12px;background:#e50914;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}
-#trailerFrame{width:100%;height:360px;margin-top:10px;display:none;}
+body { font-family: Arial, sans-serif; background: #141414; color: #fff; margin: 0; padding: 20px; }
+h1 { text-align: center; margin-bottom: 20px; color: #e50914; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+.card { position: relative; cursor: pointer; transition: transform 0.2s; border-radius: 12px; overflow: hidden; border: 2px solid #444; background: #1f1f1f; }
+.card:hover { transform: scale(1.05); border-color: #e50914; background: #2a2a2a; }
+.poster { width: 100%; display: block; }
+.badge { position: absolute; top: 8px; right: 8px; background: #e50914; color: #fff; padding: 4px 6px; font-size: 14px; font-weight: bold; border-radius: 8px; text-align: center; }
+.favorite-btn { font-size: 20px; color: #fff; text-shadow: 0 0 4px #000; position: absolute; top: 8px; left: 8px; pointer-events: none; }
+.favorite-btn.active { color: gold; }
+
+#infoCard { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(34,34,34,0.95); display: none; z-index: 1001; backdrop-filter: blur(8px); color: #fff; padding: 20px; overflow:auto; }
+#infoCard .inner { position: relative; background: #222; border-radius: 10px; padding: 20px; max-width: 800px; margin: auto; }
+#infoCard h2 { margin-top: 0; color: #e50914; display:inline-block; }
+#infoCard button { margin-left: 10px; padding: 8px 12px; background: #e50914; border: none; color: #fff; border-radius: 5px; cursor: pointer; vertical-align: middle; }
+#infoCard #trailerFrame { width: 100%; max-width: 600px; height: 315px; margin-top: 10px; display: none; border-radius: 8px; }
+#controls { display:flex; gap:10px; justify-content:center; margin-bottom:20px; flex-wrap:wrap; }
+#controls input, #controls select { padding:8px; font-size:14px; border-radius:4px; border:none; }
 </style>
 </head>
 <body>
-<h1>Movies & Series - Prova</h1>
-<div class='grid' id='moviesGrid'></div>
 
-<div id='infoCard'>
-  <div id='infoContent'>
+<h1>Movies & Series Demo</h1>
+<div id="controls">
+  <input type="text" id="searchBox" placeholder="Cerca...">
+</div>
+
+<div id="moviesGrid" class="grid"></div>
+
+<div id="infoCard">
+  <div class="inner">
     <h2 id="infoTitle"></h2>
-    <div style="margin:10px 0;">
+    <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
       <button id="closeCardBtn">Chiudi</button>
       <span id="favoriteInCard" class="favorite-btn">★</span>
     </div>
@@ -43,40 +51,49 @@ h1{text-align:center;margin-bottom:20px;}
 </div>
 
 <script>
-// Film di prova
 const allData = [
-  {id:"1", title:"Inception", poster:"https://image.tmdb.org/t/p/w300/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg", genres:["Azione","Fantascienza"], vote:8.8, overview:"Un ladro che ruba segreti dai sogni...", year:"2010", duration:148, cast:["Leonardo DiCaprio","Joseph Gordon-Levitt"], trailer:"8hP9D6kZseM", type:"movie"},
-  {id:"2", title:"The Matrix", poster:"https://image.tmdb.org/t/p/w300/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg", genres:["Azione","Fantascienza"], vote:8.7, overview:"Un hacker scopre la verità sulla realtà...", year:"1999", duration:136, cast:["Keanu Reeves","Laurence Fishburne"], trailer:"vKQi3bBA1y8", type:"movie"},
-  {id:"3", title:"Interstellar", poster:"https://image.tmdb.org/t/p/w300/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", genres:["Avventura","Fantascienza"], vote:8.6, overview:"Un gruppo di astronauti viaggia attraverso un wormhole...", year:"2014", duration:169, cast:["Matthew McConaughey","Anne Hathaway"], trailer:"zSWdZVtXT7E", type:"movie"},
-  {id:"4", title:"The Dark Knight", poster:"https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg", genres:["Azione","Crime"], vote:9.0, overview:"Batman affronta il Joker...", year:"2008", duration:152, cast:["Christian Bale","Heath Ledger"], trailer:"EXeTwQWrcwY", type:"movie"},
-  {id:"5", title:"Avatar", poster:"https://image.tmdb.org/t/p/w300/kmcqlZGaSh20zpTbuoF0Cdn07dT.jpg", genres:["Avventura","Fantascienza"], vote:7.8, overview:"Su Pandora, gli umani cercano risorse...", year:"2009", duration:162, cast:["Sam Worthington","Zoe Saldana"], trailer:"5PSNL1qE6VY", type:"movie"}
+  {id:"1", title:"Film A", poster:"https://via.placeholder.com/300x450?text=Film+A", genres:["Azione"], vote:7.5, overview:"Descrizione Film A", year:2022, duration:120, cast:["Attore1","Attore2"], trailer:"https://www.youtube.com/embed/dQw4w9WgXcQ"},
+  {id:"2", title:"Film B", poster:"https://via.placeholder.com/300x450?text=Film+B", genres:["Commedia"], vote:8.2, overview:"Descrizione Film B", year:2021, duration:95, cast:["Attore3","Attore4"], trailer:"https://www.youtube.com/embed/oHg5SJYRHA0"},
+  {id:"3", title:"Film C", poster:"https://via.placeholder.com/300x450?text=Film+C", genres:["Horror"], vote:6.8, overview:"Descrizione Film C", year:2023, duration:110, cast:["Attore5","Attore6"], trailer:"https://www.youtube.com/embed/9bZkp7q19f0"},
+  {id:"4", title:"Film D", poster:"https://via.placeholder.com/300x450?text=Film+D", genres:["Drammatico"], vote:7.9, overview:"Descrizione Film D", year:2020, duration:130, cast:["Attore7","Attore8"], trailer:"https://www.youtube.com/embed/3JZ_D3ELwOQ"},
+  {id:"5", title:"Film E", poster:"https://via.placeholder.com/300x450?text=Film+E", genres:["Azione","Avventura"], vote:8.0, overview:"Descrizione Film E", year:2021, duration:125, cast:["Attore9","Attore10"], trailer:"https://www.youtube.com/embed/V-_O7nl0Ii0"}
 ];
 
 let favorites = [];
-let currentItem = null;
+const grid = document.getElementById('moviesGrid');
+const infoCard = document.getElementById('infoCard');
+const infoTitle = document.getElementById('infoTitle');
+const infoGenres = document.getElementById('infoGenres');
+const infoVote = document.getElementById('infoVote');
+const infoOverview = document.getElementById('infoOverview');
+const infoYear = document.getElementById('infoYear');
+const infoDuration = document.getElementById('infoDuration');
+const infoCast = document.getElementById('infoCast');
+const closeCardBtn = document.getElementById('closeCardBtn');
+const favoriteInCard = document.getElementById('favoriteInCard');
+const trailerFrame = document.getElementById('trailerFrame');
+const searchBox = document.getElementById('searchBox');
 
-const grid=document.getElementById('moviesGrid');
-const infoCard=document.getElementById('infoCard');
-const closeCardBtn=document.getElementById('closeCardBtn');
-const infoTitle=document.getElementById('infoTitle');
-const infoGenres=document.getElementById('infoGenres');
-const infoVote=document.getElementById('infoVote');
-const infoOverview=document.getElementById('infoOverview');
-const infoYear=document.getElementById('infoYear');
-const infoDuration=document.getElementById('infoDuration');
-const infoCast=document.getElementById('infoCast');
-const favoriteInCard=document.getElementById('favoriteInCard');
-const trailerFrame=document.getElementById('trailerFrame');
-
-function toggleFavorite(id){
-  if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
-  else favorites.push(id);
-  favoriteInCard.classList.toggle("active", favorites.includes(id));
+function render() {
+  grid.innerHTML = '';
+  const search = searchBox.value.toLowerCase();
+  allData.forEach(item => {
+    if(item.title.toLowerCase().includes(search)){
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <img class='poster' src='${item.poster}' alt='${item.title}'>
+        <div class='badge'>${item.vote}</div>
+        <span class="favorite-btn ${favorites.includes(item.id)?'active':''}">★</span>
+      `;
+      card.onclick = () => openInfo(item);
+      grid.appendChild(card);
+    }
+  });
 }
 
-function openInfo(item){
-  currentItem = item;
-  infoCard.style.display='flex';
+function openInfo(item) {
+  infoCard.style.display='block';
   infoTitle.textContent = item.title;
   infoGenres.textContent = "Generi: "+item.genres.join(", ");
   infoVote.textContent = "★ "+item.vote;
@@ -84,34 +101,25 @@ function openInfo(item){
   infoYear.textContent = "Anno: "+item.year;
   infoDuration.textContent = "Durata: "+item.duration+" min";
   infoCast.textContent = "Cast: "+item.cast.join(", ");
-  favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-  favoriteInCard.onclick = () => toggleFavorite(item.id);
-
-  if(item.trailer){
-    trailerFrame.src = "https://www.youtube.com/embed/"+item.trailer+"?autoplay=0";
-    trailerFrame.style.display="block";
-  } else {
-    trailerFrame.style.display="none";
-  }
+  trailerFrame.src = item.trailer;
+  trailerFrame.style.display = 'block';
+  favoriteInCard.classList.toggle('active', favorites.includes(item.id));
+  favoriteInCard.onclick = () => {
+    if(favorites.includes(item.id)) favorites = favorites.filter(f=>f!==item.id);
+    else favorites.push(item.id);
+    favoriteInCard.classList.toggle('active', favorites.includes(item.id));
+  };
 }
 
-closeCardBtn.onclick = () => { infoCard.style.display='none'; trailerFrame.src=""; };
-
-function renderGrid(){
-  grid.innerHTML='';
-  allData.forEach(item=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.innerHTML = `
-      <img class='poster' src='${item.poster}' alt='${item.title}'>
-      <div class='badge'>${item.vote}</div>
-    `;
-    card.onclick = () => openInfo(item);
-    grid.appendChild(card);
-  });
+closeCardBtn.onclick = () => {
+  infoCard.style.display='none';
+  trailerFrame.src='';
+  trailerFrame.style.display='none';
 }
 
-renderGrid();
+searchBox.oninput = render;
+
+render();
 </script>
 </body>
 </html>
