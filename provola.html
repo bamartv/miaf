@@ -3,141 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Movies & Series - Split Screen</title>
+<title>Film & Serie - Index</title>
 <style>
-body { font-family: Arial, sans-serif; background: #141414; color: #fff; margin: 0; padding: 20px; }
-h1 { text-align: center; margin-bottom: 20px; color: #e50914; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
-.card { position: relative; cursor: pointer; transition: transform 0.2s; border-radius: 12px; overflow: hidden; border: 2px solid #444; background: #1f1f1f; }
-.card:hover { transform: scale(1.05); border-color: #e50914; background: #2a2a2a; }
-.poster { width: 100%; display: block; }
-.badge { position: absolute; top: 8px; right: 8px; background: #e50914; color: #fff; padding: 4px 6px; font-size: 14px; font-weight: bold; border-radius: 8px; text-align: center; }
-.favorite-btn { font-size: 20px; color: #fff; text-shadow: 0 0 4px #000; position: absolute; top: 8px; left: 8px; pointer-events: none; }
-.favorite-btn.active { color: gold; }
-
-#infoCard { 
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-  background: rgba(0,0,0,0.95); display: none; z-index: 1001; color: #fff;
-}
-#infoCard .inner { display: flex; height: 100%; }
-#infoCard .left { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
-#infoCard .left img { width: 100%; max-width: 350px; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.7); }
-#infoCard .right { flex: 2; padding: 30px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
-#infoCard h2 { margin-top: 0; color: #e50914; font-size: 2.5rem; }
-#infoCard p { margin: 8px 0; font-size: 1.1rem; max-width: 800px; }
-#infoCard iframe { width: 100%; max-width: 560px; height: 315px; margin-top: 20px; border-radius: 8px; display: none; }
-#infoCard .buttons { display: flex; gap: 20px; margin-top: 20px; }
-#infoCard button { font-size: 1.2rem; padding: 12px 20px; background: #e50914; border: none; color: #fff; border-radius: 6px; cursor: pointer; }
-#infoCard button:hover { background: #b00610; }
-#infoCard #favoriteInCard { font-size: 2rem; cursor: pointer; align-self: center; }
-#controls { display:flex; gap:10px; justify-content:center; margin-bottom:20px; flex-wrap:wrap; }
-#controls input { padding:8px; font-size:14px; border-radius:4px; border:none; }
+body { font-family: Arial, sans-serif; background:#141414; color:#fff; margin:0; padding:20px; }
+h1 { text-align:center; margin-bottom:20px; color:#e50914; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:15px; }
+.card { position:relative; border-radius:12px; overflow:hidden; background:#1f1f1f; border:2px solid #444; transition:transform .2s; }
+.card:hover { transform:scale(1.05); border-color:#e50914; }
+.poster { width:100%; display:block; }
+.badge { position:absolute; top:8px; right:8px; background:#e50914; padding:4px 6px; border-radius:6px; font-weight:bold; }
 </style>
 </head>
 <body>
-
-<h1>Movies & Series Split Demo</h1>
-<div id="controls">
-  <input type="text" id="searchBox" placeholder="Cerca...">
+<h1>Film & Serie</h1>
+<div class="grid">
+  <a href="detail.html?id=1&type=movie" class="card">
+    <img src="https://via.placeholder.com/300x450?text=Film+A" class="poster" alt="Film A">
+    <div class="badge">7.5</div>
+  </a>
+  <a href="detail.html?id=2&type=movie" class="card">
+    <img src="https://via.placeholder.com/300x450?text=Film+B" class="poster" alt="Film B">
+    <div class="badge">8.1</div>
+  </a>
+  <a href="detail.html?id=3&type=tv" class="card">
+    <img src="https://via.placeholder.com/300x450?text=Serie+C" class="poster" alt="Serie C">
+    <div class="badge">7.8</div>
+  </a>
+  <a href="detail.html?id=4&type=movie" class="card">
+    <img src="https://via.placeholder.com/300x450?text=Film+D" class="poster" alt="Film D">
+    <div class="badge">8.0</div>
+  </a>
 </div>
-
-<div id="moviesGrid" class="grid"></div>
-
-<div id="infoCard">
-  <div class="inner">
-    <div class="left">
-      <img id="infoPoster" src="" alt="">
-    </div>
-    <div class="right">
-      <h2 id="infoTitle"></h2>
-      <p id="infoGenres"></p>
-      <p id="infoVote"></p>
-      <p id="infoOverview"></p>
-      <p id="infoYear"></p>
-      <p id="infoDuration"></p>
-      <p id="infoCast"></p>
-      <iframe id="trailerFrame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      <div class="buttons">
-        <button id="closeCardBtn">Chiudi</button>
-        <span id="favoriteInCard">★</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const allData = [
-  {id:"1", title:"Film A", poster:"https://via.placeholder.com/300x450?text=Film+A", genres:["Azione"], vote:7.5, overview:"Descrizione Film A", year:2022, duration:120, cast:["Attore1","Attore2"], trailer:"https://www.youtube.com/embed/dQw4w9WgXcQ"},
-  {id:"2", title:"Film B", poster:"https://via.placeholder.com/300x450?text=Film+B", genres:["Commedia"], vote:8.2, overview:"Descrizione Film B", year:2021, duration:95, cast:["Attore3","Attore4"], trailer:"https://www.youtube.com/embed/oHg5SJYRHA0"},
-  {id:"3", title:"Film C", poster:"https://via.placeholder.com/300x450?text=Film+C", genres:["Horror"], vote:6.8, overview:"Descrizione Film C", year:2023, duration:110, cast:["Attore5","Attore6"], trailer:"https://www.youtube.com/embed/9bZkp7q19f0"},
-  {id:"4", title:"Film D", poster:"https://via.placeholder.com/300x450?text=Film+D", genres:["Drammatico"], vote:7.9, overview:"Descrizione Film D", year:2020, duration:130, cast:["Attore7","Attore8"], trailer:"https://www.youtube.com/embed/3JZ_D3ELwOQ"},
-  {id:"5", title:"Film E", poster:"https://via.placeholder.com/300x450?text=Film+E", genres:["Azione","Avventura"], vote:8.0, overview:"Descrizione Film E", year:2021, duration:125, cast:["Attore9","Attore10"], trailer:"https://www.youtube.com/embed/V-_O7nl0Ii0"}
-];
-
-let favorites = [];
-const grid = document.getElementById('moviesGrid');
-const infoCard = document.getElementById('infoCard');
-const infoPoster = document.getElementById('infoPoster');
-const infoTitle = document.getElementById('infoTitle');
-const infoGenres = document.getElementById('infoGenres');
-const infoVote = document.getElementById('infoVote');
-const infoOverview = document.getElementById('infoOverview');
-const infoYear = document.getElementById('infoYear');
-const infoDuration = document.getElementById('infoDuration');
-const infoCast = document.getElementById('infoCast');
-const closeCardBtn = document.getElementById('closeCardBtn');
-const favoriteInCard = document.getElementById('favoriteInCard');
-const trailerFrame = document.getElementById('trailerFrame');
-const searchBox = document.getElementById('searchBox');
-
-function render() {
-  grid.innerHTML = '';
-  const search = searchBox.value.toLowerCase();
-  allData.forEach(item => {
-    if(item.title.toLowerCase().includes(search)){
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <img class='poster' src='${item.poster}' alt='${item.title}'>
-        <div class='badge'>${item.vote}</div>
-        <span class="favorite-btn ${favorites.includes(item.id)?'active':''}">★</span>
-      `;
-      card.onclick = () => openInfo(item);
-      grid.appendChild(card);
-    }
-  });
-}
-
-function openInfo(item) {
-  infoCard.style.display='block';
-  infoPoster.src = item.poster;
-  infoPoster.alt = item.title;
-  infoTitle.textContent = item.title;
-  infoGenres.textContent = "Generi: "+item.genres.join(", ");
-  infoVote.textContent = "★ "+item.vote;
-  infoOverview.textContent = item.overview;
-  infoYear.textContent = "Anno: "+item.year;
-  infoDuration.textContent = "Durata: "+item.duration+" min";
-  infoCast.textContent = "Cast: "+item.cast.join(", ");
-  trailerFrame.src = item.trailer;
-  trailerFrame.style.display = 'block';
-  favoriteInCard.style.color = favorites.includes(item.id)?'gold':'#fff';
-  favoriteInCard.onclick = () => {
-    if(favorites.includes(item.id)) favorites = favorites.filter(f=>f!==item.id);
-    else favorites.push(item.id);
-    favoriteInCard.style.color = favorites.includes(item.id)?'gold':'#fff';
-  };
-}
-
-closeCardBtn.onclick = () => {
-  infoCard.style.display='none';
-  trailerFrame.src='';
-  trailerFrame.style.display='none';
-}
-
-searchBox.oninput = render;
-
-render();
-</script>
 </body>
 </html>
