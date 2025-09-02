@@ -1,103 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Film Info Card Prova</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Film Demo</title>
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#111; color:#fff; }
+body {
+    margin:0; padding:0;
+    font-family: Arial, sans-serif;
+    background: #141414;
+    color: #fff;
+}
 #infoCard {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.7);
-  overflow:auto;
-  padding:20px;
-  backdrop-filter: blur(6px);
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background-size: cover; background-position: center;
+    background-repeat: no-repeat;
+    backdrop-filter: brightness(0.4);
+    overflow-y:auto;
+    padding: 20px;
 }
 #infoContent {
-  position: relative;
-  width:70%;
-  max-width:700px;
-  border-radius:12px;
-  padding:20px;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg');
-  background-size: cover;
-  background-position: center;
+    width: 90%; max-width: 900px;
+    display:flex; flex-direction:column; align-items:center;
+    gap: 15px;
+    text-align:center;
+    background: rgba(0,0,0,0.6); /* leggero overlay per leggibilità */
+    padding: 15px 20px;
+    border-radius: 12px;
 }
-#infoContent h2 { margin:0 0 10px; color:#e50914; text-align:center; }
-#infoDetails { text-align:left; width:100%; margin-bottom:10px; }
-#infoDetails p { margin:4px 0; font-size:14px; }
-.action-buttons { display:flex; gap:10px; margin:10px 0; justify-content:center; }
-.action-buttons button {
-  padding:8px 12px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
-}
-#watchBtn { background:#e50914; color:#fff; }
-#favoriteBtn { background:gold; color:#000; }
-#playerContainer { width:90%; max-width:600px; height:180px; margin:15px 0; }
-#playerContainer iframe { width:100%; height:100%; border:none; border-radius:8px; }
-#relatedWrapper { width:100%; margin-top:10px; }
-#related { display:flex; overflow-x:auto; gap:10px; padding-bottom:10px; scroll-behavior:smooth; }
+#infoContent h2 { margin:0; font-size:28px; color:#e50914; }
+#infoContent p { margin:3px 0; font-size:14px; }
+#player { width:80%; height:300px; border:none; border-radius:8px; }
+#buttons { display:flex; gap:15px; margin-top:10px; }
+button { padding:10px 20px; font-size:14px; border:none; border-radius:6px; cursor:pointer; }
+button#watchBtn { background:#e50914; color:#fff; }
+button#favBtn { background: gold; color:#000; }
+#related { display:flex; overflow-x:auto; gap:10px; margin-top:20px; padding-bottom:10px; }
 #related::-webkit-scrollbar { display:none; }
-.related-card { flex-shrink:0; width:100px; cursor:pointer; }
-.related-card img { width:100%; border-radius:8px; display:block; }
+#related img { width:100px; border-radius:8px; flex-shrink:0; cursor:pointer; transition: transform 0.2s; }
+#related img:hover { transform: scale(1.05); }
 </style>
 </head>
 <body>
 
 <div id="infoCard">
   <div id="infoContent">
-    <h2 id="infoTitle">The Dark Knight</h2>
-    <div id="infoDetails">
-      <p>Anno: 2008</p>
-      <p>Durata: 152 min</p>
-      <p>Generi: Azione, Crimine, Drammatico</p>
-      <p>Cast: Christian Bale, Heath Ledger, Aaron Eckhart</p>
-      <p>Trama: Batman si scontra con il Joker, un criminale psicopatico che vuole creare caos a Gotham City.</p>
-    </div>
-    <div class="action-buttons">
+    <h2 id="title">Il Signore degli Anelli</h2>
+    <p id="genres">Generi: Fantasy, Avventura</p>
+    <p id="year">Anno: 2001</p>
+    <p id="duration">Durata: 178 min</p>
+    <p id="cast">Cast: Elijah Wood, Ian McKellen, Viggo Mortensen</p>
+    
+    <iframe id="player" src="https://www.youtube.com/embed/V75dMMIW2B4" allowfullscreen></iframe>
+    
+    <div id="buttons">
       <button id="watchBtn">Guarda</button>
-      <button id="favoriteBtn">★ Preferiti</button>
+      <button id="favBtn">★ Preferiti</button>
     </div>
-    <div id="playerContainer">
-      <iframe src="https://www.youtube.com/embed/EXeTwQWrcwY" allowfullscreen></iframe>
-    </div>
-    <h3 style="width:100%; text-align:left; margin-top:10px;">Film correlati</h3>
-    <div id="relatedWrapper">
-      <div id="related">
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg" alt="Inception"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg" alt="Interstellar"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/5pMy5LF2JAleBNBtuzizfCMWM7k.jpg" alt="Joker"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/hqkIcbrOHL86UncnHIsHVcVmzue.jpg" alt="Batman Begins"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker 2019"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/fZPSd91yGE9fCcCe6OoQr6E3Bev.jpg" alt="Dark Knight Rises"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/kb4s0ML0iVZlG6wAKbbs9NAm6X.jpg" alt="Batman v Superman"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/6bCplVkhowCjTHXWv49UjRPn0eK.jpg" alt="Logan"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/c8Ass7acuOe4za6DhSattE359gr.jpg" alt="Avengers"></div>
-        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/2TeJfUZMGolfDdW6DKhfIWqvq8y.jpg" alt="Deadpool"></div>
-      </div>
+
+    <div id="related">
+      <img src="https://image.tmdb.org/t/p/w200/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg" alt="Il Signore degli Anelli: La Compagnia dell'Anello">
+      <img src="https://image.tmdb.org/t/p/w200/7W0GbfvXJ7H8qR6hFf7rF3tyPzA.jpg" alt="Il Signore degli Anelli: Le Due Torri">
+      <img src="https://image.tmdb.org/t/p/w200/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg" alt="Il Signore degli Anelli: Il Ritorno del Re">
+      <img src="https://image.tmdb.org/t/p/w200/9DeGfFIqjph5CBFVQrD6wv9S7rF.jpg" alt="Lo Hobbit: Un Viaggio Inaspettato">
+      <img src="https://image.tmdb.org/t/p/w200/6s1G9pHYpo4iR5Xj9SS1ZfXZ1Wn.jpg" alt="Lo Hobbit: La Desolazione di Smaug">
+      <img src="https://image.tmdb.org/t/p/w200/56zTpe2xvaA4alU51sRWPoKPYZy.jpg" alt="Lo Hobbit: La Battaglia delle Cinque Armate">
+      <img src="https://image.tmdb.org/t/p/w200/9f6W7a3S2Ew3KX4gkYdWcAq1T0O.jpg" alt="Harry Potter e la Pietra Filosofale">
+      <img src="https://image.tmdb.org/t/p/w200/dCtFvscYcXQKTNvyyaQr2g2UacJ.jpg" alt="Harry Potter e la Camera dei Segreti">
+      <img src="https://image.tmdb.org/t/p/w200/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg" alt="Harry Potter e il Prigioniero di Azkaban">
+      <img src="https://image.tmdb.org/t/p/w200/Av9yTlyQ3tD6G7G6iKGvks6hW7S.jpg" alt="Harry Potter e il Calice di Fuoco">
     </div>
   </div>
 </div>
-
-<script>
-document.getElementById('watchBtn').onclick = () => {
-  alert('Funzione Guarda attivata!');
-};
-document.getElementById('favoriteBtn').onclick = () => {
-  alert('Film aggiunto ai Preferiti!');
-};
-</script>
 
 </body>
 </html>
