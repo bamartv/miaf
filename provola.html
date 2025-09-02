@@ -1,212 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Card Info Fullscreen Demo</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Movies & Series - Prova</title>
 <style>
-body {
-    font-family: Arial, sans-serif;
-    background: #141414;
-    color: #fff;
-    margin: 0;
-    padding: 20px;
-}
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
-}
-.card {
-    cursor: pointer;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.2s;
-    border: 2px solid #444;
-}
-.card:hover { transform: scale(1.05); border-color: #e50914; }
-.card img { width: 100%; display: block; }
-#infoOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(20,20,20,0.95);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    overflow-y: auto;
-}
-#infoCard {
-    background: #1c1c1c;
-    max-width: 900px;
-    width: 95%;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    position: relative;
-    animation: fadeIn 0.3s ease;
-}
-#infoCard img {
-    width: 100%;
-    max-height: 400px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-#infoCard h2 { color: #e50914; margin: 0; }
-#infoCard p { margin: 4px 0; color: #ccc; }
-#infoCard .badge { background: #e50914; padding: 4px 8px; border-radius: 6px; font-weight: bold; display: inline-block; margin-right: 8px; }
-#infoButtons { display: flex; gap: 10px; flex-wrap: wrap; }
-button {
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-}
-#playBtn { background: #e50914; color: #fff; }
-#favBtn { background: gold; color: #000; }
-#closeBtn { background: #555; color: #fff; margin-left: auto; }
-iframe { width: 100%; height: 400px; border: none; border-radius: 10px; }
-@keyframes fadeIn { from {opacity:0; transform: translateY(-20px);} to {opacity:1; transform: translateY(0);} }
+body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
+h1{text-align:center;margin-bottom:20px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
+.card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
+.card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
+.poster{width:100%;display:block;}
+.badge{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;}
+.favorite-btn{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}
+.favorite-btn.active{color:gold;}
+#infoCard{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(34,34,34,0.95);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;display:flex;align-items:center;justify-content:center;}
+#infoContent{position:relative;background:#222;border-radius:10px;padding:20px;max-width:800px;width:90%;}
+#infoContent h2{margin-top:0;color:#e50914;display:inline-block;}
+#infoContent button{margin-left:10px;padding:8px 12px;background:#e50914;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}
+#trailerFrame{width:100%;height:360px;margin-top:10px;display:none;}
 </style>
 </head>
 <body>
+<h1>Movies & Series - Prova</h1>
+<div class='grid' id='moviesGrid'></div>
 
-<h1>Griglia Film Demo</h1>
-<div class="grid" id="moviesGrid">
-    <!-- Locandine di prova -->
-</div>
-
-<div id="infoOverlay">
-    <div id="infoCard">
-        <button id="closeBtn">Chiudi</button>
-        <img id="infoPoster" src="" alt="Poster">
-        <h2 id="infoTitle"></h2>
-        <div>
-            <span id="infoVote" class="badge"></span>
-            <span id="infoGenres"></span>
-        </div>
-        <p id="infoOverview"></p>
-        <p id="infoYear"></p>
-        <p id="infoDuration"></p>
-        <p id="infoCast"></p>
-        <div id="infoButtons">
-            <button id="playBtn">Riproduci</button>
-            <button id="favBtn">Aggiungi ai preferiti</button>
-        </div>
-        <h3>Trailer</h3>
-        <iframe id="trailer" src="" allowfullscreen></iframe>
+<div id='infoCard'>
+  <div id='infoContent'>
+    <h2 id="infoTitle"></h2>
+    <div style="margin:10px 0;">
+      <button id="closeCardBtn">Chiudi</button>
+      <span id="favoriteInCard" class="favorite-btn">★</span>
     </div>
+    <p id="infoGenres"></p>
+    <p id="infoVote"></p>
+    <p id="infoOverview"></p>
+    <p id="infoYear"></p>
+    <p id="infoDuration"></p>
+    <p id="infoCast"></p>
+    <iframe id="trailerFrame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
 </div>
 
 <script>
-// Dati demo
-const movies = [
-    {
-        title: "Inception",
-        poster: "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        genres: ["Azione", "Fantascienza", "Thriller"],
-        vote: 8.8,
-        overview: "Dom Cobb è un ladro esperto nell'arte dell'estrazione...",
-        year: 2010,
-        duration: 148,
-        cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
-        trailer: "https://www.youtube.com/embed/YoHD9XEInc0"
-    },
-    {
-        title: "Interstellar",
-        poster: "https://image.tmdb.org/t/p/w300/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
-        genres: ["Avventura", "Drammatico", "Fantascienza"],
-        vote: 8.6,
-        overview: "Un gruppo di esploratori utilizza un wormhole...",
-        year: 2014,
-        duration: 169,
-        cast: ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
-        trailer: "https://www.youtube.com/embed/zSWdZVtXT7E"
-    },
-    {
-        title: "The Dark Knight",
-        poster: "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-        genres: ["Azione", "Crime", "Drammatico"],
-        vote: 9.0,
-        overview: "Batman affronta il Joker, un criminale psicopatico...",
-        year: 2008,
-        duration: 152,
-        cast: ["Christian Bale", "Heath Ledger", "Aaron Eckhart"],
-        trailer: "https://www.youtube.com/embed/EXeTwQWrcwY"
-    },
-    {
-        title: "Avatar",
-        poster: "https://image.tmdb.org/t/p/w300/kmcqlZGaSh20zpTbuoF0Cdn07dT.jpg",
-        genres: ["Azione", "Avventura", "Fantascienza"],
-        vote: 7.8,
-        overview: "Jake Sully, un ex-marine paraplegico, viene mandato su Pandora...",
-        year: 2009,
-        duration: 162,
-        cast: ["Sam Worthington", "Zoe Saldana", "Sigourney Weaver"],
-        trailer: "https://www.youtube.com/embed/5PSNL1qE6VY"
-    }
+// Film di prova
+const allData = [
+  {id:"1", title:"Inception", poster:"https://image.tmdb.org/t/p/w300/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg", genres:["Azione","Fantascienza"], vote:8.8, overview:"Un ladro che ruba segreti dai sogni...", year:"2010", duration:148, cast:["Leonardo DiCaprio","Joseph Gordon-Levitt"], trailer:"8hP9D6kZseM", type:"movie"},
+  {id:"2", title:"The Matrix", poster:"https://image.tmdb.org/t/p/w300/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg", genres:["Azione","Fantascienza"], vote:8.7, overview:"Un hacker scopre la verità sulla realtà...", year:"1999", duration:136, cast:["Keanu Reeves","Laurence Fishburne"], trailer:"vKQi3bBA1y8", type:"movie"},
+  {id:"3", title:"Interstellar", poster:"https://image.tmdb.org/t/p/w300/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg", genres:["Avventura","Fantascienza"], vote:8.6, overview:"Un gruppo di astronauti viaggia attraverso un wormhole...", year:"2014", duration:169, cast:["Matthew McConaughey","Anne Hathaway"], trailer:"zSWdZVtXT7E", type:"movie"},
+  {id:"4", title:"The Dark Knight", poster:"https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg", genres:["Azione","Crime"], vote:9.0, overview:"Batman affronta il Joker...", year:"2008", duration:152, cast:["Christian Bale","Heath Ledger"], trailer:"EXeTwQWrcwY", type:"movie"},
+  {id:"5", title:"Avatar", poster:"https://image.tmdb.org/t/p/w300/kmcqlZGaSh20zpTbuoF0Cdn07dT.jpg", genres:["Avventura","Fantascienza"], vote:7.8, overview:"Su Pandora, gli umani cercano risorse...", year:"2009", duration:162, cast:["Sam Worthington","Zoe Saldana"], trailer:"5PSNL1qE6VY", type:"movie"}
 ];
 
-const grid = document.getElementById('moviesGrid');
-const overlay = document.getElementById('infoOverlay');
-const infoPoster = document.getElementById('infoPoster');
-const infoTitle = document.getElementById('infoTitle');
-const infoGenres = document.getElementById('infoGenres');
-const infoVote = document.getElementById('infoVote');
-const infoOverview = document.getElementById('infoOverview');
-const infoYear = document.getElementById('infoYear');
-const infoDuration = document.getElementById('infoDuration');
-const infoCast = document.getElementById('infoCast');
-const playBtn = document.getElementById('playBtn');
-const favBtn = document.getElementById('favBtn');
-const closeBtn = document.getElementById('closeBtn');
-const trailer = document.getElementById('trailer');
+let favorites = [];
+let currentItem = null;
 
-function renderGrid() {
-    movies.forEach((m, idx) => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `<img src="${m.poster}" alt="${m.title}">`;
-        div.onclick = () => showInfo(m);
-        grid.appendChild(div);
-    });
+const grid=document.getElementById('moviesGrid');
+const infoCard=document.getElementById('infoCard');
+const closeCardBtn=document.getElementById('closeCardBtn');
+const infoTitle=document.getElementById('infoTitle');
+const infoGenres=document.getElementById('infoGenres');
+const infoVote=document.getElementById('infoVote');
+const infoOverview=document.getElementById('infoOverview');
+const infoYear=document.getElementById('infoYear');
+const infoDuration=document.getElementById('infoDuration');
+const infoCast=document.getElementById('infoCast');
+const favoriteInCard=document.getElementById('favoriteInCard');
+const trailerFrame=document.getElementById('trailerFrame');
+
+function toggleFavorite(id){
+  if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
+  else favorites.push(id);
+  favoriteInCard.classList.toggle("active", favorites.includes(id));
 }
 
-function showInfo(movie) {
-    infoPoster.src = movie.poster;
-    infoTitle.textContent = movie.title;
-    infoGenres.textContent = "Generi: " + movie.genres.join(", ");
-    infoVote.textContent = movie.vote;
-    infoOverview.textContent = movie.overview;
-    infoYear.textContent = "Anno: " + movie.year;
-    infoDuration.textContent = "Durata: " + movie.duration + " min";
-    infoCast.textContent = "Cast: " + movie.cast.join(", ");
-    trailer.src = movie.trailer + "?autoplay=1";
-    overlay.style.display = 'flex';
-    grid.style.display = 'none';
+function openInfo(item){
+  currentItem = item;
+  infoCard.style.display='flex';
+  infoTitle.textContent = item.title;
+  infoGenres.textContent = "Generi: "+item.genres.join(", ");
+  infoVote.textContent = "★ "+item.vote;
+  infoOverview.textContent = item.overview;
+  infoYear.textContent = "Anno: "+item.year;
+  infoDuration.textContent = "Durata: "+item.duration+" min";
+  infoCast.textContent = "Cast: "+item.cast.join(", ");
+  favoriteInCard.classList.toggle("active", favorites.includes(item.id));
+  favoriteInCard.onclick = () => toggleFavorite(item.id);
+
+  if(item.trailer){
+    trailerFrame.src = "https://www.youtube.com/embed/"+item.trailer+"?autoplay=0";
+    trailerFrame.style.display="block";
+  } else {
+    trailerFrame.style.display="none";
+  }
 }
 
-closeBtn.onclick = () => {
-    overlay.style.display = 'none';
-    trailer.src = '';
-    grid.style.display = 'grid';
-};
+closeCardBtn.onclick = () => { infoCard.style.display='none'; trailerFrame.src=""; };
 
-playBtn.onclick = () => alert("Qui partirebbe il player principale!");
-favBtn.onclick = () => alert("Film aggiunto ai preferiti!");
+function renderGrid(){
+  grid.innerHTML='';
+  allData.forEach(item=>{
+    const card = document.createElement('div');
+    card.className='card';
+    card.innerHTML = `
+      <img class='poster' src='${item.poster}' alt='${item.title}'>
+      <div class='badge'>${item.vote}</div>
+    `;
+    card.onclick = () => openInfo(item);
+    grid.appendChild(card);
+  });
+}
 
 renderGrid();
 </script>
-
 </body>
 </html>
