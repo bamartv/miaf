@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Film Demo</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Film Detail Demo</title>
 <style>
 body {
     margin:0;
@@ -15,69 +15,102 @@ body {
     position: relative;
     width: 100%;
     min-height: 100vh;
-    /* Gradiente netto verso nero nella parte bassa */
-    background: linear-gradient(to bottom, rgba(0,0,0,0.0) 60%, rgba(0,0,0,1) 100%), 
-                url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;
     padding: 40px 20px;
     box-sizing: border-box;
+    /* Dissolvenza locandina verso nero */
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%),
+                url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
+    background-size: cover;
 }
 #infoContent {
-    position: relative;
-    z-index:2;
-    max-width:800px;
-    width:100%;
-    text-align:left;
-    color:#fff;
+    width: 100%;
+    max-width: 800px;
+    background: rgba(0,0,0,0.9);
+    padding: 20px;
+    border-radius: 8px;
 }
-h1 { margin:0 0 10px 0; font-size:32px; }
-p { margin:5px 0; font-size:16px; line-height:1.4; }
-#buttons { margin:15px 0; display:flex; justify-content:flex-start; gap:20px; }
-button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
-#watchBtn { background:#e50914; color:#fff; }
-#favoriteBtn { background:gold; color:#000; }
+#infoContent h1 {
+    margin-top: 0;
+    color: #e50914;
+}
+#infoContent p {
+    line-height: 1.4;
+}
 #trailer {
-    width:100%;
-    max-width:560px;
-    height:315px;
-    margin:20px 0;
+    width: 100%;
+    max-width: 640px;
+    height: 360px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 8px;
 }
+#buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+}
+#playBtn { background: #e50914; color: #fff; }
+#favoriteBtn { background: gold; color: #000; }
 #related {
-    display:flex;
-    overflow-x:auto;
-    gap:10px;
-    padding:10px 0;
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 10px;
 }
-#related::-webkit-scrollbar { display:none; }
-.related-item { flex:0 0 auto; width:120px; cursor:pointer; }
-.related-item img { width:100%; border-radius:8px; }
+#related::-webkit-scrollbar { display: none; }
+.related-item {
+    flex: 0 0 auto;
+    width: 120px;
+    border-radius: 6px;
+}
+.related-item img {
+    width: 100%;
+    border-radius: 6px;
+}
 </style>
 </head>
 <body>
 
 <div id="infoCard">
-    <div id="infoContent">
-        <h1>Wonder Woman 1984</h1>
-        <p><strong>Anno:</strong> 2020 • <strong>Durata:</strong> 151 min • <strong>Generi:</strong> Azione, Avventura, Fantascienza</p>
-        <p><strong>Cast:</strong> Gal Gadot, Chris Pine, Kristen Wiig</p>
-        <p>Wonder Woman affronta un nuovo nemico potente e misterioso mentre il mondo intero affronta nuove sfide.</p>
-        <div id="buttons">
-            <button id="watchBtn">Guarda</button>
-            <button id="favoriteBtn">★ Preferiti</button>
-        </div>
-        <iframe id="trailer" src="https://www.youtube.com/embed/ssrNcwxALS4" allowfullscreen></iframe>
-        <h3>Film correlati</h3>
-        <div id="related">
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="Film 2"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Film 3"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 4"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="Film 5"></div>
-        </div>
+  <div id="infoContent">
+    <h1>Wonder Woman 1984</h1>
+    <div id="buttons">
+      <button id="playBtn" class="button">Guarda</button>
+      <button id="favoriteBtn" class="button">★ Preferiti</button>
     </div>
+    <p><strong>Anno:</strong> 2020</p>
+    <p><strong>Durata:</strong> 151 min</p>
+    <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
+    <p><strong>Cast:</strong> Gal Gadot, Chris Pine, Kristen Wiig, Pedro Pascal</p>
+    <p><strong>Descrizione:</strong> Diana Prince vive tra gli uomini negli anni '80 durante la Guerra Fredda. Mentre si confronta con nuovi nemici, scopre che la sua forza eroica sarà messa alla prova come mai prima d'ora.</p>
+
+    <iframe id="trailer" src="https://www.youtube.com/embed/ps6G9y1_xNs" allowfullscreen></iframe>
+
+    <h2>Film correlati</h2>
+    <div id="related">
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6S2VnKxGvFThsI3O0fVQ7pCD8Q7.jpg" alt="Film 2"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2qvKytGNnb7HKGw2YpX2iyz4U76.jpg" alt="Film 3"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg" alt="Film 4"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/jlA9y5nqHrZ1Qkx3dTrJqVnW5tJ.jpg" alt="Film 5"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4EFCsO9M4gCZ8zgi0U5VBrVnHQ5.jpg" alt="Film 6"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/wZ91gTa7g6C1Tj0xD38U95F5Zyo.jpg" alt="Film 7"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6n0N0I4DqL5l3nUKhG7ieKqtG6S.jpg" alt="Film 8"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3IhNkvpmN6QdkifQ1M2dLSiUR7V.jpg" alt="Film 9"></div>
+      <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7E9MqU1xY0m9xP5gYJ2k7TyRrLz.jpg" alt="Film 10"></div>
+    </div>
+  </div>
 </div>
 
 </body>
