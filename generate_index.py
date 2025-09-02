@@ -371,48 +371,190 @@ function render(reset=false) {{
             grid.appendChild(card);
             count++;
         }}
+def build_html(entries, latest_entries):
+    html = f"""<!DOCTYPE html>
+<html lang='it'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>Movies & Series</title>
+<style>
+body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
+h1{{color:#fff;text-align:center;margin-bottom:20px;}}
+.controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
+input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
+.card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
+.card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
+.poster{{width:100%;border-radius:0;display:block;}}
+.badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
+.favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
+.favorite-btn.active{{color:gold;}}
+.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
+#playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
+#playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
+#playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;overflow:auto;}}
+#infoCardContent{{position:relative;background:#222;border-radius:10px;padding:20px;max-width:800px;width:90%;margin:40px auto;}}
+#infoCard h1{{margin-top:0;color:#fff;text-shadow:2px 2px 6px rgba(0,0,0,0.8);}}
+#infoCard p{{margin:5px 0;}}
+#infoCard #buttons{{display:flex;gap:10px;margin:10px 0;}}
+.button{{padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-size:16px;background:#111;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.5);transition:background 0.2s;}}
+.button:hover{{background:#333;}}
+#trailer{{width:100%;max-width:500px;height:280px;border:none;border-radius:8px;margin-bottom:20px;}}
+#related{{display:flex;overflow-x:auto;gap:10px;padding-bottom:10px;}}
+#related::-webkit-scrollbar{{display:none;}}
+.related-item{{flex:0 0 auto;width:120px;border-radius:6px;}}
+.related-item img{{width:100%;border-radius:6px;}}
+</style>
+</head>
+<body>
+
+<h1>Ultime Novità</h1>
+<div id='latest'>{latest_entries}</div>
+
+<h1>Movies & Series</h1>
+<div class='controls'>
+<select id='typeSelect'>
+  <option value='movie'>Film</option>
+  <option value='tv'>Serie TV</option>
+  <option value='favorites'>★ Preferiti</option>
+  <option value='recent'>👁 Visti di recente</option>
+</select>
+<select id='genreSelect' multiple size=5></select>
+<input type='text' id='searchBox' placeholder='Cerca...'>
+</div>
+
+<div id='moviesGrid' class='grid'></div>
+<button id='loadMore'>Carica altri</button>
+
+<div id='playerOverlay'>
+  <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+  <div id="playerTitle"></div>
+</div>
+
+<div id='infoCard'>
+  <div id="infoCardContent">
+    <h1 id="infoTitle">Titolo Film</h1>
+    <div id="buttons">
+      <button id="playBtn" class="button">Guarda</button>
+      <button id="favoriteBtn" class="button">★ Preferiti</button>
+      <button id="closeCardBtn" class="button">Chiudi</button>
+    </div>
+    <p id="infoYear"></p>
+    <p id="infoDuration"></p>
+    <p id="infoGenres"></p>
+    <p id="infoCast"></p>
+    <p id="infoOverview"></p>
+    <iframe id="trailer" src="" allowfullscreen></iframe>
+    <h2>Film correlati</h2>
+    <div id="related"></div>
+  </div>
+</div>
+
+<script>
+const allData={entries};
+let favorites=JSON.parse(localStorage.getItem("favorites")||"[]");
+let recentList=JSON.parse(localStorage.getItem("recent")||"[]");
+let currentItem=null;
+
+const grid=document.getElementById('moviesGrid');
+const infoCard=document.getElementById('infoCard');
+const infoTitle=document.getElementById('infoTitle');
+const infoGenres=document.getElementById('infoGenres');
+const infoOverview=document.getElementById('infoOverview');
+const infoYear=document.getElementById('infoYear');
+const infoDuration=document.getElementById('infoDuration');
+const infoCast=document.getElementById('infoCast');
+const playBtn=document.getElementById('playBtn');
+const favoriteBtn=document.getElementById('favoriteBtn');
+const closeCardBtn=document.getElementById('closeCardBtn');
+const trailer=document.getElementById('trailer');
+const relatedDiv=document.getElementById('related');
+const typeSelect=document.getElementById('typeSelect');
+const genreSelect=document.getElementById('genreSelect');
+const searchBox=document.getElementById('searchBox');
+const loadMore=document.getElementById('loadMore');
+
+closeCardBtn.onclick=()=>{{ infoCard.style.display='none'; history.replaceState({{page:"grid"}}, "", "#grid"); }};
+favoriteBtn.onclick=()=>{{ if(currentItem) toggleFavorite(currentItem.id); render(true); }};
+playBtn.onclick=()=>{{ if(currentItem) openPlayer(currentItem); }};
+
+function openInfo(item) {{
+    currentItem=item;
+    infoCard.style.display='block';
+    infoTitle.textContent=item.title;
+    infoGenres.textContent="Generi: "+(item.genres?item.genres.join(", "):"");
+    infoOverview.textContent=item.overview||"";
+    infoYear.textContent=item.year?"Anno: "+item.year:"";
+    infoDuration.textContent=item.duration?"Durata: "+item.duration+" min":"";
+    infoCast.textContent=item.cast&&item.cast.length?"Cast: "+item.cast.slice(0,5).join(", "):"";
+
+    trailer.src=item.trailer?item.trailer+"?autoplay=1&mute=1":"";
+    relatedDiv.innerHTML="";
+    if(item.related) {{
+        item.related.forEach(r=>{{
+            const div=document.createElement('div');
+            div.className='related-item';
+            div.innerHTML=`<img src="${{r.poster}}" alt="${{r.title}}">`;
+            relatedDiv.appendChild(div);
+        }});
     }}
+}}
+
+function openPlayer(item) {{
+    window.open(item.link || "#", "_blank");
+    addToRecent(item.id);
+}}
+
+function toggleFavorite(id) {{
+    if(favorites.includes(id)){{ favorites=favorites.filter(f=>f!==id); }}
+    else{{ favorites.push(id); }}
+    localStorage.setItem("favorites", JSON.stringify(favorites));
+}}
+
+function addToRecent(id) {{
+    recentList=recentList.filter(x=>x!==id);
+    recentList.unshift(id);
+    if(recentList.length>20) recentList.pop();
+    localStorage.setItem("recent", JSON.stringify(recentList));
+}}
+
+function render(reset=false) {{
+    if(reset) grid.innerHTML='';
+    let count=0;
+    let s=searchBox.value.toLowerCase();
+    let gSel=Array.from(genreSelect.selectedOptions).map(o=>o.value);
+    allData.forEach(m=>{{
+        if(count>=40) return;
+        if(gSel.length && !gSel.every(g=>m.genres.includes(g))) return;
+        if(s && !m.title.toLowerCase().includes(s)) return;
+        const card=document.createElement('div');
+        card.className='card';
+        card.innerHTML=`<img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+                          <div class='badge'>${{m.vote}}</div>
+                          <span class='favorite-btn ${{favorites.includes(m.id)?'active':''}}'>★</span>`;
+        card.onclick=()=>openInfo(m);
+        grid.appendChild(card);
+        count++;
+    }});
 }}
 
 function populateGenres(){{
     const set=new Set();
-    currentList.forEach(m=>m.genres.forEach(g=>set.add(g)));
-    const sel=document.getElementById('genreSelect');
-    sel.innerHTML='<option value="all">Tutti i generi</option>';
-    [...set].sort().forEach(g=>{{
-        const o=document.createElement('option');
-        o.value=o.textContent=g;
-        sel.appendChild(o);
-    }});
+    allData.forEach(m=>m.genres.forEach(g=>set.add(g)));
+    genreSelect.innerHTML='<option value="all">Tutti i generi</option>';
+    [...set].sort().forEach(g=>{{ const o=document.createElement('option'); o.value=o.textContent=g; genreSelect.appendChild(o); }});
 }}
 
-function updateType(t){{
-    currentType=t;
-    if(t==="movie" || t==="tv"){{
-        currentList=allData.filter(x=>x.type===t);
-        genreSelect.style.display='inline';
-        populateGenres();
-    }} else if(t==="favorites"){{
-        currentList=allData.filter(x=>favorites.includes(x.id));
-        genreSelect.style.display='none';
-    }} else if(t==="recent"){{
-        currentList=allData.filter(x=>recentList.includes(x.id));
-        genreSelect.style.display='none';
-    }}
-    render(true);
-}}
+typeSelect.onchange=e=>render(true);
+genreSelect.onchange=()=>render(true);
+searchBox.oninput=()=>render(true);
+loadMore.onclick=()=>render(false);
 
-/* Eventi UI */
-document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
-document.getElementById('genreSelect').onchange=()=>render(true);
-document.getElementById('searchBox').oninput=()=>render(true);
-document.getElementById('loadMore').onclick=()=>render(false);
-
-/* stato iniziale nella history */
-history.replaceState({{page:"grid"}}, "", "#grid");
-
-updateType('movie');
-showLatest();
+render(true);
+populateGenres();
 </script>
 </body>
 </html>
