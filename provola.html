@@ -15,29 +15,27 @@ body {
 #infoCard {
     position: fixed;
     top:0; left:0; width:100%; height:100%;
-    display:flex; flex-direction:column; justify-content:center;
-    background-size: cover; background-position: center;
+    background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(0.35); /* locandina meno visibile */
-    overflow-y:auto;
-    padding: 20px;
+    filter: brightness(0.25); /* locandina più visibile ma scura */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 #infoContent {
     width: 90%; max-width: 900px;
-    margin: 0 auto;
-    display:flex; flex-direction:column; align-items:center;
-    gap: 15px;
-    text-align:center;
+    text-align: center;
     color: #fff;
 }
-#infoContent h2 { margin:0; font-size:28px; color:#e50914; }
-#infoContent p { margin:3px 0; font-size:14px; }
-#player { width:80%; height:250px; border:none; border-radius:8px; }
-#buttons { display:flex; gap:15px; margin-top:10px; }
+#infoContent h2 { margin:0 0 10px; font-size:32px; color:#e50914; }
+#infoContent p { margin:5px 0; font-size:14px; }
+#player { width:80%; height:250px; border:none; border-radius:8px; margin:15px 0; }
+#buttons { display:flex; justify-content:center; gap:15px; margin-bottom:20px; }
 button { padding:10px 20px; font-size:14px; border:none; border-radius:6px; cursor:pointer; }
 button#watchBtn { background:#e50914; color:#fff; }
 button#favBtn { background: gold; color:#000; }
-#relatedContainer { width: 100%; overflow-x:auto; margin-top:20px; }
+#relatedContainer { width: 100%; overflow-x:auto; margin-top:10px; }
 #related { display:flex; gap:10px; padding-bottom:10px; }
 #related img { width:100px; border-radius:8px; flex-shrink:0; cursor:pointer; transition: transform 0.2s; }
 #related img:hover { transform: scale(1.05); }
@@ -70,10 +68,6 @@ button#favBtn { background: gold; color:#000; }
         <img src="https://image.tmdb.org/t/p/w200/9DeGfFIqjph5CBFVQrD6wv9S7rF.jpg" alt="Lo Hobbit: Un Viaggio Inaspettato">
         <img src="https://image.tmdb.org/t/p/w200/6s1G9pHYpo4iR5Xj9SS1ZfXZ1Wn.jpg" alt="La Desolazione di Smaug">
         <img src="https://image.tmdb.org/t/p/w200/56zTpe2xvaA4alU51sRWPoKPYZy.jpg" alt="La Battaglia delle Cinque Armate">
-        <img src="https://image.tmdb.org/t/p/w200/9f6W7a3S2Ew3KX4gkYdWcAq1T0O.jpg" alt="Harry Potter e la Pietra Filosofale">
-        <img src="https://image.tmdb.org/t/p/w200/dCtFvscYcXQKTNvyyaQr2g2UacJ.jpg" alt="Harry Potter e la Camera dei Segreti">
-        <img src="https://image.tmdb.org/t/p/w200/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg" alt="Harry Potter e il Prigioniero di Azkaban">
-        <img src="https://image.tmdb.org/t/p/w200/Av9yTlyQ3tD6G7G6iKGvks6hW7S.jpg" alt="Harry Potter e il Calice di Fuoco">
       </div>
     </div>
 
