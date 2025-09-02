@@ -3,14 +3,12 @@
 generate_index.py
 
 Gestione Preferiti spostati nella tendina principale e Visti recentemente.
-- Preferiti e Visti recentemente in typeSelect (insieme a Film/Serie TV)
-- Gestione recenti tramite localStorage (max 20)
+- Preferiti e Visti recentemente in typeSelect
 - Stellina sulle locandine: solo visuale (non cliccabile)
 - Stellina cliccabile dentro la card info
 - Possibilità di selezionare più generi
 - Correzione back button: chiude il player prima di tornare alla card o griglia
-- Titolo nel player comparibile al tocco dello schermo
-- InfoCard fullscreen con poster, trailer e film correlati
+- InfoCard a tutta pagina con poster e trailer
 """
 
 import os
@@ -28,7 +26,6 @@ VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
 
-
 def get_api_key():
     key = os.getenv("TMDB_API_KEY")
     if not key:
@@ -36,12 +33,10 @@ def get_api_key():
         sys.exit(1)
     return key
 
-
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
-
 
 def extract_ids(data):
     ids = []
@@ -55,7 +50,6 @@ def extract_ids(data):
                 break
     return ids
 
-
 def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
@@ -67,7 +61,6 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
         return None
     r.raise_for_status()
     return r.json()
-
 
 def build_html(entries, latest_entries):
     html = f"""<!doctype html>
@@ -89,13 +82,15 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+#favoriteInCard.favorite-btn{{position:static;cursor:pointer;margin-left:auto;font-size:22px;}}
+#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;}}
-#infoContent{{position:relative;width:100%;height:100%;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;box-sizing:border-box;background-size:cover;background-position:center;}}
-#infoText{{margin-top:40vh;}}
-h2{{margin-top:0;color:#e50914;}}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;overflow:auto;}}
+#infoCardContent{{position:relative;width:100%;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;box-sizing:border-box;background-size:cover;background-position:center;}}
+#infoText{{margin-top:40vh;background:rgba(0,0,0,0.5);padding:20px;border-radius:10px;}}
+h2{{color:#e50914;}}
 #buttons{{display:flex;gap:10px;margin:10px 0 20px;}}
 .button{{padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-size:16px;background:#111;color:#fff;box-shadow:0 2px 6px rgba(0,0,0,0.5);transition:background 0.2s;}}
 .button:hover{{background:#333;}}
@@ -111,6 +106,7 @@ h2{{margin-top:0;color:#e50914;}}
 </style>
 </head>
 <body>
+
 <h1>Ultime Novità</h1>
 <div id='latest'>
 {latest_entries}
@@ -131,7 +127,7 @@ h2{{margin-top:0;color:#e50914;}}
 <button id='loadMore'>Carica altri</button>
 
 <div id='infoCard'>
-    <div id='infoContent'>
+    <div id='infoCardContent'>
         <div id='infoText'>
             <h1 id='infoTitle'></h1>
             <div id='buttons'>
@@ -159,7 +155,7 @@ let currentItem = null;
 
 const grid=document.getElementById('moviesGrid');
 const infoCard=document.getElementById('infoCard');
-const infoContent=document.getElementById('infoContent');
+const infoCardContent=document.getElementById('infoCardContent');
 const infoTitle=document.getElementById('infoTitle');
 const infoGenres=document.getElementById('infoGenres');
 const infoVote=document.getElementById('infoVote');
@@ -177,65 +173,56 @@ const genreSelect=document.getElementById('genreSelect');
 const trailer=document.getElementById('trailer');
 const relatedDiv=document.getElementById('related');
 
-closeCardBtn.onclick = () => {{
-    infoCard.style.display='none';
-    trailer.src='';
-    history.replaceState({{page:"grid"}}, "", "#grid");
-}};
-
-function openInfo(item) {{
+function openInfo(item, push=true){{
     currentItem=item;
     infoCard.style.display='block';
-    infoContent.style.backgroundImage = `linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 100%), url(${item.poster})`;
-
+    infoCardContent.style.backgroundImage = `url(${{item.poster}})`;
     infoTitle.textContent = item.title;
-    infoGenres.textContent = "Generi: " + (item.genres.join(", ") || "");
+    infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoYear.textContent = item.year ? "Anno: "+item.year : "";
     infoDuration.textContent = item.duration ? "Durata: "+item.duration+" min" : "";
-    infoCast.textContent = item.cast.length ? "Cast: "+item.cast.slice(0,5).join(", ") : "";
+    infoCast.textContent = item.cast && item.cast.length ? "Cast: "+item.cast.slice(0,5).join(", ") : "";
     infoOverview.textContent = item.overview || "";
-
+    trailer.src = item.trailer || "";
     favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    favoriteInCard.onclick = () => {{
-        if(favorites.includes(item.id)) favorites=favorites.filter(f=>f!==item.id);
-        else favorites.push(item.id);
-        localStorage.setItem("favorites", JSON.stringify(favorites));
+    favoriteInCard.onclick=()=>{{
+        toggleFavorite(item.id);
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-        render(true);
     }};
 
-    trailer.src = item.trailer || "";
-
-    relatedDiv.innerHTML="";
-    if(item.related) {{
-        item.related.forEach(r=>{{
-            const div = document.createElement('div');
+    // Film correlati (esempio primi 5)
+    relatedDiv.innerHTML='';
+    if(item.similar) {{
+        item.similar.slice(0,5).forEach(r=>{{
+            const div=document.createElement('div');
             div.className='related-item';
-            div.innerHTML=`<img src='${r.poster}' alt='${r.title}'>`;
-            div.onclick=()=>openInfo(r);
+            div.innerHTML=`<img src='${{r.poster}}' alt='${{r.title}}'>`;
             relatedDiv.appendChild(div);
         }});
     }}
 }}
 
-// Funzioni griglia e filtri come nel tuo script originale
-let currentType='movie', currentList=[], shown=0;
+// Griglia
 function render(reset=false){{
     if(reset){{ grid.innerHTML=''; shown=0; }}
     let count=0;
-    let s = document.getElementById('searchBox').value.toLowerCase();
-    let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
+    let s=document.getElementById('searchBox').value.toLowerCase();
+    let gSel=Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
     while(shown<currentList.length && count<40){{
         let m=currentList[shown++];
         let isFav=favorites.includes(m.id);
-        let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g=>m.genres.includes(g));
+        let genreMatch=gSel.length===0 || gSel.includes('all') || gSel.every(g=>m.genres.includes(g));
         if(genreMatch && m.title.toLowerCase().includes(s)){{
             const card=document.createElement('div');
             card.className='card';
-            card.innerHTML=`<img class='poster' src='${m.poster}' alt='${m.title}'>
-                              <div class='badge'>${m.vote}</div>
-                              <p style="margin:2px 0;font-size:12px;color:#ccc;">${m.duration?m.duration+' min • ':''}${m.year?m.year:''}</p>
-                              <span class="favorite-btn ${isFav?'active':''}" style="pointer-events:none;">★</span>`;
+            card.innerHTML=`
+                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+                <div class='badge'>${{m.vote}}</div>
+                <p style="margin:2px 0;font-size:12px;color:#ccc;">
+                    ${{m.duration ? m.duration+' min • ' : ''}}${{m.year ? m.year : ''}}
+                </p>
+                <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
+            `;
             card.onclick=()=>openInfo(m);
             grid.appendChild(card);
             count++;
@@ -243,95 +230,46 @@ function render(reset=false){{
     }}
 }}
 
-function populateGenres(){{
-    const set=new Set();
-    currentList.forEach(m=>m.genres.forEach(g=>set.add(g)));
-    const sel=document.getElementById('genreSelect');
-    sel.innerHTML='<option value="all">Tutti i generi</option>';
-    [...set].sort().forEach(g=>{{
-        const o=document.createElement('option');
-        o.value=o.textContent=g;
-        sel.appendChild(o);
-    }});
-}}
-
-function updateType(t){{
-    currentType=t;
-    if(t==="movie"||t==="tv"){{
-        currentList=allData.filter(x=>x.type===t);
-        genreSelect.style.display='inline';
-        populateGenres();
-    }} else if(t==="favorites"){{
-        currentList=allData.filter(x=>favorites.includes(x.id));
-        genreSelect.style.display='none';
-    }} else if(t==="recent"){{
-        currentList=allData.filter(x=>recentList.includes(x.id));
-        genreSelect.style.display='none';
-    }}
-    render(true);
-}}
-
-document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
-document.getElementById('genreSelect').onchange=()=>render(true);
-document.getElementById('searchBox').oninput=()=>render(true);
-document.getElementById('loadMore').onclick=()=>render(false);
-
-history.replaceState({{page:"grid"}}, "", "#grid");
-updateType('movie');
 </script>
 </body>
 </html>
 """
     return html
 
-
 def main():
     api_key = get_api_key()
     entries = []
     latest_entries = ""
-
     for type_, url in SRC_URLS.items():
         data = fetch_list(url)
         ids = extract_ids(data)
-
         for idx, tmdb_id in enumerate(ids):
             try:
                 info = tmdb_get(api_key, type_, tmdb_id)
             except:
-                info = None
-            if not info:
                 continue
-
+            if not info: continue
             title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
             poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
             genres = [g["name"] for g in info.get("genres", [])]
             vote = info.get("vote_average", 0)
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
-            seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
             runtime_list = info.get("episode_run_time") or []
             duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-
-            # Trailer YouTube
+            # trailer
             trailer_url = ""
-            videos = info.get("videos", {}).get("results", [])
-            for v in videos:
-                if v.get("type")=="Trailer" and v.get("site")=="YouTube":
-                    trailer_url = f"https://www.youtube.com/embed/{v['key']}"
+            for v in info.get("videos", {}).get("results", []):
+                if v["site"]=="YouTube" and v["type"]=="Trailer":
+                    trailer_url=f"https://www.youtube.com/embed/{v['key']}"
                     break
-
-            # Film correlati (max 5)
-            related = []
-            similars = info.get("similar", {}).get("results", [])[:5]
-            for s in similars:
-                related.append({
-                    "id": str(s.get("id")),
-                    "title": s.get("title") or s.get("name") or "",
-                    "poster": TMDB_IMAGE_BASE + s.get("poster_path") if s.get("poster_path") else ""
-                })
+            # film correlati
+            similar=[]
+            for s in info.get("similar", {}).get("results", []):
+                sposter = TMDB_IMAGE_BASE + s["poster_path"] if s.get("poster_path") else ""
+                similar.append({"title":s.get("title") or s.get("name"), "poster":sposter})
 
             entries.append({
                 "id": str(tmdb_id),
@@ -342,23 +280,19 @@ def main():
                 "overview": overview,
                 "link": link,
                 "type": type_,
-                "seasons": seasons,
-                "episodes": episodes,
                 "duration": duration or 0,
                 "year": year or "",
                 "cast": cast,
                 "trailer": trailer_url,
-                "related": related
+                "similar": similar
             })
+            if idx<10:
+                latest_entries+=f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
-
-    html = build_html(entries, latest_entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+    html_content = build_html(entries, latest_entries)
+    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
+        f.write(html_content)
     print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
 
-
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
