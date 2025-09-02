@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dettaglio Film/Serie</title>
+<style>
+body { font-family: Arial, sans-serif; background:#141414; color:#fff; margin:0; padding:20px; }
+h1 { color:#e50914; }
+.container { display:flex; gap:30px; }
+.poster { width:300px; border-radius:12px; box-shadow:0 0 15px rgba(0,0,0,.6); }
+.details { flex:1; }
+iframe { width:100%; max-width:560px; height:315px; margin-top:20px; border-radius:8px; }
+button { margin-top:20px; padding:10px 20px; font-size:16px; background:#e50914; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+button:hover { background:#b00610; }
+</style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+// Recupera ID dalla query string
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+const type = params.get("type");
+
+// Dati finti (in realtà qui useresti fetch a TMDb con API key)
+const fakeDB = {
+  "1": {title:"Film A", poster:"https://via.placeholder.com/300x450?text=Film+A", overview:"Trama di Film A", year:2022, vote:7.5, trailer:"https://www.youtube.com/embed/dQw4w9WgXcQ"},
+  "2": {title:"Film B", poster:"https://via.placeholder.com/300x450?text=Film+B", overview:"Trama di Film B", year:2021, vote:8.1, trailer:"https://www.youtube.com/embed/oHg5SJYRHA0"},
+  "3": {title:"Serie C", poster:"https://via.placeholder.com/300x450?text=Serie+C", overview:"Trama di Serie C", year:2020, vote:7.8, trailer:"https://www.youtube.com/embed/9bZkp7q19f0"},
+  "4": {title:"Film D", poster:"https://via.placeholder.com/300x450?text=Film+D", overview:"Trama di Film D", year:2023, vote:8.0, trailer:"https://www.youtube.com/embed/3JZ_D3ELwOQ"}
+};
+
+const item = fakeDB[id];
+
+if(item){
+  document.getElementById("content").innerHTML = `
+    <div class="container">
+      <img src="${item.poster}" alt="${item.title}" class="poster">
+      <div class="details">
+        <h1>${item.title}</h1>
+        <p><strong>Anno:</strong> ${item.year}</p>
+        <p><strong>Voto:</strong> ★ ${item.vote}</p>
+        <p>${item.overview}</p>
+        <iframe src="${item.trailer}" allowfullscreen></iframe>
+        <br>
+        <button onclick="window.history.back()">← Torna indietro</button>
+      </div>
+    </div>
+  `;
+}else{
+  document.getElementById("content").innerHTML = "<p>Film/serie non trovato.</p>";
+}
+</script>
+</body>
+</html>
