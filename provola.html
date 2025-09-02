@@ -81,7 +81,7 @@ body {
 #playerContainer {
   width:80%;
   max-width:720px;
-  height:240px;
+  height:200px;
   margin:15px 0;
 }
 #playerContainer iframe {
@@ -90,12 +90,16 @@ body {
   border:none;
   border-radius:8px;
 }
+#relatedWrapper {
+  width:100%;
+  margin-top:15px;
+}
 #related {
   display:flex;
   overflow-x:auto;
   gap:10px;
-  margin-top:15px;
   padding-bottom:10px;
+  scroll-behavior: smooth;
 }
 #related::-webkit-scrollbar { display:none; }
 .related-card {
@@ -129,19 +133,23 @@ body {
     <div id="playerContainer">
       <iframe src="https://www.youtube.com/embed/EXeTwQWrcwY" allowfullscreen></iframe>
     </div>
+
     <h3 style="width:100%; text-align:left; margin-top:10px;">Film correlati</h3>
-    <div id="related">
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg" alt="Inception"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg" alt="Interstellar"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/5pMy5LF2JAleBNBtuzizfCMWM7k.jpg" alt="Joker"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/hqkIcbrOHL86UncnHIsHVcVmzue.jpg" alt="Batman Begins"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/6O0xpr1p6hD9Nk0RR4Z2V6fV6iA.jpg" alt="The Prestige"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/8hP9D40gD4PSK4h7t1kGkWbCgZT.jpg" alt="Memento"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/8jQFzQGzJ5rI3v09Usk7NpWZC2p.jpg" alt="Dunkirk"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="The Dark Knight Rises"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg" alt="Justice League"></div>
-      <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg" alt="Avengers: Endgame"></div>
+    <div id="relatedWrapper">
+      <div id="related">
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/rAGiXaUfPzY7CDEyNKUofk3Kw2e.jpg" alt="Inception"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg" alt="Interstellar"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/5pMy5LF2JAleBNBtuzizfCMWM7k.jpg" alt="Joker"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/hqkIcbrOHL86UncnHIsHVcVmzue.jpg" alt="Batman Begins"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/6O0xpr1p6hD9Nk0RR4Z2V6fV6iA.jpg" alt="The Prestige"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/8hP9D40gD4PSK4h7t1kGkWbCgZT.jpg" alt="Memento"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/8jQFzQGzJ5rI3v09Usk7NpWZC2p.jpg" alt="Dunkirk"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="The Dark Knight Rises"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/9Gtg2DzBhmYamXBS1hKAhiwbBKS.jpg" alt="Justice League"></div>
+        <div class="related-card"><img src="https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg" alt="Avengers: Endgame"></div>
+      </div>
     </div>
+
   </div>
 </div>
 
