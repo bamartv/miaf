@@ -3,171 +3,162 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini Netflix Demo</title>
+<title>Card Info Demo</title>
 <style>
-body { font-family: 'Segoe UI', Arial, sans-serif; background:#141414; color:#fff; margin:0; padding:20px; }
-h1 { text-align:center; margin-bottom:20px; }
-.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:16px; }
-.card { cursor:pointer; border-radius:12px; overflow:hidden; border:2px solid #444; background:#1f1f1f; transition: transform 0.25s, border-color 0.25s; }
-.card:hover { transform: scale(1.05); border-color:#e50914; }
-.poster { width:100%; display:block; }
-#playerOverlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:1000; }
-#playerOverlay iframe { width:90%; height:90%; border:none; border-radius:10px; }
-#detailPage { display:none; padding:20px; background:#141414; position:relative; max-width:900px; margin:auto; }
-button { cursor:pointer; border:none; border-radius:6px; padding:8px 12px; background:#e50914; color:#fff; font-weight:bold; transition: background 0.2s; }
-button:hover { background:#f6121d; }
-select { padding:6px; border-radius:6px; border:none; background:#222; color:#fff; margin:5px 5px 5px 0; }
-#backToGrid { position:absolute; top:10px; left:10px; }
+body {
+    font-family: Arial, sans-serif;
+    background: #141414;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+}
+#infoCard {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateY(-30px);
+    width: 90%;
+    max-width: 800px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg') center/cover no-repeat;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+}
+#infoCard.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+}
+#infoPoster {
+    width: 200px;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+#infoContent {
+    flex: 1;
+}
+#infoTitle {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e50914;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
+    margin: 0 0 10px 0;
+}
+#infoOverview {
+    line-height: 1.6;
+    color: #ccc;
+    margin: 10px 0;
+}
+#infoGenres, #infoVote, #infoYear, #infoDuration, #infoCast {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #ddd;
+}
+#playBtn {
+    background: #e50914;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-right: 10px;
+}
+#playBtn:hover { background: #ff1a2b; }
+.favorite-btn {
+    font-size: 22px;
+    color: gold;
+    cursor: pointer;
+    text-shadow: 0 0 4px #000;
+}
+.badge {
+    display: inline-block;
+    background: #e50914;
+    color: #fff;
+    border-radius: 50%;
+    padding: 6px 10px;
+    font-weight: bold;
+    font-size: 14px;
+    margin-left: 5px;
+}
 </style>
 </head>
 <body>
 
-<h1>Mini Netflix Demo</h1>
-<div id="moviesGrid" class="grid"></div>
+<button onclick="showCard()">Apri Card Info</button>
 
-<div id="playerOverlay">
-  <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+<div id="infoCard">
+    <img id="infoPoster" src="" alt="Poster">
+    <div id="infoContent">
+        <h2 id="infoTitle"></h2>
+        <div>
+            <span id="infoVote" class="badge"></span>
+            <span id="favoriteInCard" class="favorite-btn">★</span>
+        </div>
+        <p id="infoGenres"></p>
+        <p id="infoOverview"></p>
+        <p id="infoYear"></p>
+        <p id="infoDuration"></p>
+        <p id="infoCast"></p>
+        <div style="margin-top:10px;">
+            <button id="playBtn">Riproduci</button>
+        </div>
+    </div>
 </div>
 
 <script>
-// dati fittizi
-const allData = [
-  {id:1,title:"Film 1",poster:"https://via.placeholder.com/150x220?text=Film+1",genres:["Azione"],vote:8.2,overview:"Trama del Film 1",year:"2023",duration:120,cast:["Attore A","Attore B"],type:"movie",link:"https://example.com/movie1"},
-  {id:2,title:"Serie 1",poster:"https://via.placeholder.com/150x220?text=Serie+1",genres:["Commedia"],vote:7.5,overview:"Trama della Serie 1",year:"2022",duration:45,cast:["Attore C","Attore D"],type:"tv",seasons:3,episodes:{1:10,2:8,3:12},link:""}
-];
-let currentItem = null;
+const infoCard = document.getElementById('infoCard');
+const infoPoster = document.getElementById('infoPoster');
+const infoTitle = document.getElementById('infoTitle');
+const infoGenres = document.getElementById('infoGenres');
+const infoVote = document.getElementById('infoVote');
+const infoOverview = document.getElementById('infoOverview');
+const infoYear = document.getElementById('infoYear');
+const infoDuration = document.getElementById('infoDuration');
+const infoCast = document.getElementById('infoCast');
+const favoriteInCard = document.getElementById('favoriteInCard');
+const playBtn = document.getElementById('playBtn');
 
-// griglia
-const grid = document.getElementById('moviesGrid');
-const overlay = document.getElementById('playerOverlay');
-const iframe = overlay.querySelector('iframe');
+const exampleMovie = {
+    title: "Inception",
+    poster: "https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    genres: ["Azione", "Fantascienza", "Thriller"],
+    vote: 8.8,
+    overview: "Dom Cobb è un ladro esperto nell'arte dell'estrazione: rubare segreti preziosi dal profondo del subconscio durante il sogno.",
+    year: 2010,
+    duration: 148,
+    cast: ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"]
+};
 
-// dettaglio full-page
-let detailPage = document.createElement('div');
-detailPage.id = 'detailPage';
-detailPage.innerHTML = `
-  <button id="backToGrid">← Torna alla griglia</button>
-  <h2 id="detailTitle"></h2>
-  <img id="detailPoster" style="max-width:300px;display:block;margin:10px 0;border-radius:8px;">
-  <p id="detailGenres"></p>
-  <p id="detailVote"></p>
-  <p id="detailOverview"></p>
-  <p id="detailYear"></p>
-  <p id="detailDuration"></p>
-  <p id="detailCast"></p>
-  <select id="detailSeason" style="display:none;"></select>
-  <select id="detailEpisode" style="display:none;"></select>
-  <button id="detailPlayBtn">Riproduci</button>
-`;
-document.body.appendChild(detailPage);
+function showCard() {
+    infoPoster.src = exampleMovie.poster;
+    infoTitle.textContent = exampleMovie.title;
+    infoGenres.textContent = "Generi: " + exampleMovie.genres.join(", ");
+    infoVote.textContent = exampleMovie.vote;
+    infoOverview.textContent = exampleMovie.overview;
+    infoYear.textContent = "Anno: " + exampleMovie.year;
+    infoDuration.textContent = "Durata: " + exampleMovie.duration + " min";
+    infoCast.textContent = "Cast: " + exampleMovie.cast.join(", ");
+    infoCard.classList.add('show');
+}
 
-const detailTitle = document.getElementById('detailTitle');
-const detailPoster = document.getElementById('detailPoster');
-const detailGenres = document.getElementById('detailGenres');
-const detailVote = document.getElementById('detailVote');
-const detailOverview = document.getElementById('detailOverview');
-const detailYear = document.getElementById('detailYear');
-const detailDuration = document.getElementById('detailDuration');
-const detailCast = document.getElementById('detailCast');
-const detailSeason = document.getElementById('detailSeason');
-const detailEpisode = document.getElementById('detailEpisode');
-const detailPlayBtn = document.getElementById('detailPlayBtn');
-const backToGrid = document.getElementById('backToGrid');
-
-function openDetail(item,push=true){
-  currentItem = item;
-  grid.style.display = 'none';
-  detailPage.style.display = 'block';
-  detailTitle.textContent = item.title;
-  detailPoster.src = item.poster;
-  detailGenres.textContent = "Generi: "+item.genres.join(", ");
-  detailVote.textContent = "★ "+item.vote;
-  detailOverview.textContent = item.overview;
-  detailYear.textContent = "Anno: "+item.year;
-  detailDuration.textContent = "Durata: "+item.duration+" min";
-  detailCast.textContent = "Cast: "+item.cast.join(", ");
-  
-  detailSeason.style.display='none';
-  detailEpisode.style.display='none';
-  if(item.type==='tv'){
-    detailSeason.style.display='inline';
-    detailEpisode.style.display='inline';
-    detailSeason.innerHTML='';
-    for(let s=1;s<=item.seasons;s++){
-      let o = document.createElement('option');
-      o.value=s; o.textContent="Stagione "+s;
-      detailSeason.appendChild(o);
+infoCard.onclick = (e) => {
+    if(e.target === infoCard) {
+        infoCard.classList.remove('show');
     }
-    updateEpisodes();
-    detailSeason.onchange=updateEpisodes;
-    function updateEpisodes(){
-      let season=parseInt(detailSeason.value);
-      let epCount = item.episodes[season];
-      detailEpisode.innerHTML='';
-      for(let e=1;e<=epCount;e++){
-        let o = document.createElement('option');
-        o.value=e; o.textContent="Episodio "+e;
-        detailEpisode.appendChild(o);
-      }
-    }
-  }
+};
 
-  detailPlayBtn.onclick = () => openPlayer(item);
+playBtn.onclick = () => {
+    alert("Qui partirebbe il player!");
+};
 
-  if(push) history.pushState({page:"detail",itemId:item.id},"","#detail-"+item.id);
-}
-
-function openPlayer(item,push=true){
-  let link = item.link;
-  if(item.type==='tv'){
-    let season = parseInt(detailSeason.value)||1;
-    let episode = parseInt(detailEpisode.value)||1;
-    link = `https://example.com/tv/${item.id}/${season}/${episode}`;
-  }
-  overlay.style.display='flex';
-  iframe.src = link;
-  if(overlay.requestFullscreen) overlay.requestFullscreen();
-  if(push) history.pushState({page:"player",itemId:item.id},"","#player-"+item.id);
-}
-
-function closePlayer(){
-  overlay.style.display='none';
-  iframe.src='';
-}
-
-backToGrid.onclick = () => {
-  history.pushState({page:"grid"},"","#grid");
-  detailPage.style.display='none';
-  grid.style.display='grid';
-}
-
-window.addEventListener("popstate", function(e){
-  const state=e.state;
-  if(!state||state.page==="grid"){
-    closePlayer();
-    detailPage.style.display='none';
-    grid.style.display='grid';
-    return;
-  }
-  const itemId = state.itemId;
-  const item = allData.find(x=>x.id===itemId);
-  if(!item){ closePlayer(); detailPage.style.display='none'; grid.style.display='grid'; return; }
-  if(state.page==="player"){ openPlayer(item,false); }
-  else if(state.page==="detail"){ closePlayer(); openDetail(item,false); }
-});
-
-function render(){
-  grid.innerHTML='';
-  allData.forEach(item=>{
-    let card=document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<img class='poster' src='${item.poster}'><p style="text-align:center;margin:5px 0;">${item.title}</p>`;
-    card.onclick = ()=>openDetail(item);
-    grid.appendChild(card);
-  });
-}
-
-render();
+favoriteInCard.onclick = () => {
+    favoriteInCard.classList.toggle('active');
+};
 </script>
+
 </body>
 </html>
