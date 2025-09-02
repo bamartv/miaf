@@ -20,18 +20,20 @@ body {
     justify-content: flex-end;
     padding: 20px;
     box-sizing: border-box;
+    /* Locandina di sfondo con dissolvenza dal 35% al 50% */
     background:
         linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 100%),
-        url('https://image.tmdb.org/t/p/original/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg') center/cover no-repeat;
+        url('https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg') center/cover no-repeat;
     background-size: cover;
 }
 #infoText {
-    margin-top: 40vh;
-    background: rgba(0,0,0,0);
+    margin-top: 40vh; /* scritte nella parte nera */
+    background: rgba(0,0,0,0); /* trasparente */
 }
 h1 {
     margin-top: 0;
     color: #e50914;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.8); /* rende leggibile su qualsiasi sfondo */
 }
 p {
     margin:5px 0;
@@ -50,7 +52,7 @@ p {
 }
 #playBtn { background: #e50914; color: #fff; }
 #favoriteBtn { background: gold; color: #000; }
-#closeBtn { background: #555; color: #fff; }
+#closeBtn { background: #555; color: #fff; } /* nuovo tasto chiudi */
 #trailer {
     width: 100%;
     max-width: 500px;
@@ -90,18 +92,18 @@ p {
         <p><strong>Anno:</strong> 2021</p>
         <p><strong>Durata:</strong> 148 min</p>
         <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
-        <p><strong>Cast:</strong> Tom Holland, Zendaya, Benedict Cumberbatch</p>
-        <p><strong>Descrizione:</strong> Peter Parker chiede aiuto al Dottor Strange quando la sua identità segreta viene rivelata. Ma un incantesimo va storto e porta a conseguenze catastrofiche.</p>
+        <p><strong>Cast:</strong> Tom Holland, Zendaya, Benedict Cumberbatch, Jacob Batalon</p>
+        <p><strong>Descrizione:</strong> Peter Parker si trova alle prese con le conseguenze della sua identità segreta rivelata al mondo. Per rimediare, chiede aiuto al Dottor Strange, ma l'incantesimo va storto e scatena il multiverso.</p>
 
-        <iframe id="trailer" src="https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1&mute=1" allowfullscreen></iframe>
+        <iframe id="trailer" src="https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1" allowfullscreen></iframe>
 
         <h2>Film correlati</h2>
         <div id="related">
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/fVzXp3NwovUlLe7fvoRynCmBPNc.jpg" alt="Film 1"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" alt="Film 2"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/5f2TzQkZlVgaj2Uu7DZ69k2BeyQ.jpg" alt="Film 3"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg" alt="Film 4"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6u1fYtxG5eqjhtCPDx04pJphQRW.jpg" alt="Film 5"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2cPz1cmFqq0yNw5vQz1yZ6n5ouX.jpg" alt="Film 1"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/fVzXp3NwovUlLe7fvoRynCmBPNc.jpg" alt="Film 2"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/zf8cXz6t79S1V9A3oXc3uAZG0oj.jpg" alt="Film 3"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/1gokDeVg6uU6qlLDy9P5VExqJtA.jpg" alt="Film 4"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3WZl03MJuhK2k8gP1imnmK8BRWR.jpg" alt="Film 5"></div>
         </div>
     </div>
 </div>
