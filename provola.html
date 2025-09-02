@@ -20,9 +20,9 @@ body {
     justify-content: flex-end;
     padding: 20px;
     box-sizing: border-box;
-    /* Locandina di sfondo con dissolvenza netta verso nero dalla metà */
+    /* Locandina di sfondo con dissolvenza verso nero dal 30% della pagina */
     background:
-        linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,1) 100%),
+        linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%),
         url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
     background-size: cover;
 }
@@ -49,8 +49,8 @@ p {
 #favoriteBtn { background: gold; color: #000; }
 #trailer {
     width: 100%;
-    max-width: 640px;
-    height: 360px;
+    max-width: 560px;
+    height: 315px;
     border: none;
     border-radius: 8px;
     margin-bottom: 20px;
