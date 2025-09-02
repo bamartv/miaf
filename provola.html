@@ -1,28 +1,93 @@
-<div id="infoCard" style="background-image: url('https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg');">
-  <!-- Overlay scuro dietro il testo -->
-  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4);"></div>
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Film Demo</title>
+<style>
+body {
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#141414;
+    color:#fff;
+}
+#infoCard {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+#infoOverlay {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.4); /* meno trasparente */
+    z-index:1;
+}
+#infoContent {
+    position: relative;
+    z-index:2;
+    max-width:800px;
+    width:100%;
+    text-align:center;
+}
+h1 { margin:10px 0; font-size:32px; }
+p { margin:5px 0; font-size:16px; line-height:1.4; }
+#buttons { margin:15px 0; display:flex; justify-content:center; gap:20px; }
+button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; font-size:16px; }
+#watchBtn { background:#e50914; color:#fff; }
+#favoriteBtn { background:gold; color:#000; }
+#trailer {
+    width:80%;
+    max-width:640px;
+    height:360px;
+    margin:20px 0;
+}
+#related {
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+    padding:10px 0;
+}
+#related::-webkit-scrollbar { display:none; }
+.related-item { flex:0 0 auto; width:120px; cursor:pointer; }
+.related-item img { width:100%; border-radius:8px; }
+</style>
+</head>
+<body>
 
-  <div id="infoContent">
-    <h2 id="title">Il Signore degli Anelli</h2>
-    <p id="genres">Generi: Fantasy, Avventura</p>
-    <p id="year">Anno: 2001</p>
-    <p id="duration">Durata: 178 min</p>
-    <p id="cast">Cast: Elijah Wood, Ian McKellen, Viggo Mortensen</p>
-    <p id="overview">Un giovane hobbit intraprende un pericoloso viaggio per distruggere un anello malvagio...</p>
-    
-    <iframe id="player" src="https://www.youtube.com/embed/V75dMMIW2B4" allowfullscreen></iframe>
-    
-    <div id="buttons">
-      <button id="watchBtn">Guarda</button>
-      <button id="favBtn">★ Preferiti</button>
+<div id="infoCard" style="background-image:url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg');">
+    <div id="infoOverlay"></div>
+    <div id="infoContent">
+        <h1>Wonder Woman 1984</h1>
+        <p><strong>Anno:</strong> 2020 • <strong>Durata:</strong> 151 min • <strong>Generi:</strong> Azione, Avventura, Fantascienza</p>
+        <p><strong>Cast:</strong> Gal Gadot, Chris Pine, Kristen Wiig</p>
+        <p>Wonder Woman affronta un nuovo nemico potente e misterioso mentre il mondo intero affronta nuove sfide.</p>
+        <div id="buttons">
+            <button id="watchBtn">Guarda</button>
+            <button id="favoriteBtn">★ Preferiti</button>
+        </div>
+        <iframe id="trailer" src="https://www.youtube.com/embed/ssrNcwxALS4" allowfullscreen></iframe>
+        <h3>Film correlati</h3>
+        <div id="related">
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="Film 2"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Film 3"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 4"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/jTswp6KyDYKtvC52GbHagrZbGvD.jpg" alt="Film 5"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w200/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="Film 6"></div>
+        </div>
     </div>
-
-    <div id="relatedContainer">
-      <div id="related">
-        <img src="https://image.tmdb.org/t/p/w200/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg" alt="La Compagnia dell'Anello">
-        <img src="https://image.tmdb.org/t/p/w200/7W0GbfvXJ7H8qR6hFf7rF3tyPzA.jpg" alt="Le Due Torri">
-        <img src="https://image.tmdb.org/t/p/w200/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg" alt="Il Ritorno del Re">
-      </div>
-    </div>
-  </div>
 </div>
+
+</body>
+  </html>
