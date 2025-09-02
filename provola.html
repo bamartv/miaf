@@ -21,6 +21,9 @@ h1{color:#fff;text-align:center;margin-bottom:20px;}
 #correlati img{width:120px;border-radius:8px;cursor:pointer;flex-shrink:0;}
 #correlati div{flex-shrink:0;width:120px;text-align:center;font-size:12px;margin-top:4px;}
 button{padding:8px 12px;margin:5px;background:#e50914;color:#fff;border:none;border-radius:5px;cursor:pointer;}
+.action-buttons{display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+.favorite-btn{font-size:20px;color:#fff;text-shadow:0 0 4px #000;cursor:pointer;}
+.favorite-btn.active{color:gold;}
 </style>
 </head>
 <body>
@@ -43,9 +46,16 @@ button{padding:8px 12px;margin:5px;background:#e50914;color:#fff;border:none;bor
     <button onclick="closeInfo()">Chiudi</button>
     <h2 id="infoTitle">Joker</h2>
     <p id="infoOverview">Un film drammatico su Arthur Fleck, un uomo trascurato dalla società...</p>
+    
+    <div class="action-buttons">
+      <button id="watchBtn" onclick="watchMovie()">Guarda</button>
+      <span id="favoriteBtn" class="favorite-btn" onclick="toggleFavorite()">★ Preferiti</span>
+    </div>
+
     <div id="playerContainer">
       <iframe src="https://www.youtube.com/embed/zAGVQLHvwOY" allowfullscreen></iframe>
     </div>
+
     <h3>Film correlati</h3>
     <div id="correlati">
       <div><img src="https://image.tmdb.org/t/p/w200/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker"><br>Joker 2</div>
@@ -63,14 +73,32 @@ button{padding:8px 12px;margin:5px;background:#e50914;color:#fff;border:none;bor
 </div>
 
 <script>
+let favoriteState = false;
+
 function openInfo(id,bg){
   document.getElementById('infoCard').style.display='block';
   document.getElementById('infoCard').style.backgroundImage = `url(${bg})`;
   window.scrollTo(0,0);
+  favoriteState = false;
+  updateFavoriteBtn();
 }
 
 function closeInfo(){
   document.getElementById('infoCard').style.display='none';
+}
+
+function watchMovie(){
+  alert("Simulazione: avvia il film/serie");
+}
+
+function toggleFavorite(){
+  favoriteState = !favoriteState;
+  updateFavoriteBtn();
+}
+
+function updateFavoriteBtn(){
+  const btn = document.getElementById('favoriteBtn');
+  btn.classList.toggle("active", favoriteState);
 }
 </script>
 </body>
