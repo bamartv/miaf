@@ -1,57 +1,14 @@
-<!doctype html>
-<html lang="it">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Film Demo</title>
-<style>
-body {
-    margin:0; padding:0;
-    font-family: Arial, sans-serif;
-    background: #141414;
-    color: #fff;
-    overflow-x: hidden;
-}
-#infoCard {
-    position: fixed;
-    top:0; left:0; width:100%; height:100%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: brightness(0.25); /* locandina più visibile ma scura */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#infoContent {
-    width: 90%; max-width: 900px;
-    text-align: center;
-    color: #fff;
-}
-#infoContent h2 { margin:0 0 10px; font-size:32px; color:#e50914; }
-#infoContent p { margin:5px 0; font-size:14px; }
-#player { width:80%; height:250px; border:none; border-radius:8px; margin:15px 0; }
-#buttons { display:flex; justify-content:center; gap:15px; margin-bottom:20px; }
-button { padding:10px 20px; font-size:14px; border:none; border-radius:6px; cursor:pointer; }
-button#watchBtn { background:#e50914; color:#fff; }
-button#favBtn { background: gold; color:#000; }
-#relatedContainer { width: 100%; overflow-x:auto; margin-top:10px; }
-#related { display:flex; gap:10px; padding-bottom:10px; }
-#related img { width:100px; border-radius:8px; flex-shrink:0; cursor:pointer; transition: transform 0.2s; }
-#related img:hover { transform: scale(1.05); }
-#relatedContainer::-webkit-scrollbar { display:none; }
-</style>
-</head>
-<body>
-
 <div id="infoCard" style="background-image: url('https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg');">
+  <!-- Overlay scuro dietro il testo -->
+  <div style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4);"></div>
+
   <div id="infoContent">
     <h2 id="title">Il Signore degli Anelli</h2>
     <p id="genres">Generi: Fantasy, Avventura</p>
     <p id="year">Anno: 2001</p>
     <p id="duration">Durata: 178 min</p>
     <p id="cast">Cast: Elijah Wood, Ian McKellen, Viggo Mortensen</p>
-    <p id="overview">Un giovane hobbit intraprende un pericoloso viaggio per distruggere un anello malvagio, affrontando sfide e scoprendo il vero significato del coraggio e dell'amicizia.</p>
+    <p id="overview">Un giovane hobbit intraprende un pericoloso viaggio per distruggere un anello malvagio...</p>
     
     <iframe id="player" src="https://www.youtube.com/embed/V75dMMIW2B4" allowfullscreen></iframe>
     
@@ -65,14 +22,7 @@ button#favBtn { background: gold; color:#000; }
         <img src="https://image.tmdb.org/t/p/w200/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg" alt="La Compagnia dell'Anello">
         <img src="https://image.tmdb.org/t/p/w200/7W0GbfvXJ7H8qR6hFf7rF3tyPzA.jpg" alt="Le Due Torri">
         <img src="https://image.tmdb.org/t/p/w200/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg" alt="Il Ritorno del Re">
-        <img src="https://image.tmdb.org/t/p/w200/9DeGfFIqjph5CBFVQrD6wv9S7rF.jpg" alt="Lo Hobbit: Un Viaggio Inaspettato">
-        <img src="https://image.tmdb.org/t/p/w200/6s1G9pHYpo4iR5Xj9SS1ZfXZ1Wn.jpg" alt="La Desolazione di Smaug">
-        <img src="https://image.tmdb.org/t/p/w200/56zTpe2xvaA4alU51sRWPoKPYZy.jpg" alt="La Battaglia delle Cinque Armate">
       </div>
     </div>
-
   </div>
 </div>
-
-</body>
-</html>
