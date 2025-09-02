@@ -20,11 +20,15 @@ body {
     justify-content: flex-end;
     padding: 20px;
     box-sizing: border-box;
-    /* Locandina di sfondo con dissolvenza netta dal 35% al 50% della pagina */
+    /* Nuova locandina di sfondo con dissolvenza dal 35% al 50% */
     background:
         linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,1) 50%, rgba(0,0,0,1) 100%),
-        url('https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg') center/cover no-repeat;
+        url('https://image.tmdb.org/t/p/w500/6Wdl9N6dL0Hi0T1qJLWSz6gMLbd.jpg') center/cover no-repeat;
     background-size: cover;
+}
+#infoText {
+    margin-top: 40vh; /* posiziona le scritte nella parte nera */
+    background: rgba(0,0,0,0); /* trasparente perché la dissolvenza fa il lavoro */
 }
 h1 {
     margin-top: 0;
@@ -76,31 +80,33 @@ p {
 <body>
 
 <div id="infoCard">
-    <h1>Wonder Woman 1984</h1>
-    <div id="buttons">
-        <button id="playBtn" class="button">Guarda</button>
-        <button id="favoriteBtn" class="button">★ Preferiti</button>
-    </div>
-    <p><strong>Anno:</strong> 2020</p>
-    <p><strong>Durata:</strong> 151 min</p>
-    <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
-    <p><strong>Cast:</strong> Gal Gadot, Chris Pine, Kristen Wiig, Pedro Pascal</p>
-    <p><strong>Descrizione:</strong> Diana Prince vive tra gli uomini negli anni '80 durante la Guerra Fredda. Mentre si confronta con nuovi nemici, scopre che la sua forza eroica sarà messa alla prova come mai prima d'ora.</p>
+    <div id="infoText">
+        <h1>Black Panther</h1>
+        <div id="buttons">
+            <button id="playBtn" class="button">Guarda</button>
+            <button id="favoriteBtn" class="button">★ Preferiti</button>
+        </div>
+        <p><strong>Anno:</strong> 2018</p>
+        <p><strong>Durata:</strong> 134 min</p>
+        <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
+        <p><strong>Cast:</strong> Chadwick Boseman, Michael B. Jordan, Lupita Nyong'o, Danai Gurira</p>
+        <p><strong>Descrizione:</strong> T’Challa ritorna a casa, Wakanda, dopo la morte del padre. Mentre governa come nuovo re, un nemico emerge per minacciare il destino del suo regno e del mondo intero.</p>
 
-    <iframe id="trailer" src="https://www.youtube.com/embed/ps6G9y1_xNs" allowfullscreen></iframe>
+        <iframe id="trailer" src="https://www.youtube.com/embed/xjDjIWPwcPU" allowfullscreen></iframe>
 
-    <h2>Film correlati</h2>
-    <div id="related">
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg" alt="Film 1"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6S2VnKxGvFThsI3O0fVQ7pCD8Q7.jpg" alt="Film 2"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2qvKytGNnb7HKGw2YpX2iyz4U76.jpg" alt="Film 3"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9yBVqNruk6Ykrwc32qrK2TIE5xw.jpg" alt="Film 4"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/jlA9y5nqHrZ1Qkx3dTrJqVnW5tJ.jpg" alt="Film 5"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4EFCsO9M4gCZ8zgi0U5VBrVnHQ5.jpg" alt="Film 6"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/wZ91gTa7g6C1Tj0xD38U95F5Zyo.jpg" alt="Film 7"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/6n0N0I4DqL5l3nUKhG7ieKqtG6S.jpg" alt="Film 8"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3IhNkvpmN6QdkifQ1M2dLSiUR7V.jpg" alt="Film 9"></div>
-        <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7E9MqU1xY0m9xP5gYJ2k7TyRrLz.jpg" alt="Film 10"></div>
+        <h2>Film correlati</h2>
+        <div id="related">
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/uW0FWp0Eh6H3jATlXv3UQmChwfn.jpg" alt="Film 1"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/kz4s9N7xq1sz6Z0G1F5T7xMZ8pT.jpg" alt="Film 2"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/4q2hz2m8hubgvijz8Ez0T2Os2Yv.jpg" alt="Film 3"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg" alt="Film 4"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/9I4cG2EDVXuZpKQLN8tBrXC6lqZ.jpg" alt="Film 5"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg" alt="Film 6"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/2X7m8I9O4rJqXHJzTovWqFhX5Lc.jpg" alt="Film 7"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/5WJt6k5j9fYBuhSvn2th6CEhWhf.jpg" alt="Film 8"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/3bOGNsHlrswhyW79uvIHH1V43JI.jpg" alt="Film 9"></div>
+            <div class="related-item"><img src="https://image.tmdb.org/t/p/w500/lqN5qPn0DR3jNDeK6sIz34p9XH2.jpg" alt="Film 10"></div>
+        </div>
     </div>
 </div>
 
