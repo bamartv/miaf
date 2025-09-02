@@ -9,6 +9,7 @@ Aggiunta gestione Preferiti spostati nella tendina principale e Visti recentemen
 - Stellina cliccabile dentro la card info
 - Possibilità di selezionare più generi
 - Correzione back button: chiude il player prima di tornare alla card o griglia
+- Aggiunta titolo in sovraimpressione nel player al tap (scompare dopo 2 secondi)
 """
 
 
@@ -92,6 +93,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;}}
+#playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:1002;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(34,34,34,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCard button#playBtn{{margin-left:10px;padding:8px 12px;background:#e50914;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
@@ -125,6 +127,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+  <div id="playerTitle"></div>
 </div>
 
 <div id='infoCard'>
@@ -172,6 +175,7 @@ function addToRecent(id) {{
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
 const iframe=overlay.querySelector('iframe');
+const playerTitle=document.getElementById('playerTitle');
 const infoCard=document.getElementById('infoCard');
 const infoTitle=document.getElementById('infoTitle');
 const infoGenres=document.getElementById('infoGenres');
@@ -296,6 +300,15 @@ function closePlayer(push=true) {{
     }}
 }}
 
+overlay.addEventListener('click', () => {{
+  if(!currentItem) return;
+  playerTitle.textContent = currentItem.title;
+  playerTitle.style.display = 'block';
+  setTimeout(() => {{
+    playerTitle.style.display = 'none';
+  }}, 2000);
+}});
+
 window.addEventListener("popstate", function(e) {{
     const state = e.state;
 
@@ -398,9 +411,8 @@ document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 
 /* stato iniziale nella history */
-history.replaceState({{page:"grid"}}, "", "#grid");
-
-updateType('movie');
+history.replaceState({page:"grid"},"","#grid");
+updateType("movie");
 showLatest();
 </script>
 </body>
@@ -411,61 +423,41 @@ showLatest();
 
 def main():
     api_key = get_api_key()
-    entries = []
-    latest_entries = ""
-
+    all_entries = []
+    latest_html = ""
     for type_, url in SRC_URLS.items():
         data = fetch_list(url)
         ids = extract_ids(data)
-
-        for idx, tmdb_id in enumerate(ids):
-            try:
-                info = tmdb_get(api_key, type_, tmdb_id)
-            except:
-                info = None
-            if not info:
+        for tmdb_id in ids:
+            item = tmdb_get(api_key, type_, tmdb_id)
+            if not item:
                 continue
-
-            title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
-            poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
-            genres = [g["name"] for g in info.get("genres", [])]
-            vote = info.get("vote_average", 0)
-            overview = info.get("overview", "")
-            link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
-            seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
-
-            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-
-            runtime_list = info.get("episode_run_time") or []
-            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
-
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-
-            entries.append({
+            entry = {
                 "id": str(tmdb_id),
-                "title": title,
-                "poster": poster,
-                "genres": genres,
-                "vote": vote,
-                "overview": overview,
-                "link": link,
+                "title": item.get("title") or item.get("name") or "",
+                "overview": item.get("overview",""),
+                "poster": TMDB_IMAGE_BASE + item["poster_path"] if item.get("poster_path") else "",
+                "vote": item.get("vote_average",0),
+                "genres": [g["name"] for g in item.get("genres",[])],
                 "type": type_,
-                "seasons": seasons,
-                "episodes": episodes,
-                "duration": duration or 0,
-                "year": year or "",
-                "cast": cast
-            })
+                "year": (item.get("release_date") or item.get("first_air_date") or "")[:4],
+                "duration": item.get("runtime") if type_=="movie" else None,
+                "seasons": item.get("number_of_seasons") if type_=="tv" else None,
+                "episodes": {{s["season_number"]: s.get("episode_count",1) for s in item.get("seasons",[])}} if type_=="tv" else None,
+                "cast": [c["name"] for c in item.get("credits",{{}}).get("cast",[])],
+                "link": VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else None
+            }
+            all_entries.append(entry)
 
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+    latest = sorted(all_entries, key=lambda x: x["year"] or "0", reverse=True)[:20]
+    for e in latest:
+        latest_html += f"<img class='poster' src='{e['poster']}' alt='{e['title']}' onclick='openInfo({{id:\"{e['id']}\"}})'>"
 
-    html = build_html(entries, latest_entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
+    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
+        f.write(build_html(all_entries, latest_html))
+
+    print(f"File generato: {OUTPUT_HTML}")
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
