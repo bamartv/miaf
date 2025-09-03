@@ -99,8 +99,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    width: 120px;       /* stessa larghezza */
-    height: 38px;       /* stessa altezza */
+    width: 100px;       /* stessa larghezza */
+    height: 40px;       /* stessa altezza */
     padding: 8px 0;     /* verticale interna */
     background: #141414;
     border: none;
@@ -167,6 +167,11 @@ const allData = {entries};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
+function updateFavoriteButton(itemId) {
+    const isFav = favorites.includes(itemId);
+    favoriteInCard.textContent = isFav ? "- Preferiti" : "+ Preferiti";
+    favoriteInCard.style.backgroundColor = isFav ? "#e50914" : "#141414"; 
+    }
 
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
@@ -213,10 +218,11 @@ function showLatest(){{
 
 function openInfo(item, push=true) {{
     currentItem = item;
-    infoCard.style.display='block';
+    infoCard.style.display = 'block';
     document.body.style.overflow = 'hidden'; //
     infoCard.style.backgroundImage = "none";
     infoCard.style.backgroundColor = "rgba(20,20,20,0.95)";
+
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
@@ -225,12 +231,18 @@ function openInfo(item, push=true) {{
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
-    favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    favoriteInCard.onclick = () => {{
-        toggleFavorite(item.id);
-        favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    }};
+    // aggiorna il bottone preferiti (testo + colore)
+    updateFavoriteButton(item.id);
 
+    favoriteInCard.onclick = () => {
+        toggleFavorite(item.id);
+        updateFavoriteButton(item.id);
+    };
+
+    if (push) {
+        history.pushState({page:"info", id:item.id}, "", "#info-" + item.id);
+    }
+        }
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
