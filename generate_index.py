@@ -218,12 +218,13 @@ function showLatest(){{
 }}
 
 function openInfo(item, push=true) {{
+function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display = 'block';
     document.body.style.overflow = 'hidden'; //
     infoCard.style.backgroundImage = "none";
     infoCard.style.backgroundColor = "rgba(20,20,20,0.95)";
-
+    
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
@@ -232,18 +233,18 @@ function openInfo(item, push=true) {{
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
-    // aggiorna il bottone preferiti (testo + colore)
+    // aggiorna il bottone preferiti
     updateFavoriteButton(item.id);
 
-    favoriteInCard.onclick = () => {
+    favoriteInCard.onclick = () => {{
         toggleFavorite(item.id);
         updateFavoriteButton(item.id);
-    };
+    }};
 
-    if (push) {
-        history.pushState({page:"info", id:item.id}, "", "#info-" + item.id);
-    }
-        }
+    if (push) {{
+        history.pushState({{page:"info", id:item.id}}, "", "#info-" + item.id);
+    }}
+}}
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
