@@ -131,7 +131,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 
 <div id='infoCard'>
-  <div style="position:relative;background:#222;border-radius:10px;padding:20px;max-width:800px;width:90%;">
+  <div style="position:relative;background:transparent;border-radius:10px;padding:20px;max-width:800px;width:90%;">
     <h2 id="infoTitle"></h2>
     <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
       <button id="playBtn" class="btn-play">Riproduci</button>
