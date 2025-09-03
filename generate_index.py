@@ -375,7 +375,7 @@ def main():
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
 
-            entries.append({{
+            entries.append({
                 "id": str(tmdb_id),
                 "title": title,
                 "poster": poster,
@@ -389,7 +389,7 @@ def main():
                 "duration": duration or 0,
                 "year": year or "",
                 "cast": cast
-            }})
+            })
 
             if idx < 10 and poster:
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
