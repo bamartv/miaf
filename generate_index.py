@@ -9,7 +9,7 @@ Generatore di pagina HTML per Movies & Series con:
 - Selezione multipla dei generi
 - Correzione back button: chiude il player prima di tornare alla griglia
 - Titolo nel player comparibile al tocco dello schermo
-- Pulsanti stile Netflix
+- Stile tasti nero stile Netflix
 """
 
 import os
@@ -86,34 +86,11 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
-#favoriteInCard.favorite-btn{{
-    position:static;
-    cursor:pointer;
-    font-size:16px;
-    background:#e50914;
-    color:#fff;
-    border:none;
-    padding:6px 12px;
-    border-radius:4px;
-    font-weight:bold;
-    pointer-events:auto;
-}}
-button.btn-play,
-button.btn-close {{
-    background:#141414;
-    color:#fff;
-    border:none;
-    padding:6px 12px;
-    border-radius:4px;
-    font-weight:bold;
-    cursor:pointer;
-    pointer-events:auto;
-}}
-button.btn-play:hover,
-button.btn-close:hover,
-#favoriteInCard.favorite-btn:hover {{
-    background:#e50914;
-}}
+.favorite-btn.active{{color:gold;}}
+.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+#favoriteInCard.favorite-btn{{position:static;cursor:pointer;margin-left:10px;font-size:18px;}}
+button{{background:#141414;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px;}}
+button:hover{{background:#222;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
@@ -157,9 +134,9 @@ button.btn-close:hover,
   <div class="content-wrap">
     <h2 id="infoTitle"></h2>
     <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
-      <button id="playBtn" class="btn-play">Riproduci</button>
-      <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <span id="favoriteInCard" class="favorite-btn">+ La mia lista</span>
+      <button id="playBtn">Riproduci</button>
+      <button id="closeCardBtn">Chiudi</button>
+      <button id="favoriteInCard" class="favorite-btn">+ La mia lista</button>
     </div>
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
@@ -408,7 +385,7 @@ document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 
 /* stato iniziale nella history */
-history.replaceState({page:"grid"}, "", "#grid");
+history.replaceState({{page:"grid"}}, "", "#grid");
 
 updateType('movie');
 showLatest();
