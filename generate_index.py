@@ -366,7 +366,7 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {{s["season_number"]: s.get("episode_count",1) for s in info.get("seasons",[]) if s.get("season_number")}} if type_=="tv" else {{}}
+            episodes = {s["season_number"]: s.get("episode_count",1) for s in info.get("seasons",[]) if s.get("season_number")} if type_=="tv" else {}
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
