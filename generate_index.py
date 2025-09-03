@@ -23,7 +23,7 @@ SRC_URLS = {
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
 }
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w300"
+TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
@@ -94,13 +94,13 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    width: 100px;       /* stessa larghezza */
-    height: 40px;       /* stessa altezza */
+    width: 120px;       /* stessa larghezza */
+    height: 38px;       /* stessa altezza */
     padding: 8px 0;     /* verticale interna */
     background: #141414;
     border: none;
@@ -163,16 +163,10 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 
 <script>
-const allData = {{entries}};
+const allData = {entries};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
-
-function updateFavoriteButton(itemId) {{
-    const isFav = favorites.includes(itemId);
-    favoriteInCard.textContent = isFav ? "- Preferiti" : "+ Preferiti";
-    favoriteInCard.style.backgroundColor = isFav ? "#e50914" : "#141414"; 
-}}
 
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
@@ -219,11 +213,10 @@ function showLatest(){{
 
 function openInfo(item, push=true) {{
     currentItem = item;
-    infoCard.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    infoCard.style.display='block';
+    document.body.style.overflow = 'hidden'; //
     infoCard.style.backgroundImage = "none";
     infoCard.style.backgroundColor = "rgba(20,20,20,0.95)";
-
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
@@ -232,11 +225,10 @@ function openInfo(item, push=true) {{
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
-    updateFavoriteButton(item.id);
-
+    favoriteInCard.classList.toggle("active", favorites.includes(item.id));
     favoriteInCard.onclick = () => {{
         toggleFavorite(item.id);
-        updateFavoriteButton(item.id);
+        favoriteInCard.classList.toggle("active", favorites.includes(item.id));
     }};
 
     seasonSelect.style.display = 'none';
