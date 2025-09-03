@@ -90,11 +90,11 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:22px;}}
-#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#141414;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
+#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,20,0.95);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCard button#playBtn{{margin-left:10px;padding:8px 12px;background:#141414;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
 #infoCard button#closeCardBtn{{margin-left:10px;padding:8px 12px;background:#141414;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
@@ -138,7 +138,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
       <button id="playBtn" class="btn-play">Riproduci</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="favoriteInCard" class="favorite-btn">+ Preferiti</span>
+      <button id="favoriteInCard" class="favorite-btn">+ Preferiti</button>
     </div>
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
