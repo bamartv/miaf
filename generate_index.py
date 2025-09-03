@@ -16,7 +16,7 @@ SRC_URLS = {
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
 }
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
+TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
