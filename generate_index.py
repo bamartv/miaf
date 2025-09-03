@@ -338,7 +338,7 @@ def main():
 
     entries = []
     for d, type_ in [(movie_data,"movie"),(tv_data,"tv")]:
-        for item in d.get("results", []):
+        for item in d:
             tmdb = tmdb_get(api_key, type_, item.get("tmdb_id"))
             if tmdb:
                 poster = TMDB_IMAGE_BASE + tmdb.get("poster_path","")
