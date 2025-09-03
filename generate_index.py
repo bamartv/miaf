@@ -5,11 +5,11 @@ generate_index.py
 Generatore di pagina HTML per Movies & Series con:
 - Preferiti e Visti di recente nella tendina principale
 - Gestione recenti tramite localStorage (max 20)
-- Stellina sulle locandine: solo visuale
 - Stellina cliccabile nella scheda info
 - Selezione multipla dei generi
 - Correzione back button: chiude il player prima di tornare alla griglia
 - Titolo nel player comparibile al tocco dello schermo
+- Pulsanti stile Netflix
 """
 
 import os
@@ -86,9 +86,34 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
-.favorite-btn.active{{color:gold;}}
-.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
-#favoriteInCard.favorite-btn{{position:static;cursor:pointer;margin-left:auto;font-size:22px;}}
+#favoriteInCard.favorite-btn{{
+    position:static;
+    cursor:pointer;
+    font-size:16px;
+    background:#e50914;
+    color:#fff;
+    border:none;
+    padding:6px 12px;
+    border-radius:4px;
+    font-weight:bold;
+    pointer-events:auto;
+}}
+button.btn-play,
+button.btn-close {{
+    background:#141414;
+    color:#fff;
+    border:none;
+    padding:6px 12px;
+    border-radius:4px;
+    font-weight:bold;
+    cursor:pointer;
+    pointer-events:auto;
+}}
+button.btn-play:hover,
+button.btn-close:hover,
+#favoriteInCard.favorite-btn:hover {{
+    background:#e50914;
+}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
@@ -383,7 +408,7 @@ document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 
 /* stato iniziale nella history */
-history.replaceState({{page:"grid"}}, "", "#grid");
+history.replaceState({page:"grid"}, "", "#grid");
 
 updateType('movie');
 showLatest();
