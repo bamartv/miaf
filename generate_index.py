@@ -2,25 +2,22 @@
 """
 generate_index.py
 
-Gestione Preferiti e Visti recentemente.
-InfoCard con poster a tutta pagina e dissolvenza morbida.
+Gestione Preferiti e Visti recentemente. Poster w780.
 """
 
 import os
 import sys
 import requests
 
-# --- Config ---
-SRC_URLS = {
+SRC_URLS = {{
     "movie": "https://vixsrc.to/api/list/movie?lang=it",
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
-}
-TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
+}}
+TMDB_BASE = "https://api.themoviedb.org/3/{{type}}/{{id}}"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
-VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
+VIX_LINK_MOVIE = "https://vixsrc.to/movie/{{}}/?"
 OUTPUT_HTML = "index.html"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
-
+HEADERS = {{"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}}
 
 def get_api_key():
     key = os.getenv("TMDB_API_KEY")
@@ -29,12 +26,10 @@ def get_api_key():
         sys.exit(1)
     return key
 
-
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
-
 
 def extract_ids(data):
     ids = []
@@ -42,25 +37,19 @@ def extract_ids(data):
     for item in items:
         if not isinstance(item, dict):
             continue
-        for key in ("tmdb_id", "tmdbId", "id"):
+        for key in ("tmdb_id","tmdbId","id"):
             if key in item and item[key]:
                 ids.append(str(item[key]))
                 break
     return ids
 
-
 def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
-    r = requests.get(
-        url,
-        params={"api_key": api_key, "language": language, "append_to_response": "credits"},
-        timeout=15
-    )
+    r = requests.get(url, params={{"api_key": api_key, "language": language, "append_to_response": "credits"}}, timeout=15)
     if r.status_code == 404:
         return None
     r.raise_for_status()
     return r.json()
-
 
 def build_html(entries, latest_entries):
     html = f"""<!doctype html>
@@ -88,8 +77,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;color:#fff;overflow:auto;}}
-#infoCardOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background-size:cover;background-position:center center;background-repeat:no-repeat;transition:background 0.5s ease;}}
-#infoCardContent{{position:relative;z-index:1;padding:20px;max-width:800px;width:90%;margin:auto;background:linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 70%);}}
+#infoCardOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background-size:cover;background-position:center center;background-repeat:no-repeat;filter:brightness(0.6);}}
+#infoCardContent{{position:relative;z-index:1;padding:20px;max-width:800px;width:90%;margin:auto;background:linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.8) 70%);}}
 #infoCardContent h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCardContent div{{display:flex;align-items:center;gap:10px;margin:10px 0;}}
 #infoCardContent p, #infoCardContent select{{margin:5px 0;}}
@@ -173,12 +162,13 @@ const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const genreSelect=document.getElementById('genreSelect');
 
-closeCardBtn.onclick = () => {
+closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
-  history.replaceState({page:"grid"}, "", "#grid");
-};
+  history.replaceState({{page:"grid"}}, "", "#grid");
+}};
 
-function openInfo(item, push=true) {
+// --- Open infoCard ---
+function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
     infoCardOverlay.style.backgroundImage = 'url(' + item.poster + ')';
@@ -191,120 +181,121 @@ function openInfo(item, push=true) {
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
     favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    favoriteInCard.onclick = () => {
+    favoriteInCard.onclick = () => {{
         toggleFavorite(item.id);
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    };
+    }};
 
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
-    if(item.type==='tv') {
+    if(item.type==='tv') {{
         seasonSelect.style.display = 'inline';
         episodeSelect.style.display = 'inline';
         seasonSelect.innerHTML = "";
-        for(let s=1;s<=item.seasons;s++) {
+        for(let s=1;s<=item.seasons;s++) {{
             let o = document.createElement('option');
             o.value = s;
             o.textContent = "Stagione " + s;
             seasonSelect.appendChild(o);
-        }
+        }}
         seasonSelect.onchange = updateEpisodes;
         updateEpisodes();
-    }
+    }}
 
     playBtn.onclick = () => openPlayer(item);
 
-    if(push) {
-        history.pushState({page:"info", itemId:item.id}, "", "#info-"+item.id);
-    }
+    if(push) {{
+        history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
+    }}
 
-    function updateEpisodes() {
+    function updateEpisodes() {{
         let season = parseInt(seasonSelect.value);
         let epCount = item.episodes[season] || 1;
         episodeSelect.innerHTML = "";
-        for(let e=1;e<=epCount;e++) {
+        for(let e=1;e<=epCount;e++) {{
             let o = document.createElement('option');
             o.value = e;
             o.textContent = "Episodio " + e;
             episodeSelect.appendChild(o);
-        }
-    }
-}
+        }}
+    }}
+}}
 
-function addToRecent(id) {
+function addToRecent(id) {{
   recentList = recentList.filter(x => x !== id);
   recentList.unshift(id);
   if(recentList.length>20) recentList.pop();
   localStorage.setItem("recent", JSON.stringify(recentList));
-}
+}}
 
-function toggleFavorite(id) {
+function toggleFavorite(id) {{
   if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
   else favorites.push(id);
   localStorage.setItem("favorites", JSON.stringify(favorites));
-}
+}}
 
-function openPlayer(item) {
+function openPlayer(item) {{
     addToRecent(item.id);
     infoCard.style.display='none';
     overlay.style.display='flex';
     iframe.src = item.link || "";
     playerTitle.textContent = item.title;
     playerTitle.style.display='block';
-}
+}}
 
-overlay.onclick = (e) => {
-    if(e.target === overlay) {
+overlay.onclick = (e) => {{
+    if(e.target === overlay) {{
         iframe.src = "";
         overlay.style.display='none';
         playerTitle.style.display='none';
-    }
-};
+    }}
+}};
 
-function renderGrid(filterType="movie", filterGenres=[], search="") {
+// --- Render grid ---
+function renderGrid(filterType="movie", filterGenres=[], search="") {{
     grid.innerHTML = "";
     let filtered = allData.slice();
     if(filterType==="favorites") filtered = allData.filter(i=>favorites.includes(i.id));
     else if(filterType==="recent") filtered = allData.filter(i=>recentList.includes(i.id));
     else filtered = allData.filter(i=>i.type===filterType);
 
-    if(filterGenres.length>0) filtered = filtered.filter(i=>{
+    if(filterGenres.length>0) filtered = filtered.filter(i=>{{
         if(!i.genres) return false;
         return filterGenres.every(g => i.genres.includes(g));
-    });
+    }});
 
-    if(search) {
+    if(search) {{
         search = search.toLowerCase();
         filtered = filtered.filter(i=>i.title.toLowerCase().includes(search));
-    }
+    }}
 
-    for(let item of filtered) {
+    for(let item of filtered) {{
         let card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <img class='poster' src='${item.poster}' alt='${item.title}'>
-            <span class='favorite-btn ${favorites.includes(item.id) ? "active" : ""}'>★</span>
+            <img class='poster' src='${{item.poster}}' alt='${{item.title}}'>
+            <span class='favorite-btn ${{favorites.includes(item.id) ? "active" : ""}}'>★</span>
         `;
         card.onclick = ()=>openInfo(item);
         grid.appendChild(card);
-    }
-}
+    }}
+}}
 
 document.getElementById('typeSelect').onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 genreSelect.onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 searchBox.oninput = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 
-function populateGenres() {
+function populateGenres() {{
     let genresSet = new Set();
     allData.forEach(i=>i.genres && i.genres.forEach(g=>genresSet.add(g)));
-    genresSet.forEach(g=>{
+    genresSet.forEach(g=>{{
         let o = document.createElement('option');
         o.value = g;
         o.textContent = g;
         genreSelect.appendChild(o);
-    });
-}
+    }});
+}}
 
 populateGenres();
 renderGrid();
@@ -313,7 +304,6 @@ renderGrid();
 </html>
 """
     return html
-
 
 def main():
     api_key = get_api_key()
@@ -326,7 +316,7 @@ def main():
             tmdb = tmdb_get(api_key, type_, tmdb_id)
             if not tmdb:
                 continue
-            item = {
+            item = {{
                 "id": str(tmdb.get("id")),
                 "type": type_,
                 "title": tmdb.get("title") or tmdb.get("name"),
@@ -336,22 +326,21 @@ def main():
                 "overview": tmdb.get("overview") or "",
                 "year": (tmdb.get("release_date") or tmdb.get("first_air_date") or "")[:4],
                 "duration": tmdb.get("runtime") or (tmdb.get("episode_run_time")[0] if tmdb.get("episode_run_time") else None),
-                "cast": [c["name"] for c in tmdb.get("credits", {}).get("cast", [])],
+                "cast": [c["name"] for c in tmdb.get("credits", {{}}).get("cast", [])],
                 "seasons": len(tmdb.get("seasons", [])) if type_=="tv" else 0,
-                "episodes": {i+1:s["episode_count"] for i,s in enumerate(tmdb.get("seasons", []))} if type_=="tv" else {},
+                "episodes": {{i+1:s["episode_count"] for i,s in enumerate(tmdb.get("seasons", []))}} if type_=="tv" else {{}},
                 "link": VIX_LINK_MOVIE.format(tmdb_id)
-            }
+            }}
             entries.append(item)
 
     latest_entries_html = ""
     for item in entries[:10]:
-        latest_entries_html += f"<div class='card'><img class='poster' src='{item['poster']}'><span class='favorite-btn {"active" if item['id'] in [] else ""}'>★</span></div>"
+        latest_entries_html += f"<div class='card'><img class='poster' src='{{{{item['poster']}}}}'><span class='favorite-btn ${{{{'active' if item['id'] in [] else ''}}}}'>★</span></div>"
 
     html_content = build_html(entries, latest_entries_html)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html_content)
     print(f"File generato: {OUTPUT_HTML}")
-
 
 if __name__ == "__main__":
     main()
