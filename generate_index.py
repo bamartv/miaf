@@ -56,52 +56,53 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
         url,
-        params={"api_key": api_key, "language": language, "append_to_response": "credits"},
+        params={"api_key": api_key, "language": language, "append_to_response": "credits,seasons"},
         timeout=15
     )
     if r.status_code == 404:
         return None
     r.raise_for_status()
     return r.json()
+
 def build_html(entries, latest_entries):
-    html = f"""<!doctype html>
+    html = """<!doctype html>
 <html lang='it'>
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
 <title>Movies & Series</title>
 <style>
-body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
-h1{{color:#fff;text-align:center;margin-bottom:20px;}}
-.controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
-input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
-.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
-.card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
-.card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
-.poster{{width:100%;border-radius:0;display:block;}}
-.badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
-.favorite-btn{{font-size:20px;color:#000;text-shadow:0 0 4px #000;cursor:pointer;}}
-.favorite-btn.active{{color:gold;}}
-button{{background:#000;color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:14px;}}
-button:focus{{outline:2px solid #e50914;}}
-#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
-#playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
-#playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
-#playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed; top:0; left:0; width:100%; height:100%; display:none; z-index:1001; color:#fff; padding:20px; overflow:auto; background-color:#000; background-size:cover; background-position:center center; background-repeat:no-repeat;}}
-#infoCard h2, #infoCard p{{text-shadow:0 2px 6px rgba(0,0,0,.75);}}
-#infoCard .content-wrap{{position:relative; padding:40px 20px 20px 20px; max-width:800px; width:90%; margin:0 auto;}}
-@media(min-width:768px){{#infoCard .content-wrap{{ padding-top:200px; }}}}
-#latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
-#latest::-webkit-scrollbar {{display: none;}}
-#latest {{-ms-overflow-style: none;scrollbar-width: none;}}
-#latest .poster{{width:100px;flex-shrink:0;}}
+body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
+h1{color:#fff;text-align:center;margin-bottom:20px;}
+.controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
+input,select{padding:8px;font-size:14px;border-radius:4px;border:none;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
+.card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
+.card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
+.poster{width:100%;border-radius:0;display:block;}
+.badge{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}
+.favorite-btn{font-size:20px;color:#000;text-shadow:0 0 4px #000;cursor:pointer;}
+.favorite-btn.active{color:gold;}
+button{background:#000;color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:14px;}
+button:focus{outline:2px solid #e50914;}
+#loadMore{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}
+#playerOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}
+#playerOverlay iframe{width:100%;height:100%;border:none;position:relative;z-index:1;}
+#playerTitle{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}
+#infoCard{position:fixed; top:0; left:0; width:100%; height:100%; display:none; z-index:1001; color:#fff; padding:20px; overflow:auto; background-color:#000; background-size:cover; background-position:center center; background-repeat:no-repeat;}
+#infoCard h2, #infoCard p{text-shadow:0 2px 6px rgba(0,0,0,.75);}
+#infoCard .content-wrap{position:relative; padding:40px 20px 20px 20px; max-width:800px; width:90%; margin:0 auto;}
+@media(min-width:768px){#infoCard .content-wrap{ padding-top:150px; }}
+#latest{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}
+#latest::-webkit-scrollbar {display: none;}
+#latest {-ms-overflow-style: none;scrollbar-width: none;}
+#latest .poster{width:100px;flex-shrink:0;}
 </style>
 </head>
 <body>
 <h1>Ultime Novità</h1>
 <div id='latest'>
-{latest_entries}
+""" + latest_entries + """
 </div>
 
 <h1>Movies & Series</h1>
@@ -117,6 +118,7 @@ button:focus{{outline:2px solid #e50914;}}
 </div>
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
+
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
   <div id="playerTitle"></div>
@@ -169,27 +171,27 @@ const genreSelect=document.getElementById('genreSelect');
 
 closeCardBtn.onclick = () => {
     infoCard.style.display='none';
-    history.replaceState({"page":"grid"}, "", "#grid");
+    history.replaceState({{"page":"grid"}}, "", "#grid");
 };
 
-overlay.addEventListener('click', () => {
+overlay.addEventListener('click', () => {{
     if(!currentItem) return;
     playerTitle.textContent = currentItem.title || "";
     playerTitle.style.display = 'block';
-    setTimeout(() => { playerTitle.style.display = 'none'; }, 2000);
-});
+    setTimeout(() => {{ playerTitle.style.display = 'none'; }}, 2000);
+}});
 
-function showLatest(){
+function showLatest(){{
     let scrollPos = 0;
-    function scroll() {
+    function scroll() {{
         scrollPos += 1;
         if(scrollPos > latestDiv.scrollWidth - latestDiv.clientWidth) scrollPos = 0;
-        latestDiv.scrollTo({ left: scrollPos, behavior: 'smooth' });
-    }
+        latestDiv.scrollTo({{ left: scrollPos, behavior: 'smooth' }});
+    }}
     setInterval(scroll, 30);
-}
+}}
 
-function openInfo(item, push=true) {
+function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
     infoCard.style.backgroundImage =
@@ -203,58 +205,58 @@ function openInfo(item, push=true) {
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
     favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    favoriteInCard.onclick = () => {
+    favoriteInCard.onclick = () => {{
         toggleFavorite(item.id);
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    };
+    }};
 
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
-    if(item.type==='tv') {
+    if(item.type==='tv') {{
         seasonSelect.style.display = 'inline';
         episodeSelect.style.display = 'inline';
         seasonSelect.innerHTML = "";
-        for(let s=1;s<=item.seasons;s++) {
+        for(let s=1;s<=item.seasons;s++) {{
             let o = document.createElement('option');
             o.value = s;
             o.textContent = "Stagione " + s;
             seasonSelect.appendChild(o);
-        }
+        }}
         seasonSelect.onchange = updateEpisodes;
         updateEpisodes();
-    }
+    }}
 
     playBtn.onclick = () => openPlayer(item);
 
-    if(push) {
-        history.pushState({page:"info", itemId:item.id}, "", "#info-"+item.id);
-    }
+    if(push) {{
+        history.pushState({{"page":"info", "itemId":item.id}}, "", "#info-"+item.id);
+    }}
 
-    function updateEpisodes() {
+    function updateEpisodes() {{
         let season = parseInt(seasonSelect.value);
         let epCount = item.episodes[season] || 1;
         episodeSelect.innerHTML = "";
-        for(let e=1;e<=epCount;e++) {
+        for(let e=1;e<=epCount;e++) {{
             let o = document.createElement('option');
             o.value = e;
             o.textContent = "Episodio " + e;
             episodeSelect.appendChild(o);
-        }
-    }
-}
+        }}
+    }}
+}}
 
-function openPlayer(item, push=true) {
+function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
     overlay.style.display='flex';
     let link = item.link;
-    if(item.type==='tv') {
+    if(item.type==='tv') {{
         let season = parseInt(seasonSelect.value) || 1;
         let episode = parseInt(episodeSelect.value) || 1;
-        link = `https://vixsrc.to/tv/${item.id}/${season}/${episode}?lang=it&sottotitoli=off&autoplay=1`;
-    } else {
-        link = `https://vixsrc.to/movie/${item.id}/?lang=it&sottotitoli=off&autoplay=1`;
-    }
+        link = `https://vixsrc.to/tv/${{item.id}}/${{season}}/${{episode}}?lang=it&sottotitoli=off&autoplay=1`;
+    }} else {{
+        link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1`;
+    }}
     iframe.src = link;
     addToRecent(item.id);
 
@@ -262,75 +264,75 @@ function openPlayer(item, push=true) {
     else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
     else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
 
-    if(push) {
-        history.pushState({page:"player", itemId:item.id}, "", "#player-"+item.id);
-    }
-}
+    if(push) {{
+        history.pushState({{"page":"player", "itemId":item.id}}, "", "#player-"+item.id);
+    }}
+}}
 
-function closePlayer(push=true) {
+function closePlayer(push=true) {{
     overlay.style.display='none';
     iframe.src='';
     if (document.fullscreenElement) document.exitFullscreen();
     else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
     else if (document.msFullscreenElement) document.msExitFullscreen();
 
-    if(currentItem){
+    if(currentItem){{
         infoCard.style.display = 'block';
-        if(push){
-            history.pushState({page:"info", itemId:currentItem.id}, "", "#info-"+currentItem.id);
-        }
-    }
-}
+        if(push){{
+            history.pushState({{"page":"info", "itemId":currentItem.id}}, "", "#info-"+currentItem.id);
+        }}
+    }}
+}}
 
 // Funzioni gestionali
-function toggleFavorite(id) {
+function toggleFavorite(id) {{
   if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
   else favorites.push(id);
   localStorage.setItem("favorites", JSON.stringify(favorites));
   render(true);
-}
+}}
 
-function addToRecent(id) {
+function addToRecent(id) {{
   recentList = recentList.filter(x => x !== id);
   recentList.unshift(id);
   if(recentList.length > 20) recentList.pop();
   localStorage.setItem("recent", JSON.stringify(recentList));
-}
+}}
 
 // Gestione history
-window.addEventListener("popstate", function(e) {
+window.addEventListener("popstate", function(e) {{
     const state = e.state;
-    if(!state || state.page==="grid" || state.page==="home"){
+    if(!state || state.page==="grid" || state.page==="home"){{
         overlay.style.display='none';
         iframe.src='';
         infoCard.style.display='none';
         return;
-    }
+    }}
     const itemId = state.itemId;
     const item = allData.find(x => String(x.id) === String(itemId));
     if(!item) return;
     if(state.page === "player") openPlayer(item, false);
-    else if(state.page === "info") {
+    else if(state.page === "info") {{
         if(overlay.style.display==='flex') closePlayer(false);
         openInfo(item, false);
-    }
-});
+    }}
+}});
 
 // Firestick & TV: gestione focus tasti
 const focusable = [playBtn, closeCardBtn, favoriteInCard];
 let focusIndex = 0;
 
-function updateFocus() {
+function updateFocus() {{
     focusable.forEach((b,i)=>b.style.outline=(i===focusIndex ? '2px solid #e50914' : 'none'));
-}
+}}
 
-document.addEventListener('keydown', (e)=>{
-    if(infoCard.style.display==='block'){
-        if(e.key === 'ArrowRight'){ focusIndex=(focusIndex+1)%focusable.length; updateFocus(); e.preventDefault();}
-        else if(e.key === 'ArrowLeft'){ focusIndex=(focusIndex-1+focusable.length)%focusable.length; updateFocus(); e.preventDefault();}
-        else if(e.key === 'Enter'){ focusable[focusIndex].click(); e.preventDefault();}
-    }
-});
+document.addEventListener('keydown', (e)=>{{
+    if(infoCard.style.display==='block'){{
+        if(e.key === 'ArrowRight'){{ focusIndex=(focusIndex+1)%focusable.length; updateFocus(); e.preventDefault(); }}
+        else if(e.key === 'ArrowLeft'){{ focusIndex=(focusIndex-1+focusable.length)%focusable.length; updateFocus(); e.preventDefault(); }}
+        else if(e.key === 'Enter'){{ focusable[focusIndex].click(); e.preventDefault(); }}
+    }}
+}});
 
 updateFocus();
 </script>
@@ -338,6 +340,7 @@ updateFocus();
 </html>
 """
     return html
+
 def main():
     api_key = get_api_key()
     entries = []
