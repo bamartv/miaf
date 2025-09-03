@@ -202,10 +202,16 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-    infoCard.style.backgroundImage = `url('${item.poster}')`;
+
+    // Sfondo con locandina e sfumatura verso il nero
+    infoCard.style.backgroundImage = 'url(' + item.poster + ')';
     infoCard.style.backgroundSize = 'cover';
     infoCard.style.backgroundPosition = 'center';
     infoCard.style.backgroundRepeat = 'no-repeat';
+
+    // Sfondo del contenuto interno con gradiente
+    document.getElementById('infoCardContent').style.background = 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 60%)';
+
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
