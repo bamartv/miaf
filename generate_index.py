@@ -2,14 +2,12 @@
 """
 generate_index.py
 
-Generatore di pagina HTML per Movies & Series con:
+Generatore di pagina HTML per Movies & Series:
 - Preferiti e Visti di recente nella tendina principale
-- Gestione recenti tramite localStorage (max 20)
+- Gestione recenti tramite localStorage
 - Stellina sulle locandine: solo visuale
 - Stellina cliccabile nella scheda info
 - Selezione multipla dei generi
-- Correzione back button: chiude il player prima di tornare alla griglia
-- Titolo nel player comparibile al tocco dello schermo
 - Compatibile TV/Firestick (tasti selezionabili)
 """
 
@@ -56,7 +54,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
         url,
-        params={"api_key": api_key, "language": language, "append_to_response": "credits,seasons"},
+        params={"api_key": api_key, "language": language, "append_to_response": "credits"},
         timeout=15
     )
     if r.status_code == 404:
@@ -65,44 +63,44 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     return r.json()
 
 def build_html(entries, latest_entries):
-    html = """<!doctype html>
+    html = f"""<!doctype html>
 <html lang='it'>
 <head>
 <meta charset='utf-8'>
 <meta name='viewport' content='width=device-width,initial-scale=1'>
 <title>Movies & Series</title>
 <style>
-body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
-h1{color:#fff;text-align:center;margin-bottom:20px;}
-.controls{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}
-input,select{padding:8px;font-size:14px;border-radius:4px;border:none;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}
-.card{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}
-.card:hover{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}
-.poster{width:100%;border-radius:0;display:block;}
-.badge{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}
-.favorite-btn{font-size:20px;color:#000;text-shadow:0 0 4px #000;cursor:pointer;}
-.favorite-btn.active{color:gold;}
-button{background:#000;color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:14px;}
-button:focus{outline:2px solid #e50914;}
-#loadMore{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}
-#playerOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}
-#playerOverlay iframe{width:100%;height:100%;border:none;position:relative;z-index:1;}
-#playerTitle{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}
-#infoCard{position:fixed; top:0; left:0; width:100%; height:100%; display:none; z-index:1001; color:#fff; padding:20px; overflow:auto; background-color:#000; background-size:cover; background-position:center center; background-repeat:no-repeat;}
-#infoCard h2, #infoCard p{text-shadow:0 2px 6px rgba(0,0,0,.75);}
-#infoCard .content-wrap{position:relative; padding:40px 20px 20px 20px; max-width:800px; width:90%; margin:0 auto;}
-@media(min-width:768px){#infoCard .content-wrap{ padding-top:150px; }}
-#latest{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}
-#latest::-webkit-scrollbar {display: none;}
-#latest {-ms-overflow-style: none;scrollbar-width: none;}
-#latest .poster{width:100px;flex-shrink:0;}
+body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
+h1{{color:#fff;text-align:center;margin-bottom:20px;}}
+.controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
+input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
+.grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
+.card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
+.card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
+.poster{{width:100%;border-radius:0;display:block;}}
+.badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
+.favorite-btn{{font-size:20px;color:#000;text-shadow:0 0 4px #000;cursor:pointer;}}
+.favorite-btn.active{{color:gold;}}
+button{{background:#000;color:#fff;border:none;border-radius:6px;padding:8px 12px;cursor:pointer;font-size:14px;}}
+button:focus{{outline:2px solid #e50914;}}
+#loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
+#playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
+#playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
+#playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
+#infoCard{{position:fixed; top:0; left:0; width:100%; height:100%; display:none; z-index:1001; color:#fff; padding:20px; overflow:auto; background-color:#000; background-size:cover; background-position:center center; background-repeat:no-repeat;}}
+#infoCard h2, #infoCard p{{text-shadow:0 2px 6px rgba(0,0,0,.75);}}
+#infoCard .content-wrap{{position:relative; padding:40px 20px 20px 20px; max-width:800px; width:90%; margin:0 auto;}}
+@media(min-width:768px){{#infoCard .content-wrap{{ padding-top:200px; }}}}
+#latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
+#latest::-webkit-scrollbar {{display: none;}}
+#latest {{-ms-overflow-style: none;scrollbar-width: none;}}
+#latest .poster{{width:100px;flex-shrink:0;}}
 </style>
 </head>
 <body>
 <h1>Ultime Novità</h1>
 <div id='latest'>
-""" + latest_entries + """
+{latest_entries}
 </div>
 
 <h1>Movies & Series</h1>
@@ -118,7 +116,6 @@ button:focus{outline:2px solid #e50914;}
 </div>
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
-
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
   <div id="playerTitle"></div>
@@ -149,6 +146,7 @@ let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
 
+// --- elementi DOM ---
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
 const iframe=overlay.querySelector('iframe');
@@ -169,11 +167,13 @@ const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const genreSelect=document.getElementById('genreSelect');
 
-closeCardBtn.onclick = () => {
+// --- chiudi scheda info ---
+closeCardBtn.onclick = () => {{
     infoCard.style.display='none';
     history.replaceState({{"page":"grid"}}, "", "#grid");
-};
+}};
 
+// --- overlay player ---
 overlay.addEventListener('click', () => {{
     if(!currentItem) return;
     playerTitle.textContent = currentItem.title || "";
@@ -181,6 +181,7 @@ overlay.addEventListener('click', () => {{
     setTimeout(() => {{ playerTitle.style.display = 'none'; }}, 2000);
 }});
 
+// --- scroll ultime novità ---
 function showLatest(){{
     let scrollPos = 0;
     function scroll() {{
@@ -190,12 +191,14 @@ function showLatest(){{
     }}
     setInterval(scroll, 30);
 }}
+showLatest();
 
+// --- info card ---
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
     infoCard.style.backgroundImage =
-      `linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%), url('${item.poster}')`;
+      `linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.85) 80%, rgba(0,0,0,1) 100%), url('${{item.poster}}')`;
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     infoVote.textContent = "★ " + item.vote;
@@ -230,7 +233,7 @@ function openInfo(item, push=true) {{
     playBtn.onclick = () => openPlayer(item);
 
     if(push) {{
-        history.pushState({{"page":"info", "itemId":item.id}}, "", "#info-"+item.id);
+        history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
     }}
 
     function updateEpisodes() {{
@@ -246,6 +249,7 @@ function openInfo(item, push=true) {{
     }}
 }}
 
+// --- player ---
 function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
     overlay.style.display='flex';
@@ -265,7 +269,7 @@ function openPlayer(item, push=true) {{
     else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
 
     if(push) {{
-        history.pushState({{"page":"player", "itemId":item.id}}, "", "#player-"+item.id);
+        history.pushState({{page:"player", itemId:item.id}}, "", "#player-"+item.id);
     }}
 }}
 
@@ -279,12 +283,12 @@ function closePlayer(push=true) {{
     if(currentItem){{
         infoCard.style.display = 'block';
         if(push){{
-            history.pushState({{"page":"info", "itemId":currentItem.id}}, "", "#info-"+currentItem.id);
+            history.pushState({{page:"info", itemId:currentItem.id}}, "", "#info-"+currentItem.id);
         }}
     }}
 }}
 
-// Funzioni gestionali
+// --- funzioni gestionali ---
 function toggleFavorite(id) {{
   if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
   else favorites.push(id);
@@ -299,7 +303,7 @@ function addToRecent(id) {{
   localStorage.setItem("recent", JSON.stringify(recentList));
 }}
 
-// Gestione history
+// --- history ---
 window.addEventListener("popstate", function(e) {{
     const state = e.state;
     if(!state || state.page==="grid" || state.page==="home"){{
@@ -318,22 +322,19 @@ window.addEventListener("popstate", function(e) {{
     }}
 }});
 
-// Firestick & TV: gestione focus tasti
+// --- Firestick & TV ---
 const focusable = [playBtn, closeCardBtn, favoriteInCard];
 let focusIndex = 0;
-
 function updateFocus() {{
     focusable.forEach((b,i)=>b.style.outline=(i===focusIndex ? '2px solid #e50914' : 'none'));
 }}
-
 document.addEventListener('keydown', (e)=>{{
     if(infoCard.style.display==='block'){{
-        if(e.key === 'ArrowRight'){{ focusIndex=(focusIndex+1)%focusable.length; updateFocus(); e.preventDefault(); }}
-        else if(e.key === 'ArrowLeft'){{ focusIndex=(focusIndex-1+focusable.length)%focusable.length; updateFocus(); e.preventDefault(); }}
-        else if(e.key === 'Enter'){{ focusable[focusIndex].click(); e.preventDefault(); }}
+        if(e.key === 'ArrowRight'){{ focusIndex=(focusIndex+1)%focusable.length; updateFocus(); e.preventDefault();}}
+        else if(e.key === 'ArrowLeft'){{ focusIndex=(focusIndex-1+focusable.length)%focusable.length; updateFocus(); e.preventDefault();}}
+        else if(e.key === 'Enter'){{ focusable[focusIndex].click(); e.preventDefault();}}
     }}
 }});
-
 updateFocus();
 </script>
 </body>
@@ -365,7 +366,7 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {s["season_number"]: s.get("episode_count",1) for s in info.get("seasons",[]) if s.get("season_number")} if type_=="tv" else {}
+            episodes = {{s["season_number"]: s.get("episode_count",1) for s in info.get("seasons",[]) if s.get("season_number")}} if type_=="tv" else {{}}
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
@@ -374,7 +375,7 @@ def main():
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
 
-            entries.append({
+            entries.append({{
                 "id": str(tmdb_id),
                 "title": title,
                 "poster": poster,
@@ -388,16 +389,12 @@ def main():
                 "duration": duration or 0,
                 "year": year or "",
                 "cast": cast
-            })
+            }})
 
-            # prime 10 locandine per scroll ultime novità
             if idx < 10 and poster:
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
-    # genera HTML completo
     html = build_html(entries, latest_entries)
-
-    # scrive su file
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
 
