@@ -94,12 +94,14 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;background:black;}}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;color:#fff;padding:20px;overflow:auto;background:black;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCard button#playBtn{{margin-left:10px;padding:8px 12px;background:#e50914;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
-#infoCardContent{{position:relative;border-radius:10px;padding:20px;max-width:800px;width:90%;background:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,1) 60%);}}
+#infoCardContent{{position:relative;border-radius:10px;padding:20px;max-width:800px;width:90%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 50%);
+}}
 #latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
 #latest::-webkit-scrollbar {{display: none;}}
 #latest {{-ms-overflow-style: none;scrollbar-width: none;}}
@@ -209,8 +211,8 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundPosition = 'center';
     infoCard.style.backgroundRepeat = 'no-repeat';
 
-    // Sfondo del contenuto interno con gradiente
-    document.getElementById('infoCardContent').style.background = 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 60%)';
+    // L'overlay sfumato lo gestisce direttamente il div interno
+    document.getElementById('infoCardContent').style.background = 'linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 50%)';
 
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
