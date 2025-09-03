@@ -12,7 +12,6 @@ Aggiunta gestione Preferiti spostati nella tendina principale e Visti recentemen
 - Titolo nel player comparibile al tocco dello schermo
 """
 
-
 import os
 import sys
 import requests
@@ -23,7 +22,7 @@ SRC_URLS = {
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
 }
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"  # poster più grande
+TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500"  # poster più grande
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
@@ -88,33 +87,20 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
-.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;margin-left:auto;font-size:22px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 
-#infoCard{{
-    position:fixed; top:0; left:0; width:100%; height:100%;
-    display:none; z-index:1001; color:#fff; overflow:auto;
-}}
-#infoCardOverlay{{
-    position:fixed; top:0; left:0; width:100%; height:100%; z-index:0;
-    background-size:cover; 
-    background-position:center center;
-    background-repeat:no-repeat;
-}}
-#infoCardContent{{
-    position:relative; z-index:1; padding:20px; max-width:800px; width:90%; margin:auto;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.0) 40%, rgba(0,0,0,1) 100%);
-}}
-#latest{{
-    display:flex; overflow-x:auto; gap:10px; margin-bottom:20px; padding-bottom:10px; scroll-behavior:smooth;
-}}
-#latest::-webkit-scrollbar {{ display: none; }}
-#latest {{ -ms-overflow-style: none; scrollbar-width: none; }}
-#latest .poster{{ width:100px; flex-shrink:0; }}
+#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;color:#fff;overflow:auto;}}
+#infoCardOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background-size:contain;background-position:center center;background-repeat:no-repeat;opacity:0.25;}}
+#infoCardContent{{position:relative;z-index:1;padding:20px;max-width:800px;width:90%;margin:auto;background:linear-gradient(to bottom, rgba(0,0,0,0) 50%, rgba(0,0,0,1) 100%);}}
+
+#latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior:smooth;}}
+#latest::-webkit-scrollbar{{display:none;}}
+#latest{{-ms-overflow-style:none;scrollbar-width:none;}}
+#latest .poster{{width:100px;flex-shrink:0;}}
 </style>
 </head>
 <body>
@@ -195,13 +181,6 @@ closeCardBtn.onclick = () => {{
   history.replaceState({{page:"grid"}}, "", "#grid");
 }};
 
-overlay.addEventListener('click', () => {{
-    if(!currentItem) return;
-    playerTitle.textContent = currentItem.title || "";
-    playerTitle.style.display = 'block';
-    setTimeout(() => {{ playerTitle.style.display = 'none'; }}, 2000);
-}});
-
 function showLatest(){{
     let scrollPos = 0;
     function scroll() {{
@@ -215,12 +194,12 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-
-    const overlayDiv = document.getElementById('infoCardOverlay');
-    overlayDiv.style.backgroundImage = 'url(' + item.poster + ')';
-    overlayDiv.style.backgroundSize = 'cover';
-    overlayDiv.style.backgroundPosition = 'center center';
-    overlayDiv.style.backgroundRepeat = 'no-repeat';
+    const overlayBg=document.getElementById('infoCardOverlay');
+    overlayBg.style.backgroundImage = "url('" + item.poster + "')";
+    overlayBg.style.backgroundSize="contain";
+    overlayBg.style.backgroundPosition="center center";
+    overlayBg.style.backgroundRepeat="no-repeat";
+    overlayBg.style.opacity="0.25";
 
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
@@ -236,93 +215,115 @@ function openInfo(item, push=true) {{
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
     }};
 
-    seasonSelect.style.display = 'none';
-    episodeSelect.style.display = 'none';
+    seasonSelect.style.display='none';
+    episodeSelect.style.display='none';
 
     if(item.type==='tv') {{
-        seasonSelect.style.display = 'inline';
-        episodeSelect.style.display = 'inline';
-        seasonSelect.innerHTML = "";
+        seasonSelect.style.display='inline';
+        episodeSelect.style.display='inline';
+        seasonSelect.innerHTML="";
         for(let s=1;s<=item.seasons;s++) {{
-            let o = document.createElement('option');
-            o.value = s;
-            o.textContent = "Stagione " + s;
+            let o=document.createElement('option');
+            o.value=s;
+            o.textContent="Stagione " + s;
             seasonSelect.appendChild(o);
         }}
-        seasonSelect.onchange = updateEpisodes;
+        seasonSelect.onchange=updateEpisodes;
         updateEpisodes();
     }}
 
-    playBtn.onclick = () => openPlayer(item);
+    playBtn.onclick=() => openPlayer(item);
 
     if(push) {{
         history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
     }}
 
-    function updateEpisodes() {{
-        let season = parseInt(seasonSelect.value);
-        let epCount = item.episodes[season] || 1;
-        episodeSelect.innerHTML = "";
-        for(let e=1;e<=epCount;e++) {{
-            let o = document.createElement('option');
-            o.value = e;
-            o.textContent = "Episodio " + e;
+    function updateEpisodes(){{
+        let season=parseInt(seasonSelect.value);
+        let epCount=item.episodes[season] || 1;
+        episodeSelect.innerHTML="";
+        for(let e=1;e<=epCount;e++){{
+            let o=document.createElement('option');
+            o.value=e;
+            o.textContent="Episodio " + e;
             episodeSelect.appendChild(o);
         }}
     }}
 }}
 
 function openPlayer(item, push=true) {{
-    infoCard.style.display = 'none';
+    infoCard.style.display='none';
     overlay.style.display='flex';
-    let link = item.link;
-    if(item.type==='tv') {{
-        let season = parseInt(seasonSelect.value) || 1;
-        let episode = parseInt(episodeSelect.value) || 1;
-        link = item.episodesLinks[season][episode] || link;
+    let link=item.link;
+    if(item.type==='tv'){{
+        let season=parseInt(seasonSelect.value) || 1;
+        let episode=parseInt(episodeSelect.value) || 1;
+        link = `https://vixsrc.to/tv/${{item.id}}/${{season}}/${{episode}}?lang=it&sottotitoli=off&autoplay=1`;
+    }} else {{
+        link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1`;
     }}
     iframe.src = link;
-    currentItem = item;
 
-    if(push){{
+    if (overlay.requestFullscreen) overlay.requestFullscreen();
+    else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
+    else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
+
+    if(push) {{
         history.pushState({{page:"player", itemId:item.id}}, "", "#player-"+item.id);
     }}
 }}
 
-function toggleFavorite(id){{
-    if(favorites.includes(id)){{
-        favorites = favorites.filter(x=>x!==id);
-    }} else {{
-        favorites.push(id);
+// Gestione preferiti e recenti
+function toggleFavorite(id) {{
+  if(favorites.includes(id)) favorites=favorites.filter(f=>f!==id);
+  else favorites.push(id);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+  render(true);
+}}
+function addToRecent(id) {{
+  recentList = recentList.filter(x => x!==id);
+  recentList.unshift(id);
+  if(recentList.length>20) recentList.pop();
+  localStorage.setItem("recent", JSON.stringify(recentList));
+}}
+
+// Rendering griglia
+function render(filterType=null){{
+    grid.innerHTML="";
+    let data=allData;
+    if(filterType==="favorites") data=data.filter(e=>favorites.includes(e.id));
+    else if(filterType==="recent") data=data.filter(e=>recentList.includes(e.id));
+    for(let item of data){{
+        let card=document.createElement('div');
+        card.className="card";
+        card.innerHTML=`<img class='poster' src='${{item.poster}}'>
+                        <span class="favorite-btn ${favorites.includes(item.id)?'active':''}">★</span>`;
+        card.onclick=()=>{{ openInfo(item); addToRecent(item.id); }};
+        grid.appendChild(card);
     }}
-    localStorage.setItem("favorites", JSON.stringify(favorites));
 }}
 
-function addRecent(id){{
-    recentList = recentList.filter(x=>x!==id);
-    recentList.unshift(id);
-    if(recentList.length>20) recentList.pop();
-    localStorage.setItem("recent", JSON.stringify(recentList));
-}}
+document.getElementById('typeSelect').onchange=function(){{
+    render(this.value);
+}};
+document.getElementById('searchBox').oninput=function(){{
+    let query=this.value.toLowerCase();
+    let filtered=allData.filter(e=>e.title.toLowerCase().includes(query));
+    grid.innerHTML="";
+    for(let item of filtered){{
+        let card=document.createElement('div');
+        card.className="card";
+        card.innerHTML=`<img class='poster' src='${{item.poster}}'>
+                        <span class="favorite-btn ${favorites.includes(item.id)?'active':''}">★</span>`;
+        card.onclick=()=>{{ openInfo(item); addToRecent(item.id); }};
+        grid.appendChild(card);
+    }}
+}};
 
-// --- Build Grid ---
-function renderGrid(data){{
-    grid.innerHTML = "";
-    data.forEach(item=>{{
-        const div = document.createElement("div");
-        div.className="card";
-        div.onclick = ()=>openInfo(item);
-        div.innerHTML = '<img class="poster" src="' + item.poster + '" alt="' + item.title + '">' +
-                '<span class="favorite-btn ' + (favorites.includes(item.id)?'active':'') + '">★</span>';
-        grid.appendChild(div);
-    }});
-}}
+// Avvio
+render();
+showLatest();
 
-// --- Initialize ---
-document.addEventListener("DOMContentLoaded", ()=>{{
-    renderGrid(allData);
-    showLatest();
-}});
 </script>
 </body>
 </html>
@@ -332,42 +333,37 @@ document.addEventListener("DOMContentLoaded", ()=>{{
 
 def main():
     api_key = get_api_key()
+    all_entries = []
 
-    movie_data = fetch_list(SRC_URLS["movie"])
-    tv_data = fetch_list(SRC_URLS["tv"])
+    for type_, url in SRC_URLS.items():
+        data = fetch_list(url)
+        for item in data:
+            tmdb = tmdb_get(api_key, type_, item.get("tmdb_id") or item.get("id"))
+            if not tmdb:
+                continue
+            entry = {
+                "id": item.get("id"),
+                "title": tmdb.get("title") or tmdb.get("name"),
+                "poster": TMDB_IMAGE_BASE + (tmdb.get("poster_path") or ""),
+                "genres": [g["name"] for g in tmdb.get("genres", [])],
+                "vote": tmdb.get("vote_average") or 0,
+                "overview": tmdb.get("overview") or "",
+                "year": (tmdb.get("release_date") or tmdb.get("first_air_date") or "")[:4],
+                "duration": tmdb.get("runtime") or (tmdb.get("episode_run_time") or [0])[0],
+                "cast": [c["name"] for c in tmdb.get("credits", {}).get("cast", [])],
+                "type": type_,
+                "seasons": tmdb.get("number_of_seasons") or 0,
+                "episodes": {s+1: ep.get("episode_count", 1) for s, ep in enumerate(tmdb.get("seasons", []))},
+                "link": VIX_LINK_MOVIE.format(item.get("id"))
+            }
+            all_entries.append(entry)
 
-    entries = []
-    for d, type_ in [(movie_data,"movie"),(tv_data,"tv")]:
-        for item in d:
-            tmdb = tmdb_get(api_key, type_, item.get("tmdb_id"))
-            if tmdb:
-                poster = TMDB_IMAGE_BASE + tmdb.get("poster_path","")
-                entries.append({{
-                    "id": tmdb["id"],
-                    "title": tmdb["title"] if type_=="movie" else tmdb["name"],
-                    "poster": poster,
-                    "overview": tmdb.get("overview",""),
-                    "genres": [g["name"] for g in tmdb.get("genres",[])],
-                    "vote": tmdb.get("vote_average",""),
-                    "year": (tmdb.get("release_date") or tmdb.get("first_air_date",""))[:4],
-                    "duration": tmdb.get("runtime",0),
-                    "cast": [c["name"] for c in tmdb.get("credits", {}).get("cast", [])],
-                    "type": type_,
-                    "seasons": tmdb.get("number_of_seasons",1),
-                    "episodes": {s+1: tmdb.get("number_of_episodes",1) for s in range(tmdb.get("number_of_seasons",1))},
-                    "link": VIX_LINK_MOVIE.format(tmdb["id"]),
-                    "episodesLinks": {}
-                }})
-
-    latest_entries = ""
-    for item in entries[:10]:
-        latest_entries += f"<div class='card'><img class='poster' src='{item['poster']}' alt='{item['title']}'></div>"
-
-    html_content = build_html(entries, latest_entries)
-    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
-        f.write(html_content)
-    print(f"File {OUTPUT_HTML} generato correttamente.")
+    latest_html = "".join([f"<div class='card'><img class='poster' src='{e['poster']}'/></div>" for e in all_entries[:10]])
+    html = build_html(all_entries, latest_html)
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"File generato: {OUTPUT_HTML}"
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()
