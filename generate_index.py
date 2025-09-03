@@ -98,7 +98,7 @@ button:hover{{background:#222;}}
 #infoCard{{position:fixed; top:0; left:0; width:100%; height:100%; display:none; z-index:1001; color:#fff; padding:20px; overflow:auto; background-color:#000; background-size:cover; background-position:center center; background-repeat:no-repeat;}}
 #infoCard h2, #infoCard p{{text-shadow:0 2px 6px rgba(0,0,0,.75);}}
 #infoCard .content-wrap{{position:relative; padding:20px; max-width:800px; width:90%; margin:0 auto;}}
-@media(min-width:768px){{#infoCard .content-wrap{{ padding-top:40vh; }}}}
+@media(min-width:768px){{#infoCard .content-wrap{{ padding-top:20vh; }}}}
 #latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
 #latest::-webkit-scrollbar {{display: none;}}
 #latest {{-ms-overflow-style: none;scrollbar-width: none;}}
