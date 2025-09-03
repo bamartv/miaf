@@ -2,10 +2,8 @@
 """
 generate_index.py
 
-Gestione Preferiti, Visti recentemente, card info e player.
-Poster TMDB w780.
+Genera un HTML con Movies & Series, gestendo Preferiti e Visti di recente.
 """
-
 import os
 import sys
 import requests
@@ -21,6 +19,7 @@ VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
 
+
 def get_api_key():
     key = os.getenv("TMDB_API_KEY")
     if not key:
@@ -28,10 +27,12 @@ def get_api_key():
         sys.exit(1)
     return key
 
+
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
     return r.json()
+
 
 def extract_ids(data):
     ids = []
@@ -45,6 +46,7 @@ def extract_ids(data):
                 break
     return ids
 
+
 def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
@@ -56,6 +58,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
         return None
     r.raise_for_status()
     return r.json()
+
 
 def build_html(entries, latest_entries):
     html = f"""<!doctype html>
@@ -168,13 +171,12 @@ const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const genreSelect=document.getElementById('genreSelect');
 
-closeCardBtn.onclick = () => {
+closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
-  history.replaceState({page:"grid"}, "", "#grid");
-};
+  history.replaceState({{page:"grid"}}, "", "#grid");
+}};
 
-// --- Funzioni principali ---
-function openInfo(item, push=true) {
+function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
     infoCardOverlay.style.backgroundImage = 'url(' + item.poster + ')';
@@ -187,118 +189,120 @@ function openInfo(item, push=true) {
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
     favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    favoriteInCard.onclick = () => {
+    favoriteInCard.onclick = () => {{
         toggleFavorite(item.id);
         favoriteInCard.classList.toggle("active", favorites.includes(item.id));
-    };
+    }};
 
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
-    if(item.type==='tv') {
+    if(item.type==='tv') {{
         seasonSelect.style.display = 'inline';
         episodeSelect.style.display = 'inline';
         seasonSelect.innerHTML = "";
-        for(let s=1;s<=item.seasons;s++) {
+        for(let s=1;s<=item.seasons;s++) {{
             let o = document.createElement('option');
             o.value = s;
             o.textContent = "Stagione " + s;
             seasonSelect.appendChild(o);
-        }
+        }}
         seasonSelect.onchange = updateEpisodes;
         updateEpisodes();
-    }
+    }}
 
     playBtn.onclick = () => openPlayer(item);
 
-    if(push) {
-        history.pushState({page:"info", itemId:item.id}, "", "#info-"+item.id);
-    }
+    if(push) {{
+        history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
+    }}
 
-    function updateEpisodes() {
+    function updateEpisodes() {{
         let season = parseInt(seasonSelect.value);
         let epCount = item.episodes[season] || 1;
         episodeSelect.innerHTML = "";
-        for(let e=1;e<=epCount;e++) {
+        for(let e=1;e<=epCount;e++) {{
             let o = document.createElement('option');
             o.value = e;
             o.textContent = "Episodio " + e;
             episodeSelect.appendChild(o);
-        }
-    }
-}
+        }}
+    }}
+}}
 
-function addToRecent(id) {
+function addToRecent(id) {{
   recentList = recentList.filter(x => x !== id);
   recentList.unshift(id);
   if(recentList.length>20) recentList.pop();
   localStorage.setItem("recent", JSON.stringify(recentList));
-}
+}}
 
-function toggleFavorite(id) {
+function toggleFavorite(id) {{
   if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
   else favorites.push(id);
   localStorage.setItem("favorites", JSON.stringify(favorites));
-}
+}}
 
-function openPlayer(item) {
+function openPlayer(item) {{
     addToRecent(item.id);
     infoCard.style.display='none';
     overlay.style.display='flex';
     iframe.src = item.link || "";
     playerTitle.textContent = item.title;
     playerTitle.style.display='block';
-}
+}}
 
-overlay.onclick = (e) => {
-    if(e.target === overlay) {
+overlay.onclick = (e) => {{
+    if(e.target === overlay) {{
         iframe.src = "";
         overlay.style.display='none';
         playerTitle.style.display='none';
-    }
-};
+    }}
+}};
 
-function renderGrid(filterType="movie", filterGenres=[], search="") {
+function renderGrid(filterType="movie", filterGenres=[], search="") {{
     grid.innerHTML = "";
     let filtered = allData.slice();
     if(filterType==="favorites") filtered = allData.filter(i=>favorites.includes(i.id));
     else if(filterType==="recent") filtered = allData.filter(i=>recentList.includes(i.id));
     else filtered = allData.filter(i=>i.type===filterType);
 
-    if(filterGenres.length>0) filtered = filtered.filter(i=>{
+    if(filterGenres.length>0) filtered = filtered.filter(i=>{{
         if(!i.genres) return false;
         return filterGenres.every(g => i.genres.includes(g));
-    });
+    }});
 
-    if(search) {
+    if(search) {{
         search = search.toLowerCase();
         filtered = filtered.filter(i=>i.title.toLowerCase().includes(search));
-    }
+    }}
 
-    for(let item of filtered) {
+    for(let item of filtered) {{
         let card = document.createElement('div');
         card.className = 'card';
-        card.innerHTML = f"""<img class='poster' src='{item['poster']}' alt='{item['title']}'>
-            <span class='favorite-btn {'active' if item['id'] in favorites else ''}'>★</span>""";
+        card.innerHTML = `
+            <img class='poster' src='${{item.poster}}' alt='${{item.title}}'>
+            <span class='favorite-btn ${{favorites.includes(item.id) ? "active" : ""}}'>★</span>
+        `;
         card.onclick = ()=>openInfo(item);
         grid.appendChild(card);
-    }
-}
+    }}
+}}
 
 document.getElementById('typeSelect').onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 genreSelect.onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 searchBox.oninput = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 
-function populateGenres() {
+function populateGenres() {{
     let genresSet = new Set();
     allData.forEach(i=>i.genres && i.genres.forEach(g=>genresSet.add(g)));
-    genresSet.forEach(g=>{
+    genresSet.forEach(g=>{{
         let o = document.createElement('option');
         o.value = g;
         o.textContent = g;
         genreSelect.appendChild(o);
-    });
-}
+    }});
+}}
 
 populateGenres();
 renderGrid();
@@ -307,6 +311,7 @@ renderGrid();
 </html>
 """
     return html
+
 
 def main():
     api_key = get_api_key()
@@ -344,6 +349,7 @@ def main():
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html_content)
     print(f"File generato: {OUTPUT_HTML}")
+
 
 if __name__ == "__main__":
     main()
