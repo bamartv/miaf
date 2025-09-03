@@ -2,14 +2,11 @@
 """
 generate_index.py
 
-Aggiunta gestione "La mia lista" (al posto della stellina) e Visti recentemente.
-- "La mia lista" e Visti recentemente in typeSelect (insieme a Film/Serie TV)
-- Gestione recenti tramite localStorage (max 20)
-- Bottone "+ La mia lista" cliccabile dentro la card info
-- Bottone statico visuale nelle locandine
-- Possibilità di selezionare più generi
-- Correzione back button: chiude il player prima di tornare alla card o griglia
-- Titolo nel player comparibile al tocco dello schermo
+Gestione Preferiti spostati nella tendina principale, Visti recentemente, griglia e scroll funzionanti.
+- Bottone "+ La mia lista" invece della stellina
+- Poster w780
+- Stile Netflix per i tasti (puoi modificare facilmente via CSS)
+- Tutto conforme alla sintassi Python + HTML/JS
 """
 
 import os
@@ -22,7 +19,7 @@ SRC_URLS = {
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
 }
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"   # poster migliore
+TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
@@ -85,16 +82,17 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
-.mylist-btn{{font-size:13px;padding:6px 10px;background:#e50914;color:#fff;border:none;border-radius:4px;cursor:pointer;}}
-.mylist-btn.active{{background:#444;}}
-.card .mylist-label{{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.6);color:#fff;font-size:12px;padding:2px 6px;border-radius:4px;}}
+.favorite-btn{{font-size:16px;color:#fff;text-shadow:0 0 4px #000;}}
+.favorite-btn.active{{color:gold;}}
+.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+#favoriteInCard.favorite-btn{{position:static;cursor:pointer;margin-left:auto;font-size:22px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;display:none;z-index:1001;color:#fff;overflow:auto;}}
 #infoCardOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;background-size:cover;background-position:center center;background-repeat:no-repeat;}}
-#infoCardContent{{position:relative;z-index:1;padding:20px;max-width:800px;width:90%;margin:auto;background:linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,1) 70%);}}
+#infoCardContent{{position:relative;z-index:1;padding:20px;max-width:800px;width:90%;margin:auto;background:linear-gradient(to bottom, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.7) 80%);}}
 #infoCardContent h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCardContent div{{display:flex;align-items:center;gap:10px;margin:10px 0;}}
 #infoCardContent p, #infoCardContent select{{margin:5px 0;}}
@@ -102,6 +100,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #latest::-webkit-scrollbar{{display:none;}}
 #latest{{-ms-overflow-style:none;scrollbar-width:none;}}
 #latest .poster{{width:100px;flex-shrink:0;}}
+.btn-play, .btn-close, .btn-list{{padding:8px 12px;background:#e50914;border:none;border-radius:6px;color:#fff;cursor:pointer;font-weight:bold;}}
+.btn-play:hover, .btn-close:hover, .btn-list:hover{{background:#f6121d;}}
 </style>
 </head>
 <body>
@@ -115,7 +115,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <select id='typeSelect'>
   <option value='movie'>Film</option>
   <option value='tv'>Serie TV</option>
-  <option value='mylist'>+ La mia lista</option>
+  <option value='favorites'>★ La mia lista</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
 <select id='genreSelect' multiple size=5></select>
@@ -136,7 +136,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <div>
       <button id="playBtn" class="btn-play">Riproduci</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="mylistBtn" class="mylist-btn">+ La mia lista</button>
+      <button id="favoriteInCard" class="btn-list">+ La mia lista</button>
     </div>
     <div id="infoDetails">
       <p id="infoGenres"></p>
@@ -153,7 +153,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 <script>
 const allData = {entries};
-let mylist = JSON.parse(localStorage.getItem("mylist") || "[]");
+let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
 
@@ -170,22 +170,20 @@ const infoOverview=document.getElementById('infoOverview');
 const playBtn=document.getElementById('playBtn');
 const closeCardBtn=document.getElementById('closeCardBtn');
 const latestDiv=document.getElementById('latest');
-const mylistBtn=document.getElementById('mylistBtn');
+const favoriteInCard=document.getElementById('favoriteInCard');
 const seasonSelect=document.getElementById('seasonSelect');
 const episodeSelect=document.getElementById('episodeSelect');
 const infoYear=document.getElementById('infoYear');
 const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const genreSelect=document.getElementById('genreSelect');
-const typeSelect=document.getElementById('typeSelect');
-const searchBox=document.getElementById('searchBox');
 
-closeCardBtn.onclick = () => {{
+closeCardBtn.onclick = () => {
   infoCard.style.display='none';
-  history.replaceState({{page:"grid"}}, "", "#grid");
-}};
+  history.replaceState({page:"grid"}, "", "#grid");
+};
 
-function openInfo(item, push=true) {{
+function openInfo(item, push=true) {
     currentItem = item;
     infoCard.style.display='block';
     infoCardOverlay.style.backgroundImage = 'url(' + item.poster + ')';
@@ -197,122 +195,122 @@ function openInfo(item, push=true) {{
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
 
-    mylistBtn.classList.toggle("active", mylist.includes(item.id));
-    mylistBtn.textContent = mylist.includes(item.id) ? "✓ Nella mia lista" : "+ La mia lista";
-    mylistBtn.onclick = () => {{
-        toggleMylist(item.id);
-        mylistBtn.classList.toggle("active", mylist.includes(item.id));
-        mylistBtn.textContent = mylist.includes(item.id) ? "✓ Nella mia lista" : "+ La mia lista";
-    }};
+    favoriteInCard.textContent = "+ La mia lista";
+    favoriteInCard.classList.toggle("active", favorites.includes(item.id));
+    favoriteInCard.onclick = () => {
+        toggleFavorite(item.id);
+        favoriteInCard.classList.toggle("active", favorites.includes(item.id));
+    };
 
     seasonSelect.style.display = 'none';
     episodeSelect.style.display = 'none';
 
-    if(item.type==='tv') {{
+    if(item.type==='tv') {
         seasonSelect.style.display = 'inline';
         episodeSelect.style.display = 'inline';
         seasonSelect.innerHTML = "";
-        for(let s=1;s<=item.seasons;s++) {{
+        for(let s=1;s<=item.seasons;s++) {
             let o = document.createElement('option');
             o.value = s;
             o.textContent = "Stagione " + s;
             seasonSelect.appendChild(o);
-        }}
+        }
         seasonSelect.onchange = updateEpisodes;
         updateEpisodes();
-    }}
+    }
 
     playBtn.onclick = () => openPlayer(item);
 
-    if(push) {{
-        history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
-    }}
+    if(push) {
+        history.pushState({page:"info", itemId:item.id}, "", "#info-"+item.id);
+    }
 
-    function updateEpisodes() {{
+    function updateEpisodes() {
         let season = parseInt(seasonSelect.value);
         let epCount = item.episodes[season] || 1;
         episodeSelect.innerHTML = "";
-        for(let e=1;e<=epCount;e++) {{
+        for(let e=1;e<=epCount;e++) {
             let o = document.createElement('option');
             o.value = e;
             o.textContent = "Episodio " + e;
             episodeSelect.appendChild(o);
-        }}
-    }}
-}}
+        }
+    }
+}
 
-function addToRecent(id) {{
+function addToRecent(id) {
   recentList = recentList.filter(x => x !== id);
   recentList.unshift(id);
   if(recentList.length>20) recentList.pop();
   localStorage.setItem("recent", JSON.stringify(recentList));
-}}
+}
 
-function toggleMylist(id) {{
-  if(mylist.includes(id)) mylist = mylist.filter(f=>f!==id);
-  else mylist.push(id);
-  localStorage.setItem("mylist", JSON.stringify(mylist));
-}}
+function toggleFavorite(id) {
+  if(favorites.includes(id)) favorites = favorites.filter(f=>f!==id);
+  else favorites.push(id);
+  localStorage.setItem("favorites", JSON.stringify(favorites));
+}
 
-function openPlayer(item) {{
+function openPlayer(item) {
     addToRecent(item.id);
     infoCard.style.display='none';
     overlay.style.display='flex';
     iframe.src = item.link || "";
     playerTitle.textContent = item.title;
     playerTitle.style.display='block';
-}}
+}
 
-overlay.onclick = (e) => {{
-    if(e.target === overlay) {{
+overlay.onclick = (e) => {
+    if(e.target === overlay) {
         iframe.src = "";
         overlay.style.display='none';
         playerTitle.style.display='none';
-    }}
-}};
+    }
+};
 
-function renderGrid(filterType="movie", filterGenres=[], search="") {{
+function renderGrid(filterType="movie", filterGenres=[], search="") {
     grid.innerHTML = "";
     let filtered = allData.slice();
-    if(filterType==="mylist") filtered = allData.filter(i=>mylist.includes(i.id));
+    if(filterType==="favorites") filtered = allData.filter(i=>favorites.includes(i.id));
     else if(filterType==="recent") filtered = allData.filter(i=>recentList.includes(i.id));
     else filtered = allData.filter(i=>i.type===filterType);
 
-    if(filterGenres.length>0) filtered = filtered.filter(i=>{{if(!i.genres) return false;
+    if(filterGenres.length>0) filtered = filtered.filter(i=>{
+        if(!i.genres) return false;
         return filterGenres.every(g => i.genres.includes(g));
-    }}});
+    });
 
-    if(search) {{
+    if(search) {
         search = search.toLowerCase();
         filtered = filtered.filter(i=>i.title.toLowerCase().includes(search));
-    }}
+    }
 
-    for(let item of filtered) {{
+    for(let item of filtered) {
         let card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
-            <img class='poster' src='${{item.poster}}' alt='${{item.title}}'>
-            <span class='mylist-label'>+ Lista</span>
+            <img class='poster' src='${item.poster}' alt='${item.title}'>
+            <span class='favorite-btn ${favorites.includes(item.id) ? "active" : ""}'>★</span>
         `;
         card.onclick = ()=>openInfo(item);
         grid.appendChild(card);
-    }}
-}}
+    }
+}
 
-typeSelect.onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
+document.getElementById('typeSelect').onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 genreSelect.onchange = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 searchBox.oninput = () => renderGrid(typeSelect.value, Array.from(genreSelect.selectedOptions).map(o=>o.value), searchBox.value);
 
-function populateGenres() {{
+function populateGenres() {
     let genresSet = new Set();
     allData.forEach(i=>i.genres && i.genres.forEach(g=>genresSet.add(g)));
-    genresSet.forEach(g=>{{
+    genresSet.forEach(g=>{
         let o = document.createElement('option');
         o.value = g;
         o.textContent = g;
         genreSelect.appendChild(o);
-    }});
-}}
+    });
+}
 
 populateGenres();
 renderGrid();
@@ -353,7 +351,7 @@ def main():
 
     latest_entries_html = ""
     for item in entries[:10]:
-        latest_entries_html += f"<div class='card'><img class='poster' src='{item['poster']}'><span class='mylist-label'>+ Lista</span></div>"
+        latest_entries_html += f"<div class='card'><img class='poster' src='{item['poster}'><span class='favorite-btn {"active" if item['id'] in [] else ""}'>★</span></div>"
 
     html_content = build_html(entries, latest_entries_html)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
