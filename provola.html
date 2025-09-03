@@ -56,15 +56,6 @@ p {
 .button:hover {
     background: #333;
 }
-#trailer {
-    width: 100%;
-    max-width: 500px;
-    height: 280px;
-    border: none;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    display: none; /* nascosto inizialmente */
-}
 #related {
     display: flex;
     overflow-x: auto;
@@ -81,6 +72,42 @@ p {
     width: 100%;
     border-radius: 6px;
 }
+
+/* Overlay trailer */
+#trailerOverlay {
+    display: none;
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+#trailerOverlay iframe {
+    width: 90%;
+    height: 80%;
+    border: none;
+    border-radius: 8px;
+}
+#closeTrailer {
+    position: absolute;
+    top:20px;
+    right:20px;
+    padding:10px 16px;
+    font-size:16px;
+    border:none;
+    border-radius:6px;
+    background:#111;
+    color:#fff;
+    cursor:pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+}
+#closeTrailer:hover {
+    background:#333;
+}
 </style>
 </head>
 <body>
@@ -91,7 +118,7 @@ p {
         <div id="buttons">
             <button id="playBtn" class="button">Guarda</button>
             <button id="favoriteBtn" class="button">+ La mia lista</button>
-            <button id="trailerBtn" class="button">Guarda Trailer</button> <!-- Nuovo bottone -->
+            <button id="trailerBtn" class="button">Guarda Trailer</button>
             <button id="closeBtn" class="button">Chiudi</button>
         </div>
         <p><strong>Anno:</strong> 2021</p>
@@ -99,8 +126,6 @@ p {
         <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
         <p><strong>Cast:</strong> Tom Holland, Zendaya, Benedict Cumberbatch, Jacob Batalon</p>
         <p><strong>Descrizione:</strong> Peter Parker si trova alle prese con le conseguenze della sua identità segreta rivelata al mondo. Per rimediare, chiede aiuto al Dottor Strange, ma l'incantesimo va storto e scatena il multiverso.</p>
-
-        <iframe id="trailer" allowfullscreen></iframe>
 
         <h2>Film correlati</h2>
         <div id="related">
@@ -113,15 +138,26 @@ p {
     </div>
 </div>
 
+<!-- Overlay trailer -->
+<div id="trailerOverlay">
+    <button id="closeTrailer">Chiudi Trailer</button>
+    <iframe id="trailer" src="" allowfullscreen></iframe>
+</div>
+
 <script>
-// bottone trailer
+// Bottone trailer
 var trailerBtn = document.getElementById('trailerBtn');
+var trailerOverlay = document.getElementById('trailerOverlay');
 var iframe = document.getElementById('trailer');
+var closeTrailer = document.getElementById('closeTrailer');
 
 trailerBtn.onclick = function() {{
-    iframe.src = "https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1&mute=0";
-    iframe.style.display = "block";
-    iframe.scrollIntoView({{ behavior: 'smooth' }});
+    iframe.src = "https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1&mute=0"; // Trailer di prova
+    trailerOverlay.style.display = "flex";
+}};
+closeTrailer.onclick = function() {{
+    iframe.src = "";
+    trailerOverlay.style.display = "none";
 }};
 </script>
 
