@@ -163,15 +163,16 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 
 <script>
-const allData = {entries};
+const allData = {{entries}};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
-function updateFavoriteButton(itemId) {
+
+function updateFavoriteButton(itemId) {{
     const isFav = favorites.includes(itemId);
     favoriteInCard.textContent = isFav ? "- Preferiti" : "+ Preferiti";
     favoriteInCard.style.backgroundColor = isFav ? "#e50914" : "#141414"; 
-    }
+}}
 
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
