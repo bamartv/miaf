@@ -312,8 +312,8 @@ function renderGrid(data){{
         const div = document.createElement("div");
         div.className="card";
         div.onclick = ()=>openInfo(item);
-        div.innerHTML=`<img class="poster" src="${item.poster}" alt="${item.title}">
-                       <span class="favorite-btn ${favorites.includes(item.id)?'active':''}">★</span>`;
+        div.innerHTML = '<img class="poster" src="' + item.poster + '" alt="' + item.title + '">' +
+                '<span class="favorite-btn ' + (favorites.includes(item.id)?'active':'') + '">★</span>';
         grid.appendChild(div);
     }});
 }}
