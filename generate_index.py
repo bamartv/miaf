@@ -351,7 +351,7 @@ def main():
                     "vote": tmdb.get("vote_average",""),
                     "year": (tmdb.get("release_date") or tmdb.get("first_air_date",""))[:4],
                     "duration": tmdb.get("runtime",0),
-                    "cast": [c["name"] for c in tmdb.get("credits",{{}}).get("cast",[])],
+                    "cast": [c["name"] for c in tmdb.get("credits", {}).get("cast", [])],
                     "type": type_,
                     "seasons": tmdb.get("number_of_seasons",1),
                     "episodes": {s+1: tmdb.get("number_of_episodes",1) for s in range(tmdb.get("number_of_seasons",1))},
