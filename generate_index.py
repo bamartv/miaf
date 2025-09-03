@@ -98,7 +98,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
-#infoCard button#favoriteInCard {
+#infoCard button#favoriteInCard {{
     width: 120px;       /* stessa larghezza */
     height: 38px;       /* stessa altezza */
     padding: 8px 0;     /* verticale interna */
@@ -109,7 +109,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     cursor: pointer;
     vertical-align: middle;
     text-align: center;
-}
+}}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
 #latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
