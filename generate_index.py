@@ -96,9 +96,20 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
 #infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
-#infoCard button#playBtn{{margin-left:10px;padding:8px 12px;background:#141414;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
-#infoCard button#closeCardBtn{{margin-left:10px;padding:8px 12px;background:#141414;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
-#infoCard button#favoriteInCard{{margin-left:10px;padding:8px 12px;background:#141414;border:none;color:#fff;border-radius:5px;cursor:pointer;vertical-align:middle;}}
+#infoCard button#playBtn,
+#infoCard button#closeCardBtn,
+#infoCard button#favoriteInCard {
+    width: 120px;       /* stessa larghezza */
+    height: 38px;       /* stessa altezza */
+    padding: 8px 0;     /* verticale interna */
+    background: #141414;
+    border: none;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
 #latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
