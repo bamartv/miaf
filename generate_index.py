@@ -424,7 +424,7 @@ def main():
             details = tmdb_get(api_key, type_, tmdb_id)
             if not details:
                 continue
-            item = {
+                        item = {
                 "id": tmdb_id,
                 "title": details.get("title") or details.get("name",""),
                 "overview": details.get("overview",""),
@@ -434,10 +434,10 @@ def main():
                 "link": VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else "",
                 "genres": [g["name"] for g in details.get("genres",[])],
                 "seasons": details.get("number_of_seasons",1) if type_=="tv" else 0,
-                "episodes": {{s["season_number"]: s.get("episode_count",1) for s in details.get("seasons",[])}} if type_=="tv" else {{}},
+                "episodes": {s["season_number"]: s.get("episode_count",1) for s in details.get("seasons",[])} if type_=="tv" else {},
                 "year": (details.get("release_date") or details.get("first_air_date") or "")[:4],
                 "duration": details.get("runtime") or (details.get("episode_run_time",[None])[0] if details.get("episode_run_time") else None),
-                "cast": [c["name"] for c in details.get("credits",{{}}).get("cast",[])]
+                "cast": [c["name"] for c in details.get("credits",{}).get("cast",[])]
             }
             entries.append(item)
             if i<20:
