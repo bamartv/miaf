@@ -356,7 +356,7 @@ def main():
                     "seasons": tmdb.get("number_of_seasons",1),
                     "episodes": {s+1: tmdb.get("number_of_episodes",1) for s in range(tmdb.get("number_of_seasons",1))},
                     "link": VIX_LINK_MOVIE.format(tmdb["id"]),
-                    "episodesLinks": {{}}
+                    "episodesLinks": {}
                 }})
 
     latest_entries = ""
