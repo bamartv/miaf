@@ -173,7 +173,7 @@ const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const genreSelect=document.getElementById('genreSelect');
 
-closeCardBtn.onclick = function(){ infoCard.style.display='none'; history.replaceState({{"page":"grid"}}, "", "#grid"); };
+closeCardBtn.onclick = function(){{ infoCard.style.display='none'; history.replaceState({{"page":"grid"}}, "", "#grid"); }};
 
 overlay.addEventListener('click', () => {{
     if(!currentItem) return;
