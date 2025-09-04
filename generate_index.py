@@ -521,12 +521,12 @@ def main():
 print(f"Totale entries da salvare: {len(all_entries)}")  # debug: quante entries ci sono
 save_archive(all_entries)  # salva archivio aggiornato
 print(f"Archivio salvato su {ARCHIVE_FILE}")
-    # Genera HTML finale
-    html = build_html(all_entries, latest_entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
 
+# Genera HTML finale
+html = build_html(all_entries, latest_entries)
+with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+    f.write(html)
+print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
 
 if __name__ == "__main__":
     main()
