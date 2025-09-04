@@ -113,7 +113,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
 #infoCard h2 {{
     margin-top: 0;                
-    color: #e50914;                  /* colore testo */
+    color: #ffffff;                  /* colore testo */
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;  /* sans-serif moderno */
     font-weight: bold;               /* grassetto */
     font-size: 2em;                  /* circa 32px su smartphone standard */
