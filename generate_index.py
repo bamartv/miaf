@@ -171,8 +171,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <div id="playerTitle"></div>
 </div>
 
-<div id='infoCard'>
-  <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; margin:0 auto; text-align:center;">
+<div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center;">
+  <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0.5px; color:#e50914; margin-top:0;"></h2>
     
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
