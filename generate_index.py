@@ -110,7 +110,31 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
-#infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
+#infoCard {{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(20,20,20,0.85);
+    display: none;                   /* parte nascosta */
+    z-index: 1001;
+    backdrop-filter: blur(8px);
+
+    /* CENTRAGGIO perfetto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}}
+#infoCard > div {{
+    position: relative;
+    background: transparent;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+}}
 #infoCard h2 {{
     margin-top: 0;                
     color: #ffffff;                  /* colore testo */
@@ -171,9 +195,9 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <div id="playerTitle"></div>
 </div>
 
-<div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center;">
+<div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
-    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0.5px; color:#e50914; margin-top:0;"></h2>
+    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0.5px; color:#ffffff; margin-top:0;"></h2>
     
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
       <button id="playBtn" class="btn-play">Riproduci</button>
