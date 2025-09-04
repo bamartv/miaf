@@ -153,7 +153,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
       <button id="playBtn" class="btn-play">Riproduci</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="favoriteInCard" class="favorite-btn">+ Preferiti</button>
+      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
     </div>
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
