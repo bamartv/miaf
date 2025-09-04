@@ -172,19 +172,22 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 
 <div id='infoCard'>
-  <div style="position:relative;background:transparent;border-radius:10px;padding:20px;max-width:800px;width:90%;">
-    <h2 id="infoTitle"></h2>
-    <div style="display:flex;align-items:center;gap:10px;margin:10px 0;">
+  <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; margin:0 auto; text-align:center;">
+    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0.5px; color:#e50914; margin-top:0;"></h2>
+    
+    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
       <button id="playBtn" class="btn-play">Riproduci</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
       <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
     </div>
+    
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
     <p id="infoOverview"></p>
     <p id="infoYear"></p>
     <p id="infoDuration"></p>
     <p id="infoCast"></p>
+    
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
   </div>
