@@ -109,7 +109,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     cursor: pointer;
     vertical-align: middle;
     text-align: center;
-}
+}}
 #infoCard button#favoriteInCard.active {{
     color: gold;
 }}
