@@ -111,7 +111,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     text-align: center;
 }}
 #infoCard button#favoriteInCard.active {{
-    color: gold;
+    background: gold;   /* sfondo dorato */
+    color: #141414;     /* testo scuro per contrasto */
 }}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
