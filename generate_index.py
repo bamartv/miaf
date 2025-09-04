@@ -213,13 +213,6 @@ closeCardBtn.onclick = () => {{
   history.replaceState({{page:"grid"}}, "", "#grid");
 }};
 
-overlay.addEventListener('click', () => {{
-    if(!currentItem) return;
-    playerTitle.textContent = currentItem.title || "";
-    playerTitle.style.display = 'block';
-    setTimeout(() => {{ playerTitle.style.display = 'none'; }}, 2000);
-}});
-
 function showLatest(){{
     let scrollPos = 0;
     function scroll() {{
