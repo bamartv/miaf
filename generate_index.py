@@ -482,9 +482,10 @@ def main():
             genres = [g["name"] for g in info.get("genres", [])]
             vote = info.get("vote_average", 0)
             overview = info.get("overview", "")
-            link = VIX_LINK_MOVIE.format(tmdb_id) if type_=="movie" else ""
-            seasons = info.get("number_of_seasons", 1) if type_=="tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) for s in info.get("seasons", []) if s.get("season_number")} if type_=="tv" else {}
+            link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
+            seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
@@ -514,19 +515,22 @@ def main():
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
     # --- Unione con l'archivio esistente ---
-    combined = { e["id"]: e for e in old_entries }
+    combined = {e["id"]: e for e in old_entries}
     for e in entries:
         combined[e["id"]] = e  # aggiorna o aggiunge nuovo
     all_entries = list(combined.values())
-print(f"Totale entries da salvare: {len(all_entries)}")  # debug: quante entries ci sono
-save_archive(all_entries)  # salva archivio aggiornato
-print(f"Archivio salvato su {ARCHIVE_FILE}")
 
-# Genera HTML finale
-html = build_html(all_entries, latest_entries)
-with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-    f.write(html)
-print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
+    # Debug e salvataggio
+    print(f"Totale entries da salvare: {len(all_entries)}")
+    save_archive(all_entries)
+    print(f"Archivio salvato su {ARCHIVE_FILE}")
+
+    # Genera HTML finale
+    html = build_html(all_entries, latest_entries)
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
+
 
 if __name__ == "__main__":
     main()
