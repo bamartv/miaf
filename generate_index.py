@@ -117,7 +117,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;  /* sans-serif moderno */
     font-weight: bold;               /* grassetto */
     font-size: 2em;                  /* circa 32px su smartphone standard */
-    letter-spacing: -0.5px;          /* leggermente stretto */
+    letter-spacing: -0px;          /* leggermente stretto */
     display: inline-block;
 }}
 #infoCard button#playBtn,
