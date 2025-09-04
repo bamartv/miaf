@@ -16,6 +16,7 @@ Aggiunta gestione Preferiti spostati nella tendina principale e Visti recentemen
 import os
 import sys
 import requests
+import json
 
 # --- Config ---
 SRC_URLS = {
@@ -27,6 +28,21 @@ TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
+
+ARCHIVE_FILE = "entries.json"
+
+def load_archive():
+    if os.path.exists(ARCHIVE_FILE):
+        with open(ARCHIVE_FILE, "r", encoding="utf-8") as f:
+            try:
+                return json.load(f)
+            except:
+                return []
+    return []
+
+def save_archive(entries):
+    with open(ARCHIVE_FILE, "w", encoding="utf-8") as f:
+        json.dump(entries, f, ensure_ascii=False, indent=2)
 
 
 def get_api_key():
@@ -442,6 +458,13 @@ def main():
     entries = []
     latest_entries = ""
 
+    # Carica vecchi titoli dall'archivio, se esiste
+    try:
+        old_entries = load_archive()
+    except FileNotFoundError:
+        old_entries = []
+
+    # Ciclo sulle sorgenti VIX
     for type_, url in SRC_URLS.items():
         data = fetch_list(url)
         ids = extract_ids(data)
@@ -486,13 +509,22 @@ def main():
                 "cast": cast
             })
 
+            # Solo prime 10 per latest
             if idx < 10:
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
-    html = build_html(entries, latest_entries)
+    # --- Unione con l'archivio esistente ---
+    combined = { e["id"]: e for e in old_entries }
+    for e in entries:
+        combined[e["id"]] = e  # aggiorna o aggiunge nuovo
+    all_entries = list(combined.values())
+    save_archive(all_entries)  # salva archivio aggiornato
+
+    # Genera HTML finale
+    html = build_html(all_entries, latest_entries)
     with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {len(entries)} elementi e ultime novità scrollabili")
+    print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
 
 
 if __name__ == "__main__":
