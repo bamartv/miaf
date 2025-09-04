@@ -111,7 +111,15 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 #infoCard{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(20,20,20,0.85);display:none;z-index:1001;backdrop-filter:blur(8px);color:#fff;padding:20px;overflow:auto;}}
-#infoCard h2{{margin-top:0;color:#e50914;display:inline-block;}}
+#infoCard h2 {{
+    margin-top: 0;                
+    color: #e50914;                  /* colore testo */
+    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;  /* sans-serif moderno */
+    font-weight: bold;               /* grassetto */
+    font-size: 2em;                  /* circa 32px su smartphone standard */
+    letter-spacing: -0.5px;          /* leggermente stretto */
+    display: inline-block;
+}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
