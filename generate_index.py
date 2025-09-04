@@ -89,7 +89,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
-#favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:22px;}}
+#favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:18px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
@@ -190,7 +190,6 @@ const genreSelect=document.getElementById('genreSelect');
 
 closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
-  document.body.style.overflow = ''; //
   history.replaceState({{page:"grid"}}, "", "#grid");
 }};
 
@@ -214,7 +213,6 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-    document.body.style.overflow = 'hidden'; //
     infoCard.style.backgroundImage = "none";
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
