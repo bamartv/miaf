@@ -112,14 +112,14 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
 #infoCard {{
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(20,20,20,0.85);
-    display: none;                   /* parte nascosta */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: none;
     z-index: 1001;
-    backdrop-filter: blur(8px);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}}
 
     /* CENTRAGGIO perfetto */
     display: flex;
@@ -136,14 +136,12 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     text-align: center;
 }}
 #infoCard h2 {{
-    margin-top: 0;                
-    color: #ffffff;                  /* colore testo */
-    font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;  /* sans-serif moderno */
-    font-weight: bold;               /* grassetto */
-    font-size: 2em;                  /* circa 32px su smartphone standard */
-    letter-spacing: -0px;          /* leggermente stretto */
-    display: inline-block;
+    font-size: 3em;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 20px;
 }}
+
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
@@ -261,7 +259,7 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-    infoCard.style.backgroundImage = "none";
+    infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${item.poster}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
