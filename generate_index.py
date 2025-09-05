@@ -119,12 +119,18 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}}
-
-    /* CENTRAGGIO perfetto */
     display: flex;
     align-items: center;
     justify-content: center;
+}}
+
+/* Su schermi piccoli mostro l’immagine intera */
+@media (max-width: 768px) {{
+  #infoCard {{
+    background-size: contain;
+    background-position: top center;
+    background-color: #141414; /* bordo scuro riempie lo spazio vuoto */
+  }}
 }}
 #infoCard > div {{
     position: relative;
