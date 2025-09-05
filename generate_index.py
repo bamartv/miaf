@@ -116,31 +116,24 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: cover;
+    background-size: contain;   /* mostra SEMPRE l'intero poster */
     background-position: center;
     background-repeat: no-repeat;
+    background-color: #141414;  /* riempie i bordi vuoti */
     display: flex;
     align-items: center;
     justify-content: center;
 }}
 
-/* Su schermi piccoli mostro l’immagine intera */
-@media (max-width: 768px) {{
-  #infoCard {{
-    background-size: contain;
-    background-position: top center;
-    background-color: #141414; /* bordo scuro riempie lo spazio vuoto */
-  }}
-}}
 #infoCard > div {{
     position: relative;
-    background: transparent;
+    background: rgba(0,0,0,0.5); /* opzionale: leggero scuro dietro i testi */
     border-radius: 10px;
     padding: 20px;
     max-width: 800px;
     width: 90%;
     text-align: center;
-}}
+}
 #infoCard h2 {{
     font-size: 3em;
     font-weight: 800;
