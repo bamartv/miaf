@@ -301,7 +301,24 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
-    infoVote.innerHTML = "<span class='vote-circle'></span>" + item.vote;
+    let vote = Math.round(item.vote * 10) / 10; // 1 decimale
+let dash = Math.round((vote / 10) * 100);   // percentuale su 100
+
+infoVote.innerHTML = `
+  <svg viewBox="0 0 36 36" class="circular-chart">
+    <path class="circle-bg"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <path class="circle"
+      stroke-dasharray="${dash}, 100"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <text x="18" y="20.35" class="percentage">${vote}</text>
+  </svg>
+`;
+
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
