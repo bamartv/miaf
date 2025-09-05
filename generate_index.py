@@ -108,28 +108,25 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .circular-chart {{
   max-width: 50px;
   max-height: 50px;
+  transform: rotate(-90deg);
 }}
-
 .circle-bg {{
   fill: none;
   stroke: #eee;
   stroke-width: 3.8;
 }}
-
 .circle {{
   fill: none;
   stroke-width: 3.8;
   stroke-linecap: round;
-  transition: stroke-dasharray 0.6s ease;
+  stroke: #4caf50; /* verde per alto voto, cambiare dinamicamente */
 }}
-
 .percentage {{
   fill: #fff;
   font-size: 0.6em;
   text-anchor: middle;
   dominant-baseline: middle;
 }}
-
 
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:15px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
@@ -213,21 +210,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
 
-<div class="vote-circle-container" data-vote="7.8">
-  <svg viewBox="0 0 36 36" class="circular-chart">
-    <path class="circle-bg"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <path class="circle"
-      stroke-dasharray="78, 100"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <text x="18" y="20.35" class="percentage">7.8</text>
-  </svg>
-</div>
-
 
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
@@ -304,13 +286,16 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
-    let vote = Math.round(item.vote * 10) / 10;
-let percent = Math.round((vote / 10) * 100);
+    let vote = Math.round(item.vote * 10) / 10; // es: 7.8
+    let dash = Math.round((vote / 10) * 100);   // percentuale su 100
 
-let color = "#4caf50"; // verde default
-if (vote < 5) color = "#f44336";   // rosso sotto 5
-else if (vote < 7) color = "#ff9800"; // arancione 5–6.9
-else color = "#4caf50";  // verde 7–10
+// Colore dinamico
+let color = "#4caf50"; // verde di default
+if (vote < 5) {{
+  color = "#f44336"; // rosso
+}} else if (vote < 7) {{
+  color = "#ff9800"; // arancione/giallo
+}}
 
 infoVote.innerHTML = `
   <svg viewBox="0 0 36 36" class="circular-chart">
@@ -327,13 +312,6 @@ infoVote.innerHTML = `
     <text x="18" y="20.35" class="percentage">${{vote}}</text>
   </svg>
 `;
-
-
-  color = "#f44336"; // rosso
-}} else if (vote < 7) {{
-  color = "#ff9800"; // arancione
-}}
-
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
