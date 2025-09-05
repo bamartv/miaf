@@ -105,15 +105,29 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
-.vote-circle {{
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-color: gold;
-    border-radius: 50%;
-    vertical-align: middle;
-    margin-right: 4px;
+.circular-chart {{
+  max-width: 50px;
+  max-height: 50px;
+  transform: rotate(-90deg);
 }}
+.circle-bg {{
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}}
+.circle {{
+  fill: none;
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  stroke: #4caf50; /* verde per alto voto, cambiare dinamicamente */
+}}
+.percentage {{
+  fill: #fff;
+  font-size: 0.6em;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}}
+
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:15px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
@@ -195,6 +209,22 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
+
+<div class="vote-circle-container" data-vote="7.8">
+  <svg viewBox="0 0 36 36" class="circular-chart">
+    <path class="circle-bg"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <path class="circle"
+      stroke-dasharray="78, 100"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <text x="18" y="20.35" class="percentage">7.8</text>
+  </svg>
+</div>
+
 
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
