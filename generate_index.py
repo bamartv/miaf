@@ -105,6 +105,15 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+.vote-circle {{
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: gold;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 4px;
+}}
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:15px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
@@ -262,7 +271,7 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
-    infoVote.textContent = "★ " + item.vote;
+    infoVote.innerHTML = "<span class='vote-circle'></span>" + item.vote;
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
