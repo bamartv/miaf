@@ -108,25 +108,28 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .circular-chart {{
   max-width: 50px;
   max-height: 50px;
-  transform: rotate(-90deg);
 }}
+
 .circle-bg {{
   fill: none;
   stroke: #eee;
   stroke-width: 3.8;
 }}
+
 .circle {{
   fill: none;
   stroke-width: 3.8;
   stroke-linecap: round;
-  stroke: #4caf50; /* verde per alto voto, cambiare dinamicamente */
+  transition: stroke-dasharray 0.6s ease;
 }}
+
 .percentage {{
   fill: #fff;
   font-size: 0.6em;
   text-anchor: middle;
   dominant-baseline: middle;
 }}
+
 
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:15px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
@@ -301,15 +304,20 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
-    let vote = Math.round(item.vote * 10) / 10; // es: 7.8
-    let dash = Math.round((vote / 10) * 100);   // percentuale su 100
+    let vote = Math.round(item.vote * 10) / 10;
+let percent = Math.round((vote / 10) * 100);
 
 // Colore dinamico
-let color = "#4caf50"; // verde di default
+let color = "#4caf50"; // verde
+if (vote < 5) {let vote = Math.round(item.vote * 10) / 10;
+let percent = Math.round((vote / 10) * 100);
+
+// Colore dinamico
+let color = "#4caf50"; // verde
 if (vote < 5) {{
   color = "#f44336"; // rosso
 }} else if (vote < 7) {{
-  color = "#ff9800"; // arancione/giallo
+  color = "#ff9800"; // arancione
 }}
 
 infoVote.innerHTML = `
@@ -320,13 +328,37 @@ infoVote.innerHTML = `
          a 15.9155 15.9155 0 0 1 0 -31.831"/>
     <path class="circle"
       stroke="${{color}}"
-      stroke-dasharray="${{dash}}, 100"
+      stroke-dasharray="${{percent}}, 100"
+      stroke-dashoffset="25"
       d="M18 2.0845
          a 15.9155 15.9155 0 0 1 0 31.831
          a 15.9155 15.9155 0 0 1 0 -31.831"/>
     <text x="18" y="20.35" class="percentage">${{vote}}</text>
   </svg>
 `;
+
+  color = "#f44336"; // rosso
+}} else if (vote < 7) {{
+  color = "#ff9800"; // arancione
+}}
+
+infoVote.innerHTML = `
+  <svg viewBox="0 0 36 36" class="circular-chart">
+    <path class="circle-bg"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <path class="circle"
+      stroke="${{color}}"
+      stroke-dasharray="${{percent}}, 100"
+      stroke-dashoffset="25"
+      d="M18 2.0845
+         a 15.9155 15.9155 0 0 1 0 31.831
+         a 15.9155 15.9155 0 0 1 0 -31.831"/>
+    <text x="18" y="20.35" class="percentage">${{vote}}</text>
+  </svg>
+`;
+
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
