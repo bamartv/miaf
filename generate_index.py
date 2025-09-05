@@ -132,16 +132,15 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
 #playerOverlay iframe{{width:100%;height:100%;border:none;position:relative;z-index:1;}}
 #playerTitle{{position:absolute;top:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;display:none;z-index:10;}}
+<style>
 #infoCard {{
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: contain;   /* mostra SEMPRE l'intero poster */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #141414;  /* riempie i bordi vuoti */
+    background-color: rgba(20,20,20,0.85);
+    backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,16 +148,25 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 #infoCard > div {{
     position: relative;
-    background: rgba(0,0,0,0.5); /* opzionale: leggero scuro dietro i testi */
+    background: rgba(0,0,0,0.5);
     border-radius: 10px;
     padding: 20px;
     max-width: 800px;
     width: 90%;
     text-align: center;
 }}
+
+.poster-img {{
+    width: 100%;
+    max-height: 40vh; /* massimo 40% dell'altezza finestra */
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}}
+
 #infoCard h2 {{
     font-size: 3em;
-    font-weight: 800;
+    font-weight: 900;
     color: #fff;
     margin-bottom: 20px;
 }}
@@ -166,9 +174,9 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    width: 120px;       /* stessa larghezza */
-    height: 38px;       /* stessa altezza */
-    padding: 8px 0;     /* verticale interna */
+    width: 120px;
+    height: 38px;
+    padding: 8px 0;
     background: #141414;
     border: none;
     color: #fff;
@@ -177,65 +185,53 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     vertical-align: middle;
     text-align: center;
 }}
+
 #infoCard button#favoriteInCard.active {{
-    background: gold;   /* sfondo dorato */
-    color: #141414;     /* testo scuro per contrasto */
+    background: gold;
+    color: #141414;
 }}
-#infoCard p{{margin:5px 0;}}
-#infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
-#latest{{display:flex;overflow-x:auto;gap:10px;margin-bottom:20px;padding-bottom:10px;scroll-behavior: smooth;}}
-#latest::-webkit-scrollbar {{display: none;}}
-#latest {{-ms-overflow-style: none;scrollbar-width: none;}}
-#latest .poster{{width:100px;flex-shrink:0;}}
+
+#infoCard p {{
+    margin: 5px 0;
+}}
+
+#infoCard select {{
+    margin: 5px 5px 5px 0;
+    padding: 6px;
+}}
 </style>
-</head>
-<body>
-<h1>Aggiunti di recente</h1>
-<div id='latest'>
-{latest_entries}
-</div>
 
-<h1>Movies & Series</h1>
-<div class='controls'>
-<select id='typeSelect'>
-  <option value='movie'>Film</option>
-  <option value='tv'>Serie TV</option>
-  <option value='favorites'>★ Preferiti</option>
-  <option value='recent'>👁 Visti di recente</option>
-</select>
-<select id='genreSelect' multiple size=5></select>
-<input type='text' id='searchBox' placeholder='Cerca...'>
-</div>
-<div id='moviesGrid' class='grid'></div>
-<button id='loadMore'>Carica altri</button>
+<div id="infoCard">
+  <div>
+    <!-- Locandina / Trailer -->
+    <div class="trailer-container">
+        <img src="{{ poster_url }}" alt="Locandina" class="poster-img">
+    </div>
 
+    <!-- Titolo -->
+    <h2 id="infoTitle">{{ titolo }}</h2>
 
-<div id='playerOverlay'>
-  <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
-  <div id="playerTitle"></div>
-</div>
-
-<div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
-  <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
-    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
-    
+    <!-- Bottoni -->
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
       <button id="playBtn" class="btn-play">Riproduci</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
       <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
     </div>
-    
+
+    <!-- Informazioni -->
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
     <p id="infoOverview"></p>
     <p id="infoYear"></p>
     <p id="infoDuration"></p>
     <p id="infoCast"></p>
-    
+
+    <!-- Selezione stagioni/episodi -->
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
   </div>
 </div>
+
 
 <script>
 const allData = {entries};
@@ -283,34 +279,43 @@ function openInfo(item, push=true) {{
     infoCard.style.display='block';
     infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${{item.poster}}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
+
+    // Sostituisci la locandina con il trailer in autoplay
+    const trailerContainer = infoCard.querySelector('.trailer-container');
+    trailerContainer.innerHTML = `
+      <iframe src="https://vixsrc.to/movie/${{item.id}}/?autoplay=1&lang=it" 
+              style="width:100%; height:40vh; border:none;" 
+              allow="autoplay; fullscreen" allowfullscreen></iframe>
+    `;
+
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
 
-// Colore dinamico
-let color = "#4caf50"; // verde di default
-if (vote < 5) {{
-  color = "#f44336"; // rosso
-}} else if (vote < 7) {{
-  color = "#ff9800"; // arancione/giallo
-}}
+    // Colore dinamico
+    let color = "#4caf50"; // verde di default
+    if (vote < 5) {{
+      color = "#f44336"; // rosso
+    }} else if (vote < 7) {{
+      color = "#ff9800"; // arancione/giallo
+    }}
 
-infoVote.innerHTML = `
-  <svg viewBox="0 0 36 36" class="circular-chart">
-    <path class="circle-bg"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <path class="circle"
-      stroke="${{color}}"
-      stroke-dasharray="${{dash}}, 100"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <text x="18" y="20.35" class="percentage">${{vote}}</text>
-  </svg>
-`;
+    infoVote.innerHTML = `
+      <svg viewBox="0 0 36 36" class="circular-chart">
+        <path class="circle-bg"
+          d="M18 2.0845
+             a 15.9155 15.9155 0 0 1 0 31.831
+             a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        <path class="circle"
+          stroke="${{color}}"
+          stroke-dasharray="${{dash}}, 100"
+          d="M18 2.0845
+             a 15.9155 15.9155 0 0 1 0 31.831
+             a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        <text x="18" y="20.35" class="percentage">${{vote}}</text>
+      </svg>
+    `;
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
@@ -344,6 +349,8 @@ infoVote.innerHTML = `
     if(push) {{
         history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
     }}
+}}
+
 
     function updateEpisodes() {{
         let season = parseInt(seasonSelect.value);
