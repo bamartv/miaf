@@ -108,7 +108,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .circular-chart {{
   max-width: 50px;
   max-height: 50px;
-  transform: rotate(-90deg);
 }}
 .circle-bg {{
   fill: none;
@@ -119,7 +118,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   fill: none;
   stroke-width: 3.8;
   stroke-linecap: round;
-  stroke: #4caf50; /* verde per alto voto, cambiare dinamicamente */
+  transition: stroke-dasharray 0.6s ease;
 }}
 .percentage {{
   fill: #fff;
