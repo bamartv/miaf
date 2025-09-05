@@ -133,7 +133,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     max-width: 800px;
     width: 90%;
     text-align: center;
-}
+}}
 #infoCard h2 {{
     font-size: 3em;
     font-weight: 800;
