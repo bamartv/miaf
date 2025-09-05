@@ -190,7 +190,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </style>
 </head>
 <body>
-<h1>Ultime Novità</h1>
+<h1>Aggiunti di recente</h1>
 <div id='latest'>
 {latest_entries}
 </div>
@@ -217,7 +217,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 <div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
-    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0.5px; color:#ffffff; margin-top:0;"></h2>
+    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
     
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
       <button id="playBtn" class="btn-play">Riproduci</button>
