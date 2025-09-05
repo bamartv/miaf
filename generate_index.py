@@ -280,25 +280,20 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${{item.poster}}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
 
-    // Sostituisci la locandina con il trailer in autoplay
+    // Aggiorna locandina nella infoCard (rimane immagine)
     const trailerContainer = infoCard.querySelector('.trailer-container');
-    trailerContainer.innerHTML = `
-      <iframe src="https://vixsrc.to/movie/${{item.id}}/?autoplay=1&lang=it" 
-              style="width:100%; height:40vh; border:none;" 
-              allow="autoplay; fullscreen" allowfullscreen></iframe>
-    `;
+    trailerContainer.innerHTML = `<img src="${{item.poster}}" alt="Locandina" class="poster-img">`;
 
     infoTitle.textContent = item.title;
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
-    let vote = Math.round(item.vote * 10) / 10; // es: 7.8
-    let dash = Math.round((vote / 10) * 100);   // percentuale su 100
+    let vote = Math.round(item.vote * 10) / 10; 
+    let dash = Math.round((vote / 10) * 100);
 
-    // Colore dinamico
-    let color = "#4caf50"; // verde di default
+    let color = "#4caf50"; 
     if (vote < 5) {{
-      color = "#f44336"; // rosso
+      color = "#f44336"; 
     }} else if (vote < 7) {{
-      color = "#ff9800"; // arancione/giallo
+      color = "#ff9800"; 
     }}
 
     infoVote.innerHTML = `
