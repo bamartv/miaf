@@ -307,18 +307,10 @@ function openInfo(item, push=true) {{
     let vote = Math.round(item.vote * 10) / 10;
 let percent = Math.round((vote / 10) * 100);
 
-// Colore dinamico
-let color = "#4caf50"; // verde
-if (vote < 5) {let vote = Math.round(item.vote * 10) / 10;
-let percent = Math.round((vote / 10) * 100);
-
-// Colore dinamico
-let color = "#4caf50"; // verde
-if (vote < 5) {{
-  color = "#f44336"; // rosso
-}} else if (vote < 7) {{
-  color = "#ff9800"; // arancione
-}}
+let color = "#4caf50"; // verde default
+if (vote < 5) color = "#f44336";   // rosso sotto 5
+else if (vote < 7) color = "#ff9800"; // arancione 5–6.9
+else color = "#4caf50";  // verde 7–10
 
 infoVote.innerHTML = `
   <svg viewBox="0 0 36 36" class="circular-chart">
@@ -328,36 +320,19 @@ infoVote.innerHTML = `
          a 15.9155 15.9155 0 0 1 0 -31.831"/>
     <path class="circle"
       stroke="${{color}}"
-      stroke-dasharray="${{percent}}, 100"
-      stroke-dashoffset="25"
+      stroke-dasharray="${{dash}}, 100"
       d="M18 2.0845
          a 15.9155 15.9155 0 0 1 0 31.831
          a 15.9155 15.9155 0 0 1 0 -31.831"/>
     <text x="18" y="20.35" class="percentage">${{vote}}</text>
   </svg>
 `;
+
 
   color = "#f44336"; // rosso
 }} else if (vote < 7) {{
   color = "#ff9800"; // arancione
 }}
-
-infoVote.innerHTML = `
-  <svg viewBox="0 0 36 36" class="circular-chart">
-    <path class="circle-bg"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <path class="circle"
-      stroke="${{color}}"
-      stroke-dasharray="${{percent}}, 100"
-      stroke-dashoffset="25"
-      d="M18 2.0845
-         a 15.9155 15.9155 0 0 1 0 31.831
-         a 15.9155 15.9155 0 0 1 0 -31.831"/>
-    <text x="18" y="20.35" class="percentage">${{vote}}</text>
-  </svg>
-`;
 
     infoOverview.textContent = item.overview || "";
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
