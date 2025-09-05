@@ -70,22 +70,6 @@ p {
 .button:hover {
     background: #333;
 }
-#related {
-    display: flex;
-    overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 10px;
-}
-#related::-webkit-scrollbar { display: none; }
-.related-item {
-    flex: 0 0 auto;
-    width: 120px;
-    border-radius: 6px;
-}
-.related-item img {
-    width: 100%;
-    border-radius: 6px;
-}
 </style>
 </head>
 <body>
@@ -106,25 +90,17 @@ p {
         <p><strong>Durata:</strong> 148 min</p>
         <p><strong>Genere:</strong> Azione, Avventura, Fantascienza</p>
         <p><strong>Cast:</strong> Tom Holland, Zendaya, Benedict Cumberbatch, Jacob Batalon</p>
-        <p><strong>Descrizione:</strong> Peter Parker si trova alle prese con le conseguenze della sua identità segreta rivelata al mondo. Per rimediare, chiede aiuto al Dottor Strange, ma l'incantesimo va storto e scatena il multiverso.</p>
-
-        <h2>Film correlati</h2>
-        <div id="related">
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w780/2cPz1cmFqq0yNw5vQz1yZ6n5ouX.jpg" alt="Film 1"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w780/fVzXp3NwovUlLe7fvoRynCmBPNc.jpg" alt="Film 2"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w780/zf8cXz6t79S1V9A3oXc3uAZG0oj.jpg" alt="Film 3"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w780/1gokDeVg6uU6qlLDy9P5VExqJtA.jpg" alt="Film 4"></div>
-            <div class="related-item"><img src="https://image.tmdb.org/t/p/w780/3WZl03MJuhK2k8gP1imnmK8BRWR.jpg" alt="Film 5"></div>
-        </div>
+        <p><strong>Descrizione:</strong> Peter Parker si trova alle prese con le conseguenze della sua identità segreta rivelata al mondo. 
+           Per rimediare, chiede aiuto al Dottor Strange, ma l'incantesimo va storto e scatena il multiverso.</p>
     </div>
 </div>
 
 <script>
 var mediaBox = document.getElementById('mediaBox');
 
-// Dopo 3 secondi sostituisce il poster con il trailer
+// Dopo 3 secondi sostituisce il poster con il trailer in autoplay
 setTimeout(function() {
-    mediaBox.innerHTML = '<iframe src="https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1&mute=0" allowfullscreen></iframe>';
+    mediaBox.innerHTML = '<iframe src="https://www.youtube.com/embed/JfVOs4VSpmA?autoplay=1&mute=0&rel=0&showinfo=0" allow="autoplay; fullscreen" allowfullscreen></iframe>';
 }, 3000);
 
 document.getElementById('closeBtn').onclick = function() {
