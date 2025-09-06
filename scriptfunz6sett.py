@@ -589,4 +589,33 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-            epis
+            episodes": episodes,
+                "duration": duration or 0,
+                "year": year or "",
+                "cast": cast
+            })
+
+            # Solo prime 10 per latest
+            if idx < 10:
+                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+
+    # --- Unione con l'archivio esistente ---
+    combined = {e["id"]: e for e in old_entries}
+    for e in entries:
+        combined[e["id"]] = e  # aggiorna o aggiunge nuovo
+    all_entries = list(combined.values())
+
+    # Debug e salvataggio
+    print(f"Totale entries da salvare: {len(all_entries)}")
+    save_archive(all_entries)
+    print(f"Archivio salvato su {ARCHIVE_FILE}")
+
+    # Genera HTML finale
+    html = build_html(all_entries, latest_entries)
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
+
+
+if __name__ == "__main__":
+    main()
