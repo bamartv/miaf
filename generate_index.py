@@ -152,7 +152,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: contain;   /* mostra SEMPRE l'intero poster */
+    background-size: cover;   /* mostra SEMPRE l'intero poster */
     background-position: center;
     background-repeat: no-repeat;
     background-color: #141414;  /* riempie i bordi vuoti */
@@ -162,8 +162,11 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 }}
 
 #infoCard > div {{
-    position: relative;
-    background: rgba(0,0,0,0.5); /* opzionale: leggero scuro dietro i testi */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.5);
     border-radius: 10px;
     padding: 20px;
     max-width: 800px;
