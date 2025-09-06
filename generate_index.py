@@ -181,60 +181,33 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 }}
 
 #infoCard button#playBtn,
-#infoCard button#playBtn {{
-    background: linear-gradient(45deg, #e50914, #ff5733);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    transition: transform 0.2s, box-shadow 0.2s;
-}}
-
-#infoCard button#playBtn:hover {{
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-}}
-
-#infoCard button#closeCardBtn {{
-    background: linear-gradient(45deg, #555, #999);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    transition: transform 0.2s, box-shadow 0.2s;
-}}
-
-#infoCard button#closeCardBtn:hover {{
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
-}}
-
+#infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    background: linear-gradient(45deg, #ffcc00, #ffdd33);
-    color: #141414;
+    width: 140px;
+    height: 42px;
+    margin: 6px;
+    padding: 8px 0;
+    background: linear-gradient(135deg, #e50914, #b20710);
     border: none;
-    border-radius: 50px;
-    padding: 10px 18px;
+    color: #fff;
     font-weight: bold;
+    font-size: 15px;
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}}
+
+#infoCard button#playBtn:hover,
+#infoCard button#closeCardBtn:hover,
+#infoCard button#favoriteInCard:hover {{
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 }}
 
 #infoCard button#favoriteInCard.active {{
-    background: linear-gradient(45deg, #ff4444, #ff0000);
-    color: #fff;
-}}
-
-#infoCard button#favoriteInCard:hover {{
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    background: linear-gradient(135deg, gold, orange);
+    color: #141414;
 }}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
