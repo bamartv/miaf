@@ -183,20 +183,31 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    width: 120px;       /* stessa larghezza */
-    height: 38px;       /* stessa altezza */
-    padding: 8px 0;     /* verticale interna */
-    background: #141414;
+    width: 140px;
+    height: 42px;
+    margin: 6px;
+    padding: 8px 0;
+    background: linear-gradient(135deg, #e50914, #b20710);
     border: none;
     color: #fff;
-    border-radius: 5px;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 8px;
     cursor: pointer;
-    vertical-align: middle;
-    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }}
+
+#infoCard button#playBtn:hover,
+#infoCard button#closeCardBtn:hover,
+#infoCard button#favoriteInCard:hover {{
+    transform: scale(1.05);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.6);
+}}
+
 #infoCard button#favoriteInCard.active {{
-    background: gold;   /* sfondo dorato */
-    color: #141414;     /* testo scuro per contrasto */
+    background: linear-gradient(135deg, gold, orange);
+    color: #141414;
 }}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
@@ -578,7 +589,4 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
-                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
-
-            year = (info.g
+            epis
