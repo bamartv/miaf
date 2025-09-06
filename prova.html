@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Movies & Series Grid</title>
+<title>Griglia Film Demo</title>
 <style>
 body {
   margin: 0;
@@ -12,62 +12,61 @@ body {
   color: #fff;
 }
 
+/* Header */
 header {
   padding: 20px;
   text-align: center;
-  position: sticky;
-  top: 0;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(8px);
-  z-index: 100;
+  background: linear-gradient(90deg, #ff0080, #7928ca, #00ffe7);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  box-shadow: 0 0 25px rgba(0,0,0,0.6);
 }
 
 header h1 {
-  font-size: 2.5em;
+  font-size: 2.2em;
   margin: 0;
-  background: linear-gradient(90deg, #ff00ff, #00fff7, #ff9900);
-  background-size: 300% 300%;
+  letter-spacing: 2px;
+  background: linear-gradient(90deg, #fff, #ffcc00, #fff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 6s ease infinite;
-  letter-spacing: 1px;
+  animation: shine 4s linear infinite;
 }
 
 header p {
-  margin: 5px 0 15px;
-  font-size: 1.2em;
-  color: #aaa;
-  font-style: italic;
-}
-
-.search-box {
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-.search-box input {
-  width: 60%;
-  max-width: 400px;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 30px;
+  margin: 5px 0 0;
   font-size: 1em;
+  color: #ddd;
+  letter-spacing: 1px;
+}
+
+/* Barra di ricerca */
+.search-bar {
+  margin: 20px auto;
+  text-align: center;
+}
+
+.search-bar input {
+  width: 60%;
+  max-width: 500px;
+  padding: 12px 18px;
+  border-radius: 30px;
+  border: none;
   outline: none;
-  background: #1a1a1a;
+  font-size: 1em;
+  background: #1c1c1c;
   color: #fff;
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 12px rgba(0,255,255,0.2);
-  transition: box-shadow 0.3s;
+  box-shadow: inset 0 0 5px rgba(255,255,255,0.1), 0 0 10px rgba(0,255,255,0.4);
+  transition: all 0.3s;
 }
 
-.search-box input:focus {
-  box-shadow: inset 0 0 8px rgba(255,255,255,0.15), 0 0 20px rgba(0,255,255,0.8);
+.search-bar input:focus {
+  box-shadow: 0 0 15px rgba(255,0,255,0.6), 0 0 30px rgba(0,255,255,0.7);
 }
 
-/* Griglia film */
+/* Griglia */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 20px;
   padding: 20px;
 }
@@ -76,32 +75,37 @@ header p {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.7);
   transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
 .card img {
   width: 100%;
-  height: 100%;
   display: block;
   border-radius: 12px;
+}
+
+.card:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 30px rgba(255,0,255,0.6);
 }
 
 .card::after {
   content: attr(data-title);
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+  color: #fff;
   padding: 10px;
   font-size: 0.9em;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-  color: #fff;
+  text-align: center;
+  transition: opacity 0.3s;
+  opacity: 0;
 }
 
-.card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 25px rgba(0,255,255,0.6);
+.card:hover::after {
+  opacity: 1;
 }
 
 /* Animazioni */
@@ -110,36 +114,39 @@ header p {
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
+
+@keyframes shine {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>🎬 Movies & Series</h1>
-  <p>Aggiunti di recente</p>
-  <div class="search-box">
-    <input type="text" placeholder="🔍 Cerca un film o una serie...">
-  </div>
+  <h1>Nuove Uscite</h1>
+  <p>Movies & Series Collection</p>
 </header>
+
+<div class="search-bar">
+  <input type="text" placeholder="🔍 Cerca il tuo film preferito...">
+</div>
 
 <div class="grid">
   <div class="card" data-title="Inception">
     <img src="https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg" alt="Inception">
   </div>
-  <div class="card" data-title="The Dark Knight">
-    <img src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="The Dark Knight">
-  </div>
   <div class="card" data-title="Interstellar">
     <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg" alt="Interstellar">
+  </div>
+  <div class="card" data-title="The Dark Knight">
+    <img src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="The Dark Knight">
   </div>
   <div class="card" data-title="Avatar">
     <img src="https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg" alt="Avatar">
   </div>
-  <div class="card" data-title="Pulp Fiction">
-    <img src="https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg" alt="Pulp Fiction">
-  </div>
-  <div class="card" data-title="Fight Club">
-    <img src="https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg" alt="Fight Club">
+  <div class="card" data-title="Titanic">
+    <img src="https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" alt="Titanic">
   </div>
   <div class="card" data-title="The Matrix">
     <img src="https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="The Matrix">
@@ -147,11 +154,14 @@ header p {
   <div class="card" data-title="Gladiator">
     <img src="https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg" alt="Gladiator">
   </div>
-  <div class="card" data-title="Titanic">
-    <img src="https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" alt="Titanic">
+  <div class="card" data-title="Joker">
+    <img src="https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg" alt="Joker">
   </div>
-  <div class="card" data-title="The Godfather">
-    <img src="https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" alt="The Godfather">
+  <div class="card" data-title="The Lord of the Rings">
+    <img src="https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg" alt="The Lord of the Rings">
+  </div>
+  <div class="card" data-title="Spider-Man: No Way Home">
+    <img src="https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg" alt="Spider-Man">
   </div>
 </div>
 
