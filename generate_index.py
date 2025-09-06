@@ -181,22 +181,60 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 }}
 
 #infoCard button#playBtn,
-#infoCard button#closeCardBtn,
-#infoCard button#favoriteInCard {{
-    width: 120px;       /* stessa larghezza */
-    height: 38px;       /* stessa altezza */
-    padding: 8px 0;     /* verticale interna */
-    background: #141414;
-    border: none;
+#infoCard button#playBtn {{
+    background: linear-gradient(45deg, #e50914, #ff5733);
     color: #fff;
-    border-radius: 5px;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
     cursor: pointer;
-    vertical-align: middle;
-    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
 }}
+
+#infoCard button#playBtn:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}}
+
+#infoCard button#closeCardBtn {{
+    background: linear-gradient(45deg, #555, #999);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+}}
+
+#infoCard button#closeCardBtn:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+}}
+
+#infoCard button#favoriteInCard {{
+    background: linear-gradient(45deg, #ffcc00, #ffdd33);
+    color: #141414;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+}}
+
 #infoCard button#favoriteInCard.active {{
-    background: gold;   /* sfondo dorato */
-    color: #141414;     /* testo scuro per contrasto */
+    background: linear-gradient(45deg, #ff4444, #ff0000);
+    color: #fff;
+}}
+
+#infoCard button#favoriteInCard:hover {{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.6);
 }}
 #infoCard p{{margin:5px 0;}}
 #infoCard select{{margin:5px 5px 5px 0;padding:6px;}}
