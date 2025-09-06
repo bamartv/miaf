@@ -220,7 +220,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
     
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
-      <button id="playBtn" class="btn-play">Riproduci</button>
+      <button id="playBtn" class="btn-play">Guarda ▶</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
       <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
     </div>
