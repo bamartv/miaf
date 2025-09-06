@@ -3,110 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>InfoCard Neon</title>
+<title>Movies & Series Grid</title>
 <style>
 body {
   margin: 0;
   background: #0a0a0a;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #fff;
-  overflow: hidden;
 }
 
-#infoCard {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: url('https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg') center/cover no-repeat;
-}
-
-#infoCard::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(8px);
-}
-
-#infoCard > .content {
-  position: relative;
-  z-index: 1;
-  max-width: 800px;
-  width: 90%;
-  background: rgba(10,10,10,0.85);
-  border-radius: 20px;
-  padding: 30px;
+header {
+  padding: 20px;
   text-align: center;
-  box-shadow: 0 0 40px rgba(0,255,255,0.3);
-  animation: fadeIn 0.7s ease-out;
+  position: sticky;
+  top: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  z-index: 100;
 }
 
-#infoCard h2 {
+header h1 {
   font-size: 2.5em;
-  margin-bottom: 10px;
-  background: linear-gradient(90deg, #00fff7, #ff00ff, #ff9900);
+  margin: 0;
+  background: linear-gradient(90deg, #ff00ff, #00fff7, #ff9900);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: gradientShift 5s ease infinite;
+  animation: gradientShift 6s ease infinite;
+  letter-spacing: 1px;
 }
 
-#infoCard p {
-  margin: 6px 0;
-  color: #bbb;
-  font-size: 1em;
+header p {
+  margin: 5px 0 15px;
+  font-size: 1.2em;
+  color: #aaa;
+  font-style: italic;
 }
 
-.buttons {
+.search-box {
   display: flex;
   justify-content: center;
-  gap: 20px;
-  margin: 25px 0 10px;
-  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
-/* Pulsanti neon gradient */
-button {
-  position: relative;
-  padding: 14px 30px;
+.search-box input {
+  width: 60%;
+  max-width: 400px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 50px;
+  border-radius: 30px;
   font-size: 1em;
-  font-weight: bold;
-  cursor: pointer;
+  outline: none;
+  background: #1a1a1a;
   color: #fff;
-  background: linear-gradient(90deg, #00fff7, #ff00ff, #ff9900);
-  background-size: 300% 300%;
-  animation: gradientShift 5s ease infinite;
-  box-shadow: 0 0 20px rgba(0,255,255,0.6), 0 0 40px rgba(255,0,255,0.3);
-  transition: transform 0.25s, box-shadow 0.25s;
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.1), 0 0 12px rgba(0,255,255,0.2);
+  transition: box-shadow 0.3s;
 }
 
-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px rgba(0,255,255,1), 0 0 60px rgba(255,0,255,0.8);
+.search-box input:focus {
+  box-shadow: inset 0 0 8px rgba(255,255,255,0.15), 0 0 20px rgba(0,255,255,0.8);
 }
 
-#closeCardBtn {
-  background: linear-gradient(90deg, #444, #888, #444);
-  background-size: 200% 200%;
-  animation: gradientShift 6s ease infinite;
-  box-shadow: 0 0 20px rgba(200,200,200,0.4);
+/* Griglia film */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
-#closeCardBtn:hover {
-  box-shadow: 0 0 25px rgba(255,255,255,0.9);
+.card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+.card::after {
+  content: attr(data-title);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  font-size: 0.9em;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  color: #fff;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(0,255,255,0.6);
 }
 
 /* Animazioni */
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-
 @keyframes gradientShift {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -115,22 +113,45 @@ button:hover {
 </style>
 </head>
 <body>
-  
-<div id="infoCard">
-  <div class="content">
-    <h2>Inception</h2>
-    <p><strong>Anno:</strong> 2010</p>
-    <p><strong>Durata:</strong> 148 min</p>
-    <p><strong>Generi:</strong> Azione, Fantascienza, Avventura</p>
-    <p><strong>Voto:</strong> 8.3</p>
-    <p><strong>Cast:</strong> Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page, Tom Hardy</p>
-    <p><em>Un ladro che ruba segreti attraverso i sogni viene incaricato di un’ultima missione impossibile: impiantare un’idea nella mente di qualcuno.</em></p>
-    
-    <div class="buttons">
-      <button id="playBtn">▶ Guarda</button>
-      <button id="favoriteInCard">★ Preferiti</button>
-      <button id="closeCardBtn">Chiudi</button>
-    </div>
+
+<header>
+  <h1>🎬 Movies & Series</h1>
+  <p>Aggiunti di recente</p>
+  <div class="search-box">
+    <input type="text" placeholder="🔍 Cerca un film o una serie...">
+  </div>
+</header>
+
+<div class="grid">
+  <div class="card" data-title="Inception">
+    <img src="https://image.tmdb.org/t/p/w500/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg" alt="Inception">
+  </div>
+  <div class="card" data-title="The Dark Knight">
+    <img src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg" alt="The Dark Knight">
+  </div>
+  <div class="card" data-title="Interstellar">
+    <img src="https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg" alt="Interstellar">
+  </div>
+  <div class="card" data-title="Avatar">
+    <img src="https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg" alt="Avatar">
+  </div>
+  <div class="card" data-title="Pulp Fiction">
+    <img src="https://image.tmdb.org/t/p/w500/d5iIlFn5s0ImszYzBPb8JPIfbXD.jpg" alt="Pulp Fiction">
+  </div>
+  <div class="card" data-title="Fight Club">
+    <img src="https://image.tmdb.org/t/p/w500/bptfVGEQuv6vDTIMVCHjJ9Dz8PX.jpg" alt="Fight Club">
+  </div>
+  <div class="card" data-title="The Matrix">
+    <img src="https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg" alt="The Matrix">
+  </div>
+  <div class="card" data-title="Gladiator">
+    <img src="https://image.tmdb.org/t/p/w500/ty8TGRuvJLPUmAR1H1nRIsgwvim.jpg" alt="Gladiator">
+  </div>
+  <div class="card" data-title="Titanic">
+    <img src="https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg" alt="Titanic">
+  </div>
+  <div class="card" data-title="The Godfather">
+    <img src="https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg" alt="The Godfather">
   </div>
 </div>
 
