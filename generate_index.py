@@ -141,72 +141,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   border-color: #ff3333;
   box-shadow: 0 0 8px #e50914;
 }}
-
-<style>
-/* Wrapper per la freccia custom */
-.select-wrapper {{
-    position: relative;
-    display: inline-block;
-    margin: 10px;
-}}
-
-/* Stile select */
-select {{
-    padding: 10px 35px 10px 15px;
-    border-radius: 25px;
-    border: 2px solid #e50914;
-    background: #1f1f1f;
-    color: #fff;
-    font-size: 16px;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    transition: all 0.3s ease;
-    width: 200px;
-}}
-
-/* Focus e hover */
-select:focus {{
-    border-color: #ff3333;
-    box-shadow: 0 0 8px #e50914;
-}}
-
-select:hover {{
-    transform: scale(1.03);
-}}
-
-/* Freccia custom */
-.select-wrapper::after {{
-    content: '▼';
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    font-size: 14px;
-    color: #fff;
-}}
-
-/* Tendina multipla (generi) */
-#genreSelect[multiple] {{
-    height: auto;
-    max-height: 150px;
-    overflow-y: auto;
-    padding-right: 10px;
-}}
-
-/* Scrollbar personalizzata per Webkit */
-#genreSelect[multiple]::-webkit-scrollbar {{
-    width: 6px;
-}}
-#genreSelect[multiple]::-webkit-scrollbar-thumb {{
-    background-color: #e50914;
-    border-radius: 3px;
-}}
-</style>
-
 #favoriteInCard.favorite-btn{{position:static;cursor:pointer;font-size:15px;}}
 #loadMore{{display:block;margin:20px auto;padding:10px 20px;font-size:16px;background:#e50914;color:#fff;border:none;border-radius:8px;cursor:pointer;}}
 #playerOverlay{{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;}}
@@ -289,20 +223,6 @@ select:hover {{
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
 
-<div class="select-wrapper">
-  <select id='typeSelect'>
-    <option value='movie'>Film</option>
-    <option value='tv'>Serie TV</option>
-    <option value='favorites'>★ Preferiti</option>
-    <option value='recent'>👁 Visti di recente</option>
-  </select>
-</div>
-
-<div class="select-wrapper">
-  <select id='genreSelect' multiple size=5></select>
-</div>
-
-
 
 <div id='playerOverlay'>
   <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
@@ -313,6 +233,11 @@ select:hover {{
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
     
+    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
+      <button id="playBtn" class="btn-play">▶ Guarda</button>
+      <button id="closeCardBtn" class="btn-close">Chiudi</button>
+      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
+    </div>
     
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
@@ -323,12 +248,6 @@ select:hover {{
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
-
-    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
-      <button id="playBtn" class="btn-play">▶ Guarda</button>
-      <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
-    </div>
   </div>
 </div>
 
