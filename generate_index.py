@@ -313,11 +313,6 @@ select:hover {{
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
     
-    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
-      <button id="playBtn" class="btn-play">▶ Guarda</button>
-      <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
-    </div>
     
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
@@ -328,6 +323,12 @@ select:hover {{
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
+
+    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
+      <button id="playBtn" class="btn-play">▶ Guarda</button>
+      <button id="closeCardBtn" class="btn-close">Chiudi</button>
+      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
+    </div>
   </div>
 </div>
 
