@@ -152,7 +152,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: cover;   /* mostra SEMPRE l'intero poster */
+    background-size: contain;   /* mostra SEMPRE l'intero poster */
     background-position: center;
     background-repeat: no-repeat;
     background-color: #141414;  /* riempie i bordi vuoti */
