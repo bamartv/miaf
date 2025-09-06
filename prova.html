@@ -1,40 +1,134 @@
-<!doctype html>
-<html lang='it'>
+<!DOCTYPE html>
+<html lang="it">
 <head>
-<meta charset='utf-8'>
-<meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Movies & Series</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InfoCard Demo</title>
 <style>
-body{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}
-h1{color:#fff;text-align:center;margin-bottom:20px;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
-.card{position:relative;cursor:pointer;}
-.poster{width:100%;border-radius:8px;display:block;}
-#latest{display:flex;overflow-x:auto;gap:10px;}
+body {
+  margin: 0;
+  background: #141414;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+}
+
+#infoCard {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('https://image.tmdb.org/t/p/original/s3TBrRGB1iav7gFOCNx3H31MoES.jpg') center/cover no-repeat;
+}
+
+#infoCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+}
+
+#infoCard > .content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  width: 90%;
+  background: rgba(20,20,20,0.85);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  animation: fadeIn 0.6s ease-out;
+}
+
+#infoCard h2 {
+  font-size: 2.5em;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+
+#infoCard p {
+  margin: 6px 0;
+  color: #ccc;
+  font-size: 0.95em;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+#playBtn {
+  background: linear-gradient(135deg, #e50914, #ff4b2b);
+  color: #fff;
+  box-shadow: 0 0 10px rgba(229,9,20,0.7);
+}
+
+#playBtn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(229,9,20,1);
+}
+
+#closeCardBtn {
+  background: linear-gradient(135deg, #444, #666);
+  color: #fff;
+}
+
+#closeCardBtn:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #666, #888);
+}
+
+#favoriteInCard {
+  background: linear-gradient(135deg, gold, orange);
+  color: #141414;
+}
+
+#favoriteInCard:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px gold;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
 </style>
 </head>
 <body>
-<h1>Ultime Novità</h1>
-<div id='latest'>
-<div class='card'><img class='poster' src='https://via.placeholder.com/300x450' alt='Film di esempio'></div><div class='card'><img class='poster' src='https://via.placeholder.com/300x450' alt='Serie di esempio'></div>
+  
+<div id="infoCard">
+  <div class="content">
+    <h2>Inception</h2>
+    <p><strong>Anno:</strong> 2010</p>
+    <p><strong>Durata:</strong> 148 min</p>
+    <p><strong>Generi:</strong> Azione, Fantascienza, Avventura</p>
+    <p><strong>Voto:</strong> 8.3</p>
+    <p><strong>Cast:</strong> Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page, Tom Hardy</p>
+    <p><em>Un ladro che ruba segreti attraverso i sogni viene incaricato di un’ultima missione impossibile: impiantare un’idea nella mente di qualcuno.</em></p>
+    
+    <div class="buttons">
+      <button id="playBtn">▶ Guarda</button>
+      <button id="favoriteInCard">★ Preferiti</button>
+      <button id="closeCardBtn">Chiudi</button>
+    </div>
+  </div>
 </div>
 
-<h1>Movies & Series</h1>
-<div id='moviesGrid' class='grid'></div>
-
-<script>
-const allData = [{"id": "1", "title": "Film di esempio", "poster": "https://via.placeholder.com/300x450", "genres": ["Azione", "Avventura"], "vote": 7.5, "overview": "Trama del film di esempio.", "type": "movie", "seasons": 0, "episodes": {}, "duration": 120, "year": "2023", "cast": ["Attore 1", "Attore 2"]}, {"id": "2", "title": "Serie di esempio", "poster": "https://via.placeholder.com/300x450", "genres": ["Commedia"], "vote": 8.2, "overview": "Trama della serie di esempio.", "type": "tv", "seasons": 2, "episodes": {"1": 5, "2": 6}, "duration": 0, "year": "2022", "cast": ["Attrice 1", "Attrice 2"]}];
-const grid = document.getElementById('moviesGrid');
-
-allData.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-        <img class='poster' src='${m.poster}' alt='${m.title}'>
-        <p>${m.title}</p>
-    `;
-    grid.appendChild(card);
-});
-</script>
 </body>
 </html>
