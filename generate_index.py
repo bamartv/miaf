@@ -253,8 +253,10 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
-<button id='loadMore'>Carica altri</button>
-<button id='randomPick'>🎲 Cosa guardiamo stasera?</button>
+<div id="bottomControls">
+ <button id='loadMore'>Carica altri</button>
+ <button id='randomPick'>🎲 Cosa guardiamo stasera?</button>
+ </div>
 
 
 <div id='playerOverlay'>
