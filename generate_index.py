@@ -564,6 +564,11 @@ document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
 document.getElementById('genreSelect').onchange=()=>render(true);
 document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
+document.getElementById('randomPick').onclick = () => {{
+    if(allData.length === 0) return;
+    const randomItem = allData[Math.floor(Math.random() * allData.length)];
+    openInfo(randomItem);
+}};
 
 /* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
