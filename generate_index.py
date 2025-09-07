@@ -205,6 +205,24 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 }}
 
+#bottomControls button {{
+  display:block;
+  margin:10px auto;
+  padding:10px 20px;
+  font-size:16px;
+  background:#e50914;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}}
+
+#bottomControls button:hover {{
+  transform:scale(1.05);
+  background:#b20710;
+}}
+
 #infoCard button#favoriteInCard.active {{
     background: linear-gradient(135deg, gold, orange);
     color: #141414;
@@ -236,6 +254,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 <div id='moviesGrid' class='grid'></div>
 <button id='loadMore'>Carica altri</button>
+<button id='randomPick'>🎲 Cosa guardiamo stasera?</button>
 
 
 <div id='playerOverlay'>
