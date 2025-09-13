@@ -512,24 +512,31 @@ function render(reset=false) {{
     let listToShow = s ? allData : currentList;
 
     while(shown<listToShow.length && count<40) {{
-        let m = listToShow[shown++];
-        let isFav = favorites.includes(m.id);
-        let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
-        if(genreMatch && m.title.toLowerCase().includes(s)) {{
-            const card = document.createElement('div');
-            card.className='card';
-            card.innerHTML = `
-                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
-                <div class='badge'>${{m.vote}}</div>
-                <p style="margin:2px 0;font-size:12px;color:#ccc;">
-                    ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
-                </p>
-                <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
-            `;
-            card.onclick = () => openInfo(m);
-            grid.appendChild(card);
-            count++;
-        }}
+    let m = listToShow[shown++];
+    let isFav = favorites.includes(m.id);
+    let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
+    if(genreMatch && (
+        m.title.toLowerCase().includes(s) ||
+        (m.cast && (
+            Array.isArray(m.cast)
+                ? m.cast.some(actor => actor.toLowerCase().includes(s))
+                : m.cast.toLowerCase().includes(s)
+        )) ||
+        (m.directors && (
+            Array.isArray(m.directors)
+                ? m.directors.some(dir => dir.toLowerCase().includes(s))
+                : m.directors.toLowerCase().includes(s)
+        ))
+    )) {{
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+            <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+            <div class='badge'>${{m.vote}}</div>
+            <p style="margin:2px 0;font-size:12px;color:#ccc;">
+                ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
+            </p>
+        `;
     }}
 }}
 
@@ -638,7 +645,8 @@ def main():
                 "episodes": episodes,
                 "duration": duration or 0,
                 "year": year or "",
-                "cast": cast
+                "cast": cast,
+                "directors": directors
             })
 
             # Solo prime 10 per latest
