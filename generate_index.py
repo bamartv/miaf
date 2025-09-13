@@ -611,18 +611,21 @@ def main():
     try:
         info = tmdb_get(api_key, type_, tmdb_id)
     except:
-        continue
-    if not info:
-        continue
+        info = None
 
-    title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
+    if not info:
+        continue  # salta se non trovato
+
+    title = info.get("title") or info.get("name") or "Titolo sconosciuto"
     poster = TMDB_IMAGE_BASE + info.get("poster_path", "") if info.get("poster_path") else ""
     genres = [g["name"] for g in info.get("genres", [])] if info.get("genres") else []
     vote = info.get("vote_average", 0)
     overview = info.get("overview", "")
+
+    # link e info su stagioni/episodi
     link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
     seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-    episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+    episodes = {str(s["season_number"]): s.get("episode_count", 1)
                 for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
 
     # year e durata
