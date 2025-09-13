@@ -627,31 +627,41 @@ def main():
 
             year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
-            runtime_list = info.get("episode_run_time") or []
-            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
+runtime_list = info.get("episode_run_time") or []
+duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+# cast (attori principali)
+cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
 
-            entries.append({
-                "id": str(tmdb_id),
-                "title": title,
-                "poster": poster,
-                "genres": genres,
-                "vote": vote,
-                "overview": overview,
-                "link": link,
-                "type": type_,
-                "seasons": seasons,
-                "episodes": episodes,
-                "duration": duration or 0,
-                "year": year or "",
-                "cast": cast,
-                "directors": directors
-            })
+# directors (registi)
+crew = info.get("credits", {}).get("crew", []) if info.get("credits") else []
+directors = [c["name"] for c in crew if c.get("job") and c["job"].lower() == "director"]
 
-            # Solo prime 10 per latest
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+# fallback per serie TV se non ci sono directors
+if not directors and type_ == "tv":
+    directors = [c["name"] for c in info.get("created_by", [])]
+
+entries.append({
+    "id": str(tmdb_id),
+    "title": title,
+    "poster": poster,
+    "genres": genres,
+    "vote": vote,
+    "overview": overview,
+    "link": link,
+    "type": type_,
+    "seasons": seasons,
+    "episodes": episodes,
+    "duration": duration or 0,
+    "year": year or "",
+    "cast": cast,
+    "directors": directors
+})
+
+# Solo prime 10 per latest
+if idx < 10:
+    latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+
 
     # --- Unione con l'archivio esistente ---
     combined = {e["id"]: e for e in old_entries}
