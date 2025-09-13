@@ -152,7 +152,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: cover;   /* mostra SEMPRE l'intero poster */
+    background-size: contain;   /* mostra SEMPRE l'intero poster */
     background-position: center;
     background-repeat: no-repeat;
     background-color: #141414;  /* riempie i bordi vuoti */
@@ -205,6 +205,24 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 }}
 
+#bottomControls button {{
+  display:block;
+  margin:10px auto;
+  padding:10px 20px;
+  font-size:16px;
+  background:#e50914;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}}
+
+#bottomControls button:hover {{
+  transform:scale(1.05);
+  background:#b20710;
+}}
+
 #infoCard button#favoriteInCard.active {{
     background: linear-gradient(135deg, gold, orange);
     color: #141414;
@@ -235,7 +253,10 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
-<button id='loadMore'>Carica altri</button>
+<div id="bottomControls">
+ <button id='loadMore'>Carica altri</button>
+ <button id='randomPick'>🎲 Cosa guardiamo stasera?</button>
+ </div>
 
 
 <div id='playerOverlay'>
@@ -545,6 +566,11 @@ document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
 document.getElementById('genreSelect').onchange=()=>render(true);
 document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
+document.getElementById('randomPick').onclick = () => {{
+    if(allData.length === 0) return;
+    const randomItem = allData[Math.floor(Math.random() * allData.length)];
+    openInfo(randomItem);
+}};
 
 /* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
@@ -589,7 +615,27 @@ def main():
             overview = info.get("overview", "")
             link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
             seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-            episodes": episodes,
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
+
+            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
+
+            runtime_list = info.get("episode_run_time") or []
+            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
+
+            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+
+            entries.append({
+                "id": str(tmdb_id),
+                "title": title,
+                "poster": poster,
+                "genres": genres,
+                "vote": vote,
+                "overview": overview,
+                "link": link,
+                "type": type_,
+                "seasons": seasons,
+                "episodes": episodes,
                 "duration": duration or 0,
                 "year": year or "",
                 "cast": cast
