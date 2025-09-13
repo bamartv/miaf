@@ -663,7 +663,6 @@ def main():
         latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
 
-
     # --- Unione con l'archivio esistente ---
     combined = {e["id"]: e for e in old_entries}
     for e in entries:
