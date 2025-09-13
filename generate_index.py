@@ -515,6 +515,7 @@ function render(reset=false) {{
         let m = listToShow[shown++];
         let isFav = favorites.includes(m.id);
         let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
+
         if(genreMatch && (
             m.title.toLowerCase().includes(s) ||
             (m.cast && (
@@ -536,7 +537,11 @@ function render(reset=false) {{
                 <p style="margin:2px 0;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
+                <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
             `;
+            card.onclick = () => openInfo(m);
+            grid.appendChild(card);
+            count++;
         }}
     }}
 }}
@@ -632,12 +637,8 @@ def main():
             duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+            directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
 
-            # Aggiungi directors
-            crew = info.get("credits", {}).get("crew", []) if info.get("credits") else []
-            directors = [c["name"] for c in crew if c.get("job") and c["job"].lower() == "director"]
-            if not directors and type_ == "tv":
-                directors = [c["name"] for c in info.get("created_by", [])]
 
             entries.append({
                 "id": str(tmdb_id),
@@ -659,7 +660,6 @@ def main():
             # Solo prime 10 per latest
             if idx < 10:
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
-
 
     # --- Unione con l'archivio esistente ---
     combined = {e["id"]: e for e in old_entries}
