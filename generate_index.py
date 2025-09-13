@@ -502,8 +502,8 @@ window.addEventListener("popstate", function(e) {{
 
 let currentType='movie', currentList=[], shown=0;
 
-function render(reset=false) {{
-    if(reset){{ grid.innerHTML=''; shown=0; }}
+function render(reset=false) {
+    if(reset){ grid.innerHTML=''; shown=0; }
     let count=0;
     let s = document.getElementById('searchBox').value.toLowerCase();
     let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
@@ -511,34 +511,35 @@ function render(reset=false) {{
     // Lista da mostrare: se c'è ricerca, cerca in tutto; altrimenti usa currentList
     let listToShow = s ? allData : currentList;
 
-    while(shown<listToShow.length && count<40) {{
-    let m = listToShow[shown++];
-    let isFav = favorites.includes(m.id);
-    let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
-    if(genreMatch && (
-        m.title.toLowerCase().includes(s) ||
-        (m.cast && (
-            Array.isArray(m.cast)
-                ? m.cast.some(actor => actor.toLowerCase().includes(s))
-                : m.cast.toLowerCase().includes(s)
-        )) ||
-        (m.directors && (
-            Array.isArray(m.directors)
-                ? m.directors.some(dir => dir.toLowerCase().includes(s))
-                : m.directors.toLowerCase().includes(s)
-        ))
-    )) {{
-        const card = document.createElement('div');
-        card.className='card';
-        card.innerHTML = `
-            <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
-            <div class='badge'>${{m.vote}}</div>
-            <p style="margin:2px 0;font-size:12px;color:#ccc;">
-                ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
-            </p>
-        `;
-    }}
-}}
+    while(shown<listToShow.length && count<40) {
+        let m = listToShow[shown++];
+        let isFav = favorites.includes(m.id);
+        let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
+        if(genreMatch && (
+            m.title.toLowerCase().includes(s) ||
+            (m.cast && (
+                Array.isArray(m.cast)
+                    ? m.cast.some(actor => actor.toLowerCase().includes(s))
+                    : m.cast.toLowerCase().includes(s)
+            )) ||
+            (m.directors && (
+                Array.isArray(m.directors)
+                    ? m.directors.some(dir => dir.toLowerCase().includes(s))
+                    : m.directors.toLowerCase().includes(s)
+            ))
+        )) {
+            const card = document.createElement('div');
+            card.className='card';
+            card.innerHTML = `
+                <img class='poster' src='${m.poster}' alt='${m.title}'>
+                <div class='badge'>${m.vote}</div>
+                <p style="margin:2px 0;font-size:12px;color:#ccc;">
+                    ${m.duration ? m.duration + ' min • ' : ''}${m.year ? m.year : ''}
+                </p>
+            `;
+        }
+    }
+}
 
 function populateGenres(){{
     const set=new Set();
