@@ -515,7 +515,20 @@ function render(reset=false) {{
         let m = listToShow[shown++];
         let isFav = favorites.includes(m.id);
         let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
-        if(genreMatch && m.title.toLowerCase().includes(s)) {{
+
+        if(genreMatch && (
+            m.title.toLowerCase().includes(s) ||
+            (m.cast && (
+                Array.isArray(m.cast)
+                    ? m.cast.some(actor => actor.toLowerCase().includes(s))
+                    : m.cast.toLowerCase().includes(s)
+            )) ||
+            (m.directors && (
+                Array.isArray(m.directors)
+                    ? m.directors.some(dir => dir.toLowerCase().includes(s))
+                    : m.directors.toLowerCase().includes(s)
+            ))
+        )) {{
             const card = document.createElement('div');
             card.className='card';
             card.innerHTML = `
@@ -585,83 +598,4 @@ showLatest();
 
 
 def main():
-    api_key = get_api_key()
-    entries = []
-    latest_entries = ""
-
-    # Carica vecchi titoli dall'archivio, se esiste
-    try:
-        old_entries = load_archive()
-    except FileNotFoundError:
-        old_entries = []
-
-    # Ciclo sulle sorgenti VIX
-    for type_, url in SRC_URLS.items():
-        data = fetch_list(url)
-        ids = extract_ids(data)
-
-        for idx, tmdb_id in enumerate(ids):
-            try:
-                info = tmdb_get(api_key, type_, tmdb_id)
-            except:
-                info = None
-            if not info:
-                continue
-
-            title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
-            poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
-            genres = [g["name"] for g in info.get("genres", [])]
-            vote = info.get("vote_average", 0)
-            overview = info.get("overview", "")
-            link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
-            seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
-                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
-
-            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-
-            runtime_list = info.get("episode_run_time") or []
-            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
-
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-
-            entries.append({
-                "id": str(tmdb_id),
-                "title": title,
-                "poster": poster,
-                "genres": genres,
-                "vote": vote,
-                "overview": overview,
-                "link": link,
-                "type": type_,
-                "seasons": seasons,
-                "episodes": episodes,
-                "duration": duration or 0,
-                "year": year or "",
-                "cast": cast
-            })
-
-            # Solo prime 10 per latest
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
-
-    # --- Unione con l'archivio esistente ---
-    combined = {e["id"]: e for e in old_entries}
-    for e in entries:
-        combined[e["id"]] = e  # aggiorna o aggiunge nuovo
-    all_entries = list(combined.values())
-
-    # Debug e salvataggio
-    print(f"Totale entries da salvare: {len(all_entries)}")
-    save_archive(all_entries)
-    print(f"Archivio salvato su {ARCHIVE_FILE}")
-
-    # Genera HTML finale
-    html = build_html(all_entries, latest_entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
-
-
-if __name__ == "__main__":
-    main()
+    api_ke
