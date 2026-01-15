@@ -105,30 +105,6 @@ body{{font-family:Arial,sans-serif;background: linear-gradient(180deg, #1c1c1c 0
 h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
-/* ===== FIX SELECT / FIRESTICK ===== */
-select {{{{
-  background: #2a2a2a;
-  color: #ffffff;
-  border: 1px solid #555;
-}}}}
-
-select option {{{{
-  background: #2a2a2a;
-  color: #ffffff;
-}}}}
-
-/* opzione selezionata */
-select option:checked {{{{
-  background: #e50914 !important;
-  color: #ffffff !important;
-}}}}
-
-/* hover (desktop) */
-select option:hover {{{{
-  background: #ff2a2a;
-  color: #ffffff;
-}}}}
-
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
 .card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
@@ -706,8 +682,8 @@ def main():
             "directors": directors
         })
 
-        # Solo prime 30 per latest
-        if idx < 30:
+        # Solo prime 10 per latest
+        if idx < 10:
             latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
 
