@@ -101,7 +101,7 @@ def build_html(entries, latest_entries):
   gtag('config', 'G-4Z7RJ384ZY');
 </script>
 <style>
-body{{font-family:Arial,sans-serif;background: linear-gradient(180deg, #1c1c1c 0%, #050505 100%);color:#fff;margin:0;padding:20px;}}
+body{{font-family:Arial,sans-serif;background:#0f0f0f;color:#fff;margin:0;padding:20px;}}
 h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
@@ -628,9 +628,9 @@ def main():
         r.raise_for_status()
         data = r.json()
 
-        if not data:
+        if not data.get("data"):
             break
-        all_data.extend(data)
+        all_data.extend(data["data"])
 
         if page >= data.get("last_page", page):
             break
