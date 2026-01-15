@@ -20,16 +20,54 @@ import json
 
 # --- Config ---
 SRC_URLS = {
-    "movie": "https://vixsrc.to/api/list/movie?lang=it&page=",
-    "tv": "https://vixsrc.to/api/list/tv?lang=it&page="
+    "movie": "https://vixsrc.to/api/list/movie?lang=it",
+    "tv": "https://vixsrc.to/api/list/tv?lang=it"
 }
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
-OUTPUT_HTML = "index.html"
+OUTPUT_HTML = "index2.html"
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
 
 ARCHIVE_FILE = "entries.json"
+
+def get_age_rating(api_key, type_, tmdb_id):
+    try:
+        if type_ == "movie":
+            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
+            r = requests.get(url, params={"api_key": api_key}, timeout=10)
+            r.raise_for_status()
+            results = r.json().get("results", [])
+            for c in results:
+                if c.get("iso_3166_1") == "IT":
+                    for rel in c.get("release_dates", []):
+                        cert = rel.get("certification")
+                        if cert:
+                            return cert
+            # fallback
+            for c in results:
+                for rel in c.get("release_dates", []):
+                    cert = rel.get("certification")
+                    if cert:
+                        return cert
+
+        elif type_ == "tv":
+            url = f"https://api.themoviedb.org/3/tv/{tmdb_id}/content_ratings"
+            r = requests.get(url, params={"api_key": api_key}, timeout=10)
+            r.raise_for_status()
+            results = r.json().get("results", [])
+            for c in results:
+                if c.get("iso_3166_1") == "IT" and c.get("rating"):
+                    return c["rating"]
+            for c in results:
+                if c.get("rating"):
+                    return c["rating"]
+
+    except:
+        pass
+
+    return "NR"
+
 
 def load_archive():
     if os.path.exists(ARCHIVE_FILE):
@@ -103,6 +141,19 @@ def build_html(entries, latest_entries):
 <style>
 body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
 h1{{color:#fff;text-align:center;margin-bottom:20px;}}
+.age-badge {{
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0,0,0,0.8);
+  border: 1px solid #fff;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 6px;
+}}
+
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
@@ -540,8 +591,9 @@ function render(reset=false) {{
             const card = document.createElement('div');
             card.className='card';
             card.innerHTML = `
-                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
-                <div class='badge'>${{m.vote}}</div>
+               <img class='poster' src='${m.poster}' alt='${m.title}'>
+               <div class='badge'>${m.vote}</div>
+               ${m.age ? `<div class="age-badge">${m.age}</div>` : ""}}
                 <p style="margin:2px 0;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
@@ -617,76 +669,59 @@ def main():
         old_entries = []
 
     # Ciclo sulle sorgenti VIX
-    for type_, base_url in SRC_URLS.items():
-        # Inizio nuovo codice per tutte le pagine Vix
-        page = 1
-        all_data = []
+    for type_, url in SRC_URLS.items():
+        data = fetch_list(url)
+        ids = extract_ids(data)
 
-    while True:
-        full_url = base_url + str(page)
-        r = requests.get(full_url, headers=HEADERS, timeout=20)
-        r.raise_for_status()
-        data = r.json()
+        for idx, tmdb_id in enumerate(ids):
+            try:
+                info = tmdb_get(api_key, type_, tmdb_id)
+                age = get_age_rating(api_key, type_, tmdb_id)
+            except:
+                info = None
+            if not info:
+                continue
 
-        if not data.get("data"):
-            break
-        all_data.extend(data["data"])
+            title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
+            poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
+            genres = [g["name"] for g in info.get("genres", [])]
+            vote = info.get("vote_average", 0)
+            overview = info.get("overview", "")
+            link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
+            seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
 
-        if page >= data.get("last_page", page):
-            break
-        page += 1
-    # Fine nuovo codice
+            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
-    ids = extract_ids(all_data)
+            runtime_list = info.get("episode_run_time") or []
+            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
-    for idx, tmdb_id in enumerate(ids):
-        try:
-            info = tmdb_get(api_key, type_, tmdb_id)
-        except:
-            info = None
-        if not info:
-            continue
-
-        title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
-        poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
-        genres = [g["name"] for g in info.get("genres", [])]
-        vote = info.get("vote_average", 0)
-        overview = info.get("overview", "")
-        link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
-        seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-        episodes = {str(s["season_number"]): s.get("episode_count", 1) 
-                    for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
-
-        year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-
-        runtime_list = info.get("episode_run_time") or []
-        duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
-
-        cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-        directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
-
-        entries.append({
-            "id": str(tmdb_id),
-            "title": title,
-            "poster": poster,
-            "genres": genres,
-            "vote": vote,
-            "overview": overview,
-            "link": link,
-            "type": type_,
-            "seasons": seasons,
-            "episodes": episodes,
-            "duration": duration or 0,
-            "year": year or "",
-            "cast": cast,
-            "directors": directors
-        })
-
-        # Solo prime 10 per latest
-        if idx < 10:
-            latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
+            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+            directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
 
 
+            entries.append({
+                "id": str(tmdb_id),
+                "title": title,
+                "poster": poster,
+                "genres": genres,
+                "vote": vote,
+                "overview": overview,
+                "link": link,
+                "type": type_,
+                "seasons": seasons,
+                "episodes": episodes,
+                "duration": duration or 0,
+                "year": year or "",
+                "cast": cast,
+                "directors": directors,
+                "age": age
+            })
+
+            # Solo prime 10 per latest
+            if idx < 10:
+                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
     # --- Unione con l'archivio esistente ---
     combined = {e["id"]: e for e in old_entries}
