@@ -106,28 +106,28 @@ h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 /* ===== FIX SELECT / FIRESTICK ===== */
-select {
+select {{{{
   background: #2a2a2a;
   color: #ffffff;
   border: 1px solid #555;
-}
+}}}}
 
-select option {
+select option {{{{
   background: #2a2a2a;
   color: #ffffff;
-}
+}}}}
 
 /* opzione selezionata */
-select option:checked {
+select option:checked {{{{
   background: #e50914 !important;
   color: #ffffff !important;
-}
+}}}}
 
 /* hover (desktop) */
-select option:hover {
+select option:hover {{{{
   background: #ff2a2a;
   color: #ffffff;
-}
+}}}}
 
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
 .card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
