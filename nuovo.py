@@ -617,24 +617,24 @@ def main():
         old_entries = []
 
     # Ciclo sulle sorgenti VIX
-    for type_, base_url in SRC_URLS.items():
-        # Inizio nuovo codice per tutte le pagine Vix
-        page = 1
-        all_data = []
+for type_, base_url in SRC_URLS.items():
+    # Inizio nuovo codice per tutte le pagine Vix
+    page = 1
+    all_data = []
 
-       while True:
-           full_url = base_url + str(page)
-           r = requests.get(full_url, headers=HEADERS, timeout=20)
-           r.raise_for_status()
-           data = r.json()
+    while True:
+        full_url = base_url + str(page)
+        r = requests.get(full_url, headers=HEADERS, timeout=20)
+        r.raise_for_status()
+        data = r.json()
 
-           if not data.get("data"):
-               break
-           all_data.extend(data["data"])
+        if not data.get("data"):
+            break
+        all_data.extend(data["data"])
 
-           if page >= data.get("last_page", page):
-               break
-           page += 1
+        if page >= data.get("last_page", page):
+            break
+        page += 1
     # Fine nuovo codice
 
     ids = extract_ids(all_data)
