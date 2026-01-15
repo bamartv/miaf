@@ -683,7 +683,7 @@ def main():
         })
 
         # Solo prime 10 per latest
-        if idx < 10:
+        if idx < 30:
             latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
 
