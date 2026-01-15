@@ -617,52 +617,55 @@ def main():
         old_entries = []
 
     # Ciclo sulle sorgenti VIX
-for type_, base_url in SRC_URLS.items():
-    # Inizio nuovo codice per tutte le pagine Vix
-    page = 1
-    all_data = []
+    for type_, base_url in SRC_URLS.items():
+        # Inizio nuovo codice per tutte le pagine Vix
+        page = 1
+        all_data = []
 
-    while True:
-        full_url = base_url + str(page)
-        r = requests.get(full_url, headers=HEADERS, timeout=20)
-        r.raise_for_status()
-        data = r.json()
+        while True:
+            full_url = base_url + str(page)
+            r = requests.get(full_url, headers=HEADERS, timeout=20)
+            r.raise_for_status()
+            data = r.json()
 
-        if not data.get("data"):
-            break
-        all_data.extend(data["data"])
+            if not data.get("data"):
+                break
+            all_data.extend(data["data"])
 
-        if page >= data.get("last_page", page):
-            break
-        page += 1
-    # Fine nuovo codice
+            if page >= data.get("last_page", page):
+                break
+            page += 1
+        # Fine nuovo codice
 
-    ids = extract_ids(all_data)
+        ids = extract_ids(all_data)
 
-    for idx, tmdb_id in enumerate(ids):
-        try:
-            info = tmdb_get(api_key, type_, tmdb_id)
-        except:
-            info = None
-        if not info:
-            continue
+        for idx, tmdb_id in enumerate(ids):
+            try:
+                info = tmdb_get(api_key, type_, tmdb_id)
+            except:
+                info = None
+            if not info:
+                continue
 
-        title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
-        poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
-        genres = [g["name"] for g in info.get("genres", [])]
-        vote = info.get("vote_average", 0)
-        overview = info.get("overview", "")
-        link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
-        seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-        episodes = {str(s["season_number"]): s.get("episode_count", 1) 
-                    for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
+            title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
+            poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
+            genres = [g["name"] for g in info.get("genres", [])]
+            vote = info.get("vote_average", 0)
+            overview = info.get("overview", "")
+            link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
+            seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
+            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
 
-        year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
+            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
 
-        runtime_list = info.get("episode_run_time") or []
-        duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
+            runtime_list = info.get("episode_run_time") or []
+            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
-        cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+
+            # Qui puoi continuare con la logica per entries, latest_entries, ecc.
+
         directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
 
         entries.append({
