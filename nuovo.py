@@ -618,9 +618,10 @@ def main():
 
     # Ciclo sulle sorgenti VIX
     for type_, base_url in SRC_URLS.items():
-    # Inizio nuovo codice per tutte le pagine
-    page = 1
-    all_data = []
+        # Inizio nuovo codice per tutte le pagine Vix
+        page = 1
+        all_data = []
+
     while True:
         full_url = base_url + str(page)
         r = requests.get(full_url, headers=HEADERS, timeout=20)
@@ -646,48 +647,46 @@ def main():
         if not info:
             continue
 
-        # ... resto del ciclo rimane identico ...
+        title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
+        poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
+        genres = [g["name"] for g in info.get("genres", [])]
+        vote = info.get("vote_average", 0)
+        overview = info.get("overview", "")
+        link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
+        seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
+        episodes = {str(s["season_number"]): s.get("episode_count", 1) 
+                    for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
+
+        year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
+
+        runtime_list = info.get("episode_run_time") or []
+        duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
+
+        cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
+        directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
+
+        entries.append({
+            "id": str(tmdb_id),
+            "title": title,
+            "poster": poster,
+            "genres": genres,
+            "vote": vote,
+            "overview": overview,
+            "link": link,
+            "type": type_,
+            "seasons": seasons,
+            "episodes": episodes,
+            "duration": duration or 0,
+            "year": year or "",
+            "cast": cast,
+            "directors": directors
+        })
+
+        # Solo prime 10 per latest
+        if idx < 10:
+            latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
 
-            title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
-            poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
-            genres = [g["name"] for g in info.get("genres", [])]
-            vote = info.get("vote_average", 0)
-            overview = info.get("overview", "")
-            link = VIX_LINK_MOVIE.format(tmdb_id) if type_ == "movie" else ""
-            seasons = info.get("number_of_seasons", 1) if type_ == "tv" else 0
-            episodes = {str(s["season_number"]): s.get("episode_count", 1) 
-                        for s in info.get("seasons", []) if s.get("season_number")} if type_ == "tv" else {}
-
-            year = (info.get("release_date") or info.get("first_air_date") or "")[:4]
-
-            runtime_list = info.get("episode_run_time") or []
-            duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
-
-            cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-            directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
-
-
-            entries.append({
-                "id": str(tmdb_id),
-                "title": title,
-                "poster": poster,
-                "genres": genres,
-                "vote": vote,
-                "overview": overview,
-                "link": link,
-                "type": type_,
-                "seasons": seasons,
-                "episodes": episodes,
-                "duration": duration or 0,
-                "year": year or "",
-                "cast": cast,
-                "directors": directors
-            })
-
-            # Solo prime 10 per latest
-            if idx < 10:
-                latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
     # --- Unione con l'archivio esistente ---
     combined = {e["id"]: e for e in old_entries}
