@@ -591,7 +591,7 @@ function render(reset=false) {{
             const card = document.createElement('div');
             card.className='card';
             card.innerHTML = `
-               <img class='poster' src='${m.poster}' alt='${m.title}'>
+               <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
                <div class='badge'>${m.vote}</div>
                ${{m.age ? `<div class="age-badge">${{m.age}}</div>` : ""}}
                 <p style="margin:2px 0;font-size:12px;color:#ccc;">
