@@ -53,8 +53,13 @@ def get_api_key():
     return key
 
 
-def fetch_list(url):
-    r = requests.get(url, headers=HEADERS, timeout=20)
+def fetch_list(url, page=1):
+    r = requests.get(
+        url,
+        headers=HEADERS,
+        params={"page": page},
+        timeout=20
+    )
     r.raise_for_status()
     return r.json()
 
@@ -619,17 +624,26 @@ def main():
         old_entries = []
 
     # Ciclo sulle sorgenti VIX
-    for type_, url in SRC_URLS.items():
-        data = fetch_list(url)
-        ids = extract_ids(data)
+    for type_, base_url in SRC_URLS.items():
+    print(f"[VIX] Scarico lista {type_}")
 
-        for idx, tmdb_id in enumerate(ids):
-            try:
-                info = tmdb_get(api_key, type_, tmdb_id)
-            except:
-                info = None
-            if not info:
-                continue
+    first = fetch_list(base_url, page=1)
+    ids = extract_ids(first)
+
+    last_page = first.get("last_page", 1)
+    print(f"[VIX] {type_}: {last_page} pagine totali")
+
+    for page in range(2, last_page + 1):
+        try:
+            data = fetch_list(base_url, page=page)
+            ids.extend(extract_ids(data))
+        except Exception as e:
+            print(f"[VIX] Errore pagina {page}: {e}")
+            break
+
+    ids = list(dict.fromkeys(ids))  # rimuove duplicati
+    print(f"[VIX] {type_}: {len(ids)} ID totali")
+
 
             title = info.get("title") or info.get("name") or f"ID {tmdb_id}"
             poster = TMDB_IMAGE_BASE + info["poster_path"] if info.get("poster_path") else ""
