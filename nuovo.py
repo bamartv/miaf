@@ -628,9 +628,9 @@ def main():
         r.raise_for_status()
         data = r.json()
 
-        if not data.get("data"):
+        if not data:
             break
-        all_data.extend(data["data"])
+        all_data.extend(data)
 
         if page >= data.get("last_page", page):
             break
