@@ -257,7 +257,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <option value='favorites'>★ Preferiti</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
-<select id='genreSelect' multiple size=5></select>
+<select id='genreSelect' multiple size=1></select>
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
