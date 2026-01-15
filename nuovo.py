@@ -593,7 +593,7 @@ function render(reset=false) {{
             card.innerHTML = `
                <img class='poster' src='${m.poster}' alt='${m.title}'>
                <div class='badge'>${m.vote}</div>
-               ${m.age ? `<div class="age-badge">${m.age}</div>` : ""}}
+               ${{m.age ? `<div class="age-badge">${{m.age}}</div>` : ""}}
                 <p style="margin:2px 0;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
