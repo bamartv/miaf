@@ -191,6 +191,22 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+.info-badges {{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}}
+
+.info-badge {{
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}}
+
 .circular-chart {{
   max-width: 50px;
   max-height: 50px;
@@ -326,6 +342,18 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <div id='latest'>
 {latest_entries}
 </div>
+
+<div class="info-badges">
+  ${{item.genres?.map(g => `<span class="info-badge">${{g}}</span>`).join("") || ""}}
+  
+  ${{item.year ? `<span class="info-badge">${{item.year}}</span>` : ""}}
+  
+  ${{item.runtime ? `<span class="info-badge">${{item.runtime}} min</span>` : ""}}
+  
+  ${{item.age ? `<span class="info-badge">PEGI ${{item.age}}</span>` : ""}}
+</div>
+
+
 
 <h1>Movies & Series</h1>
 <div class='controls'>
