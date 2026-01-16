@@ -440,12 +440,13 @@ function openInfo(item, push=true) {{
     infoTitle.textContent = item.title;
     infoGenres.innerHTML = `
   <div class="info-badges">
-    ${{item.genres?.map(g => `<span class="info-badge">${g}</span>`).join("") || ""}}
-    ${{item.year ? `<span class="info-badge">${item.year}</span>` : ""}}
-    ${{item.runtime ? `<span class="info-badge">${item.runtime} min</span>` : ""}}
-    ${{item.age ? `<span class="info-badge">PEGI ${item.age}</span>` : ""}}
+    ${{item.genres?.map(g => `<span class="info-badge">${{g}}</span>`).join("") || ""}}
+    ${{item.year ? `<span class="info-badge">${{item.year}}</span>` : ""}}
+    ${{item.runtime ? `<span class="info-badge">${{item.runtime}} min</span>` : ""}}
+    ${{item.age ? `<span class="info-badge">PEGI ${{item.age}}</span>` : ""}}
   </div>
 `;
+
 
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
