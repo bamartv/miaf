@@ -2,22 +2,53 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>TV Home Color Demo</title>
+<title>TV Home Premium</title>
 
 <style>
 body{
   margin:0;
   font-family: Arial, sans-serif;
   color:#fff;
-  background: linear-gradient(180deg, #1e3c72 0%, #2a5298 40%, #0f2027 100%);
-  overflow-x:hidden;
+  background: linear-gradient(180deg, #1e3c72 0%, #2a5298 45%, #0f2027 100%);
+}
+
+/* ===== TOP BAR ===== */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px 20px;
+  background: rgba(10,20,40,.9);
+  backdrop-filter: blur(8px);
+}
+
+.topbar input,
+.topbar select,
+.topbar button{
+  font-size:16px;
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#243b6b;
+  color:#fff;
+}
+
+.topbar button{
+  cursor:pointer;
+}
+
+.topbar button:hover{
+  background:#3b82f6;
 }
 
 /* ===== HERO ===== */
 .hero{
-  height:50vh;
+  height:45vh;
   background:
-    linear-gradient(to right, rgba(10,20,40,.85), rgba(10,20,40,.3)),
+    linear-gradient(to right, rgba(10,20,40,.9), rgba(10,20,40,.3)),
     url("https://image.tmdb.org/t/p/original/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg");
   background-size:cover;
   padding:40px;
@@ -26,37 +57,14 @@ body{
   justify-content:flex-end;
 }
 
-.hero h1{
-  font-size:48px;
-  margin:0;
-}
-
-.hero p{
-  max-width:650px;
-  color:#e0e0e0;
-}
-
-.hero .buttons button{
-  font-size:18px;
-  padding:10px 22px;
-  margin-right:10px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
-
-.play{background:#00e5ff;color:#000;}
-.info{background:#5c6bc0;color:#fff;}
-
 /* ===== SEZIONI ===== */
 .section{
-  margin-top:25px;
   padding-left:40px;
+  margin-top:25px;
 }
 
 .section h2{
   margin-bottom:10px;
-  font-size:22px;
 }
 
 /* ===== ROW ===== */
@@ -73,15 +81,13 @@ body{
   height:270px;
   border-radius:14px;
   overflow:hidden;
-  position:relative;
-  background:#222;
+  background:#111;
   box-shadow: 0 8px 20px rgba(0,0,0,.4);
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s;
 }
 
 .card:hover{
   transform: scale(1.08);
-  box-shadow: 0 12px 30px rgba(0,0,0,.6);
 }
 
 .card img{
@@ -95,69 +101,59 @@ body{
   position:absolute;
   bottom:8px;
   left:8px;
+  background:rgba(0,0,0,.75);
   padding:4px 8px;
-  font-size:12px;
   border-radius:6px;
-  background:rgba(0,0,0,.7);
+  font-size:12px;
 }
-
-/* ===== GENRE COLORS ===== */
-.action{background:#e53935;}
-.comedy{background:#fbc02d;color:#000;}
-.family{background:#43a047;}
-.scifi{background:#00acc1;}
-.drama{background:#8e24aa;}
 </style>
 </head>
 
 <body>
 
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  🔍 <input type="text" placeholder="Cerca titolo...">
+  
+  🎭
+  <select>
+    <option>Tutti i generi</option>
+    <option>Azione</option>
+    <option>Commedia</option>
+    <option>Dramma</option>
+    <option>Famiglia</option>
+    <option>Fantascienza</option>
+  </select>
+
+  <button>⭐ Preferiti</button>
+  <button>🕘 Visti di recente</button>
+  <button>🎲 Random</button>
+</div>
+
 <!-- ===== HERO ===== -->
 <div class="hero">
   <h1>Interstellar</h1>
-  <p>Un viaggio emozionante oltre i confini dello spazio e del tempo per salvare l’umanità.</p>
-  <div class="buttons">
-    <button class="play">▶ Guarda</button>
-    <button class="info">ℹ Info</button>
-  </div>
+  <p>Un viaggio oltre i confini dello spazio e del tempo.</p>
 </div>
 
 <!-- ===== ULTIMI AGGIUNTI ===== -->
 <div class="section">
   <h2>Ultimi aggiunti</h2>
   <div class="row">
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/74xTEgt7R36Fpooo50r9T25onhq.jpg"><span class="badge scifi">PEGI 12</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg"><span class="badge drama">PEGI 16</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/lNyLSOKMMeUPr1RsL4KcRuIXwHt.jpg"><span class="badge family">PEGI 7</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"><span class="badge action">PEGI 18</span></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/74xTEgt7R36Fpooo50r9T25onhq.jpg"></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/qJ2tW6WMUDux911r6m7haRef0WH.jpg"></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/lNyLSOKMMeUPr1RsL4KcRuIXwHt.jpg"></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"></div>
   </div>
 </div>
 
-<!-- ===== AZIONE ===== -->
+<!-- ===== CONSIGLIATI ===== -->
 <div class="section">
-  <h2>Azione</h2>
+  <h2>Consigliati per te</h2>
   <div class="row">
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"><span class="badge action">Azione</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg"><span class="badge action">Azione</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg"><span class="badge action">Azione</span></div>
-  </div>
-</div>
-
-<!-- ===== COMMEDIA ===== -->
-<div class="section">
-  <h2>Commedia</h2>
-  <div class="row">
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/saHP97rTPS5eLmrLQEcANmKrsFl.jpg"><span class="badge comedy">Commedia</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/w2PMyoyLU22YvrGK3smVM9fW1jj.jpg"><span class="badge comedy">Commedia</span></div>
-  </div>
-</div>
-
-<!-- ===== FAMIGLIA ===== -->
-<div class="section">
-  <h2>Per tutta la famiglia</h2>
-  <div class="row">
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/8UlWHLMpgZm9bx6QYh0NFoq67TZ.jpg"><span class="badge family">Famiglia</span></div>
-    <div class="card"><img src="https://image.tmdb.org/t/p/w300/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"><span class="badge family">Famiglia</span></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/xBHvZcjRiWyobQ9kxBhO6B2dtRI.jpg"></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/kOVEVeg59E0wsnXmF9nrh6OmWII.jpg"></div>
+    <div class="card"><img src="https://image.tmdb.org/t/p/w300/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg"></div>
   </div>
 </div>
 
