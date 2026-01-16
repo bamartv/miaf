@@ -191,6 +191,9 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+<style>
+/* altre regole già presenti */
+
 .info-badges {{
   display: flex;
   flex-wrap: wrap;
@@ -206,6 +209,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   border-radius: 6px;
   white-space: nowrap;
 }}
+</style>
 
 .circular-chart {{
   max-width: 50px;
@@ -343,18 +347,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 {latest_entries}
 </div>
 
-<div class="info-badges">
-  ${{item.genres?.map(g => `<span class="info-badge">${{g}}</span>`).join("") || ""}}
-  
-  ${{item.year ? `<span class="info-badge">${{item.year}}</span>` : ""}}
-  
-  ${{item.runtime ? `<span class="info-badge">${{item.runtime}} min</span>` : ""}}
-  
-  ${{item.age ? `<span class="info-badge">PEGI ${{item.age}}</span>` : ""}}
-</div>
-
-
-
 <h1>Movies & Series</h1>
 <div class='controls'>
 <select id='typeSelect'>
@@ -381,7 +373,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 <div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
-    
     <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
       <button id="playBtn" class="btn-play">▶ Guarda</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
@@ -447,7 +438,15 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${{item.poster}}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
-    infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
+    infoGenres.innerHTML = `
+  <div class="info-badges">
+    ${item.genres?.map(g => `<span class="info-badge">${g}</span>`).join("") || ""}
+    ${item.year ? `<span class="info-badge">${item.year}</span>` : ""}
+    ${item.runtime ? `<span class="info-badge">${item.runtime} min</span>` : ""}
+    ${item.age ? `<span class="info-badge">PEGI ${item.age}</span>` : ""}
+  </div>
+`;
+
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
 
