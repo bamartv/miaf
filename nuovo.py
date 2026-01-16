@@ -27,14 +27,14 @@ TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
 TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w780"
 VIX_LINK_MOVIE = "https://vixsrc.to/movie/{}/?"
 OUTPUT_HTML = "index2.html"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; script/1.0)"}
+HEADERS = {"User-Agent": "Mozilla/.0 (compatible; script/1.0)"}
 
 ARCHIVE_FILE = "entries.json"
 
 def get_pegi_eu(api_key, type_, tmdb_id):
     if type_ == "movie":
         url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
-        r = requests.get(url, params={"api_key": api_key}, timeout=15)
+        r = requests.get(url, params={"api_key": api_key}, timeout=1)
         if r.status_code != 200:
             return ""
 
@@ -49,7 +49,7 @@ def get_pegi_eu(api_key, type_, tmdb_id):
 
     else:  # TV
         url = f"https://api.themoviedb.org/3/tv/{tmdb_id}/content_ratings"
-        r = requests.get(url, params={"api_key": api_key}, timeout=15)
+        r = requests.get(url, params={"api_key": api_key}, timeout=1)
         if r.status_code != 200:
             return ""
 
@@ -108,7 +108,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     r = requests.get(
         url,
         params={"api_key": api_key, "language": language, "append_to_response": "credits"},
-        timeout=15
+        timeout=1
     )
     if r.status_code == 404:
         return None
@@ -138,9 +138,9 @@ h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
 .card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
-.card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
+.card:hover{{transform:scale(1.0);border-color:#e0914;background:#2a2a2a;}}
 .poster{{width:100%;border-radius:0;display:block;}}
-.badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
+.badge{{position:absolute;top:8px;right:8px;background:#e0914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .pegi-badge{{
@@ -151,13 +151,13 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   color:#fff;
   font-size:11px;
   padding:3px 6px;
-  border-radius:5px;
-  opacity:0.85;
+  border-radius:px;
+  opacity:0.8;
 }}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
 .circular-chart {{
-  max-width: 50px;
-  max-height: 50px;
+  max-width: 0px;
+  max-height: 0px;
 }}
 .circle-bg {{
   fill: none;
@@ -299,7 +299,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <option value='favorites'>★ Preferiti</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
-<select id='genreSelect' multiple size=5></select>
+<select id='genreSelect' multiple size=1></select>
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
