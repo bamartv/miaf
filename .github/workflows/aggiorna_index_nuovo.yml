@@ -31,7 +31,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add index.html entries.json
+          git add index2.html entries.json
           git commit -m "TEST: output da nuovo.py" || echo "Nessuna modifica"
 
       - name: Push risultati
