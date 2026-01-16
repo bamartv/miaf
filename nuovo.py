@@ -68,6 +68,33 @@ def get_age_rating(api_key, type_, tmdb_id):
 
     return "NR"
 
+def convert_to_pegi(raw):
+    if not raw:
+        return ""
+
+    r = raw.upper().strip()
+
+    mapping = {
+        "T": "PEGI 3",
+        "G": "PEGI 3",
+        "TV-G": "PEGI 3",
+
+        "PG": "PEGI 7",
+        "TV-PG": "PEGI 7",
+
+        "PG-13": "PEGI 12",
+        "TV-14": "PEGI 12",
+
+        "R": "PEGI 16",
+
+        "NC-17": "PEGI 18",
+        "MA": "PEGI 18",
+        "TV-MA": "PEGI 18"
+    }
+
+    return mapping.get(r, "")
+
+
 
 def load_archive():
     if os.path.exists(ARCHIVE_FILE):
@@ -676,7 +703,8 @@ def main():
         for idx, tmdb_id in enumerate(ids):
             try:
                 info = tmdb_get(api_key, type_, tmdb_id)
-                age = get_age_rating(api_key, type_, tmdb_id)
+                raw_age = get_age_rating(api_key, type_, tmdb_id)
+                age = convert_to_pegi(raw_age)
             except:
                 info = None
             if not info:
