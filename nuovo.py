@@ -10,7 +10,7 @@ SRC_URLS = {
 
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
 TMDB_IMAGE = "https://image.tmdb.org/t/p/w780"
-OUTPUT_HTML = "index.html"   # <-- cambia in index2.html se vuoi
+OUTPUT_HTML = "index2.html"   # <-- cambia in index2.html se vuoi
 ARCHIVE_FILE = "entries.json"
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
