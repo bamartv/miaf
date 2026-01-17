@@ -11,7 +11,7 @@ import json
 #   "pegi": "16+"
 # }
 
-with open("movies.json", "r", encoding="utf-8") as f:
+with open("entries.json", "r", encoding="utf-8") as f:
     movies = json.load(f)
 
 # Raggruppa per genere
