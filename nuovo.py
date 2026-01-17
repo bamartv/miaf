@@ -165,11 +165,53 @@ body {{
 }}
 
 #infoBox {{
-  max-width:800px;
+  max-width:900px;
   width:90%;
   background:#020617;
+  border-radius:16px;
+  display:flex;
+  overflow:hidden;
+}}
+
+#infoPoster {{
+  width:300px;
+  flex-shrink:0;
+}}
+
+#infoPoster img {{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}}
+
+#infoContent {{
   padding:20px;
-  border-radius:14px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}}
+
+#infoContent h2 {{
+  margin:0;
+}}
+
+.actions button {{
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  margin-right:8px;
+  cursor:pointer;
+}}
+
+.play {{
+  background:#dc2626;
+  color:#fff;
+}}
+
+.fav {{
+  background:#2563eb;
+  color:#fff;
 }}
 </style>
 </head>
@@ -195,13 +237,18 @@ body {{
 
 <div id="content"></div>
 
-<div id="infoCard">
+<div id="infoCard" onclick="closeInfo(event)">
   <div id="infoBox">
-    <h2 id="infoTitle"></h2>
-    <p id="infoOverview"></p>
-    <button id="playBtn">▶ Guarda</button>
-    <button id="favBtn">★ Preferiti</button>
-    <button onclick="closeInfo()">Chiudi</button>
+    <div id="infoPoster"><img id="infoImg"></div>
+    <div id="infoContent">
+      <h2 id="infoTitle"></h2>
+      <div id="infoGenres"></div>
+      <p id="infoOverview"></p>
+      <div class="actions">
+        <button class="play" id="playBtn">▶ Guarda</button>
+        <button class="fav" id="favBtn">★ Preferiti</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -217,10 +264,10 @@ let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentPool = [];
 
-/* popolamento generi */
-[...new Set(DATA.flatMap(x => x.genres || []))].sort().forEach(g => {{
+/* generi */
+[...new Set(DATA.flatMap(x=>x.genres||[]))].sort().forEach(g=>{
   genreSelect.innerHTML += `<option value="${{g}}">${{g}}</option>`;
-}});
+});
 
 function poster(item) {{
   return `
@@ -232,7 +279,7 @@ function poster(item) {{
 }}
 
 function addRow(title, items) {{
-  if (!items.length) return;
+  if(!items.length) return;
   content.innerHTML += `
     <div class="row">
       <h2>${{title}}</h2>
@@ -243,67 +290,68 @@ function addRow(title, items) {{
 }}
 
 function buildHome(list) {{
-  content.innerHTML = "";
-  addRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
-  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g => {{
-    addRow(g, list.filter(x => x.genres?.includes(g)));
-  }});
+  content.innerHTML="";
+  addRow("🔥 Ultime uscite",[...list].sort((a,b)=>b.added.localeCompare(a.added)));
+  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g=>{
+    addRow(g,list.filter(x=>x.genres?.includes(g)));
+  });
 }}
 
 function buildGrid(list) {{
-  content.innerHTML = `<div class="grid">${{list.map(poster).join("")}}</div>`;
+  content.innerHTML=`<div class="grid">${{list.map(poster).join("")}}</div>`;
 }}
 
 function rebuild() {{
-  const q = search.value.toLowerCase();
-  const g = genreSelect.value;
-  const t = typeSelect.value;
+  const q=search.value.toLowerCase();
+  const g=genreSelect.value;
+  const t=typeSelect.value;
 
-  let list = DATA;
+  let list=DATA;
+  if(t==="favorites") list=DATA.filter(x=>favorites.includes(x.id));
+  else if(t==="recent") list=DATA.filter(x=>recent.includes(x.id));
+  else list=DATA.filter(x=>x.type===t);
 
-  if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
-  else if (t === "recent") list = DATA.filter(x => recent.includes(x.id));
-  else list = DATA.filter(x => x.type === t);
+  if(q) list=list.filter(x=>x.title.toLowerCase().includes(q));
+  if(g) list=list.filter(x=>x.genres?.includes(g));
 
-  if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
-  if (g) list = list.filter(x => x.genres?.includes(g));
+  currentPool=list;
 
-  currentPool = list;
-
-  if (q || g || t === "favorites" || t === "recent") buildGrid(list);
+  if(q||g||t==="favorites"||t==="recent") buildGrid(list);
   else buildHome(list);
 }}
 
 function openInfo(item) {{
-  infoTitle.textContent = item.title;
-  infoOverview.textContent = item.overview;
-  playBtn.onclick = () => window.open(item.link, "_blank");
-  favBtn.onclick = () => toggleFav(item.id);
-  infoCard.style.display = "flex";
+  infoImg.src=item.poster;
+  infoTitle.textContent=item.title;
+  infoOverview.textContent=item.overview;
+  infoGenres.textContent=item.genres.join(" • ");
 
-  recent = [item.id, ...recent.filter(x => x !== item.id)].slice(0,20);
-  localStorage.setItem("recent", JSON.stringify(recent));
+  playBtn.onclick=()=>window.open(item.link,"_blank");
+  favBtn.onclick=()=>toggleFav(item.id);
+
+  infoCard.style.display="flex";
+
+  recent=[item.id,...recent.filter(x=>x!==item.id)].slice(0,20);
+  localStorage.setItem("recent",JSON.stringify(recent));
 }}
 
-function closeInfo() {{
-  infoCard.style.display = "none";
+function closeInfo(e) {{
+  if(e.target.id==="infoCard") infoCard.style.display="none";
 }}
 
 function toggleFav(id) {{
-  favorites = favorites.includes(id)
-    ? favorites.filter(x => x !== id)
-    : [...favorites, id];
-  localStorage.setItem("fav", JSON.stringify(favorites));
+  favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];
+  localStorage.setItem("fav",JSON.stringify(favorites));
 }}
 
-document.getElementById("randomPick").onclick = () => {{
-  if (currentPool.length)
-    openInfo(currentPool[Math.floor(Math.random() * currentPool.length)]);
-}};
+document.getElementById("randomPick").onclick=()=>{
+  if(currentPool.length)
+    openInfo(currentPool[Math.floor(Math.random()*currentPool.length)]);
+};
 
-search.oninput = rebuild;
-genreSelect.onchange = rebuild;
-typeSelect.onchange = rebuild;
+search.oninput=rebuild;
+genreSelect.onchange=rebuild;
+typeSelect.onchange=rebuild;
 
 rebuild();
 </script>
@@ -343,11 +391,10 @@ def main():
     entries = list(old.values())
     save_archive(entries)
 
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
         f.write(build_html(entries))
 
     print(f"✅ {OUTPUT_HTML} generato con {len(entries)} titoli")
-
 
 if __name__ == "__main__":
     main()
