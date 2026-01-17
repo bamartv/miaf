@@ -9,7 +9,7 @@ SRC_URLS = {
 }
 
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_IMAGE = "https://image.tmdb.org/t/p/w780"
+TMDB_IMAGE = "https://image.tmdb.org/t/p/w342"
 OUTPUT_HTML = "index2.html"
 ARCHIVE_FILE = "entries.json"
 
@@ -78,7 +78,7 @@ def build_html(entries):
 <style>
 body {{
   margin:0;
-  background:#b91c1c;
+  background:linear-gradient(135deg,#1f2933,#111827,#020617);
   color:#fff;
   font-family:Arial;
 }}
@@ -87,7 +87,7 @@ body {{
   position:sticky;
   top:0;
   z-index:100;
-  background:#000;
+  background:rgba(0,0,0,.85);
   padding:12px;
   display:flex;
   gap:10px;
@@ -103,7 +103,7 @@ body {{
   padding:8px 14px;
   border-radius:10px;
   border:none;
-  background:#dc2626;
+  background:#2563eb;
   color:#fff;
   font-weight:bold;
   cursor:pointer;
@@ -115,7 +115,6 @@ body {{
 
 .row h2 {{
   margin:10px;
-  font-size:20px;
 }}
 
 .row-content {{
@@ -130,7 +129,7 @@ body {{
 }}
 
 .poster {{
-  min-width:140px;
+  min-width:150px;
   border-radius:12px;
   overflow:hidden;
   cursor:pointer;
@@ -146,6 +145,13 @@ body {{
   display:block;
 }}
 
+.grid {{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:14px;
+  padding:20px;
+}}
+
 #infoCard {{
   position:fixed;
   inset:0;
@@ -159,16 +165,9 @@ body {{
 #infoBox {{
   max-width:800px;
   width:90%;
-  background:#111;
+  background:#020617;
   padding:20px;
   border-radius:14px;
-}}
-
-button {{
-  padding:10px 16px;
-  border:none;
-  border-radius:8px;
-  font-size:16px;
 }}
 </style>
 </head>
@@ -192,7 +191,7 @@ button {{
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
 
-<div id="rows"></div>
+<div id="content"></div>
 
 <div id="infoCard">
   <div id="infoBox">
@@ -206,7 +205,7 @@ button {{
 
 <script>
 const DATA = {entries_json};
-const rows = document.getElementById("rows");
+const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
 const genreSelect = document.getElementById("genreSelect");
@@ -215,89 +214,88 @@ let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentPool = [];
 
-/* ===== genera lista generi ===== */
-const allGenres = [...new Set(DATA.flatMap(x => x.genres || []))].sort();
-allGenres.forEach(g => {{
-  const o = document.createElement("option");
-  o.value = g;
-  o.textContent = g;
-  genreSelect.appendChild(o);
-}});
+/* generi */
+[...new Set(DATA.flatMap(x=>x.genres||[]))].sort().forEach(g=>{
+  genreSelect.innerHTML += `<option value="${{g}}">${{g}}</option>`;
+});
 
-function createRow(title, items) {{
-  if (!items.length) return;
-
-  const row = document.createElement("div");
-  row.className = "row";
-  row.innerHTML = `<h2>${{title}}</h2><div class="row-content"></div>`;
-  const content = row.querySelector(".row-content");
-
-  items.slice(0,25).forEach(item => {{
-    const p = document.createElement("div");
-    p.className = "poster";
-    p.innerHTML = `<img src="${{item.poster}}">`;
-    p.onclick = () => openInfo(item);
-    content.appendChild(p);
-  }});
-
-  rows.appendChild(row);
+function poster(item) {{
+  return `<div class="poster" onclick='openInfo(${JSON.stringify(item).replace(/'/g,"&apos;")})'>
+            <img src="${{item.poster}}">
+          </div>`;
 }}
 
-function buildRows() {{
-  rows.innerHTML = "";
-  const t = typeSelect.value;
+function buildHome(list) {{
+  content.innerHTML = "";
+  addRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
+  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g=>{
+    addRow(g, list.filter(x=>x.genres?.includes(g)));
+  });
+}}
+
+function addRow(title, items) {{
+  if(!items.length) return;
+  content.innerHTML += `
+    <div class="row">
+      <h2>${{title}}</h2>
+      <div class="row-content">
+        ${{items.slice(0,25).map(poster).join("")}}
+      </div>
+    </div>`;
+}}
+
+function buildGrid(list) {{
+  content.innerHTML = `<div class="grid">${{list.map(poster).join("")}}</div>`;
+}}
+
+function rebuild() {{
   const q = search.value.toLowerCase();
   const g = genreSelect.value;
+  const t = typeSelect.value;
 
   let list = DATA;
-  if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
-  else if (t === "recent") list = DATA.filter(x => recent.includes(x.id));
-  else list = DATA.filter(x => x.type === t);
+  if(t==="favorites") list = DATA.filter(x=>favorites.includes(x.id));
+  else if(t==="recent") list = DATA.filter(x=>recent.includes(x.id));
+  else list = DATA.filter(x=>x.type===t);
 
-  if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
-  if (g) list = list.filter(x => x.genres && x.genres.includes(g));
+  if(q) list = list.filter(x=>x.title.toLowerCase().includes(q));
+  if(g) list = list.filter(x=>x.genres?.includes(g));
 
   currentPool = list;
 
-  createRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
-
-  [...new Set(list.flatMap(x => x.genres || []))].forEach(gen => {{
-    createRow(gen, list.filter(x => x.genres && x.genres.includes(gen)));
-  }});
+  if(q || g) buildGrid(list);
+  else buildHome(list);
 }}
 
 function openInfo(item) {{
   infoTitle.textContent = item.title;
   infoOverview.textContent = item.overview;
-  playBtn.onclick = () => window.open(item.link,"_blank");
-  favBtn.onclick = () => toggleFav(item.id);
-  infoCard.style.display = "flex";
+  playBtn.onclick = ()=>window.open(item.link,"_blank");
+  favBtn.onclick = ()=>toggleFav(item.id);
+  infoCard.style.display="flex";
 
-  recent = [item.id, ...recent.filter(x=>x!==item.id)].slice(0,20);
-  localStorage.setItem("recent", JSON.stringify(recent));
+  recent=[item.id,...recent.filter(x=>x!==item.id)].slice(0,20);
+  localStorage.setItem("recent",JSON.stringify(recent));
 }}
 
 function closeInfo() {{
-  infoCard.style.display = "none";
+  infoCard.style.display="none";
 }}
 
 function toggleFav(id) {{
-  favorites = favorites.includes(id)
-    ? favorites.filter(x=>x!==id)
-    : favorites.concat(id);
-  localStorage.setItem("fav", JSON.stringify(favorites));
+  favorites = favorites.includes(id) ? favorites.filter(x=>x!==id) : [...favorites,id];
+  localStorage.setItem("fav",JSON.stringify(favorites));
 }}
 
-document.getElementById("randomPick").onclick = () => {{
-  if (!currentPool.length) return;
-  openInfo(currentPool[Math.floor(Math.random()*currentPool.length)]);
-}};
+document.getElementById("randomPick").onclick=()=>{
+  if(currentPool.length) openInfo(currentPool[Math.floor(Math.random()*currentPool.length)]);
+};
 
-search.oninput = buildRows;
-typeSelect.onchange = buildRows;
-genreSelect.onchange = buildRows;
+search.oninput=rebuild;
+genreSelect.onchange=rebuild;
+typeSelect.onchange=rebuild;
 
-buildRows();
+rebuild();
 </script>
 
 </body>
@@ -313,8 +311,7 @@ def main():
     new = []
 
     for t, url in SRC_URLS.items():
-        ids = extract_ids(fetch_list(url))
-        for tmdb_id in ids:
+        for tmdb_id in extract_ids(fetch_list(url)):
             info = tmdb_get(api_key, t, tmdb_id)
             if not info:
                 continue
