@@ -67,26 +67,29 @@ def fetch_all(type_):
     page = 1
     all_items = []
 
-    while True:
-        data = tmdb_get(
-            SRC_URL.format(type=type_),
-            params={
-                "page": page,
-                "sort_by": "primary_release_date.desc",
-                "language": "it-IT",
-            },
-        )
-
-        if not data.get("results"):
+    while page <= 500:   # <<< LIMITE TMDB
+        try:
+            data = tmdb_get(
+                SRC_URL.format(type=type_),
+                params={
+                    "page": page,
+                    "sort_by": "primary_release_date.desc",
+                    "language": "it-IT",
+                },
+            )
+        except Exception as e:
+            print(f"Errore TMDB pagina {page}: {e}")
             break
 
-        all_items.extend(data["results"])
-
-        if page >= data.get("total_pages", page):
+        results = data.get("results", [])
+        if not results:
             break
+
+        all_items.extend(results)
         page += 1
 
     return all_items
+
 
 # =========================
 # BUILD ENTRIES
