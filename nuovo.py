@@ -71,7 +71,7 @@ def build_html(entries):
 <title>TV Media Center</title>
 
 <style>
-body{{margin:0;background:#141414;color:#fff;font-family:Arial}}
+body{{margin:0;background:#b91c1c;color:#fff;font-family:Arial}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;padding:20px}}
 .card{{outline:none;cursor:pointer;border-radius:12px;overflow:hidden;transition:transform .2s}}
 .card:focus{{transform:scale(1.15);box-shadow:0 0 0 4px #e50914}}
