@@ -45,7 +45,7 @@ def extract_ids(data):
 def tmdb_get(api_key, type_, tmdb_id):
     r = requests.get(
         TMDB_BASE.format(type=type_, id=tmdb_id),
-        params={"api_key": api_key, "language": "it-IT", "append_to_response": "credits"},
+        params={"api_key": api_key, "language": "it-IT"},
         timeout=15
     )
     return r.json() if r.status_code == 200 else None
@@ -91,6 +91,7 @@ body {{
   padding:12px;
   display:flex;
   gap:10px;
+  flex-wrap:wrap;
 }}
 
 .topbar input, .topbar select {{
@@ -136,9 +137,8 @@ body {{
   transition:transform .2s;
 }}
 
-.poster:focus {{
-  outline:3px solid gold;
-  transform:scale(1.1);
+.poster:hover {{
+  transform:scale(1.08);
 }}
 
 .poster img {{
@@ -163,6 +163,7 @@ body {{
   padding:20px;
   border-radius:14px;
 }}
+
 button {{
   padding:10px 16px;
   border:none;
@@ -176,12 +177,18 @@ button {{
 
 <div class="topbar">
   <input id="searchBox" placeholder="Cerca titolo...">
+
   <select id="typeSelect">
     <option value="movie">🎬 Film</option>
     <option value="tv">📺 Serie TV</option>
     <option value="favorites">★ Preferiti</option>
     <option value="recent">🕘 Recenti</option>
   </select>
+
+  <select id="genreSelect">
+    <option value="">🎭 Tutti i generi</option>
+  </select>
+
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
 
@@ -202,10 +209,20 @@ const DATA = {entries_json};
 const rows = document.getElementById("rows");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
+const genreSelect = document.getElementById("genreSelect");
 
 let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentPool = [];
+
+/* ===== genera lista generi ===== */
+const allGenres = [...new Set(DATA.flatMap(x => x.genres || []))].sort();
+allGenres.forEach(g => {{
+  const o = document.createElement("option");
+  o.value = g;
+  o.textContent = g;
+  genreSelect.appendChild(o);
+}});
 
 function createRow(title, items) {{
   if (!items.length) return;
@@ -215,10 +232,9 @@ function createRow(title, items) {{
   row.innerHTML = `<h2>${{title}}</h2><div class="row-content"></div>`;
   const content = row.querySelector(".row-content");
 
-  items.forEach(item => {{
+  items.slice(0,25).forEach(item => {{
     const p = document.createElement("div");
     p.className = "poster";
-    p.tabIndex = 0;
     p.innerHTML = `<img src="${{item.poster}}">`;
     p.onclick = () => openInfo(item);
     content.appendChild(p);
@@ -231,6 +247,7 @@ function buildRows() {{
   rows.innerHTML = "";
   const t = typeSelect.value;
   const q = search.value.toLowerCase();
+  const g = genreSelect.value;
 
   let list = DATA;
   if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
@@ -238,13 +255,14 @@ function buildRows() {{
   else list = DATA.filter(x => x.type === t);
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
+  if (g) list = list.filter(x => x.genres && x.genres.includes(g));
+
   currentPool = list;
 
-  createRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)).slice(0,20));
+  createRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
 
-  const genres = ["Animazione","Commedia","Azione","Horror","Fantasy","Dramma"];
-  genres.forEach(g => {{
-    createRow(g, list.filter(x => x.genres && x.genres.includes(g)).slice(0,25));
+  [...new Set(list.flatMap(x => x.genres || []))].forEach(gen => {{
+    createRow(gen, list.filter(x => x.genres && x.genres.includes(gen)));
   }});
 }}
 
@@ -277,6 +295,7 @@ document.getElementById("randomPick").onclick = () => {{
 
 search.oninput = buildRows;
 typeSelect.onchange = buildRows;
+genreSelect.onchange = buildRows;
 
 buildRows();
 </script>
