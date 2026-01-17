@@ -151,7 +151,6 @@ def build_entries():
 # =========================
 
 def build_html(entries):
-    entries.sort(key=lambda x: x["added"], reverse=True)
     latest = entries[:30]
 
     def card(item):
