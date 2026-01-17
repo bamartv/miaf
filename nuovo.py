@@ -79,6 +79,18 @@ body{{margin:0;background:#b91c1c;color:#fff;font-family:Arial}}
 
 .topbar{{position:sticky;top:0;z-index:100;background:#000;padding:12px;display:flex;gap:10px}}
 .topbar input,.topbar select{{padding:8px;font-size:16px}}
+.topbar button{{
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#dc2626;
+  color:#fff;
+  cursor:pointer;
+  font-weight:bold;
+}}
+.topbar button:hover{{
+  background:#ef4444;
+}}
 
 #infoCard{{position:fixed;inset:0;display:none;background:rgba(0,0,0,.85);z-index:1000;
 display:flex;align-items:center;justify-content:center}}
@@ -92,14 +104,18 @@ button:focus{{outline:3px solid gold}}
 <body>
 
 <div class="topbar">
-  <input id="search" placeholder="Cerca">
-  <select id="type">
-    <option value="movie">Film</option>
-    <option value="tv">Serie TV</option>
+  <input id="searchBox" placeholder="Cerca titolo...">
+
+  <select id="typeSelect">
+    <option value="movie">🎬 Film</option>
+    <option value="tv">📺 Serie TV</option>
     <option value="favorites">★ Preferiti</option>
-    <option value="recent">👁 Recenti</option>
+    <option value="recent">🕘 Recenti</option>
   </select>
+
+  <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
+
 
 <div id="grid" class="grid"></div>
 
@@ -122,6 +138,9 @@ let favorites = JSON.parse(localStorage.getItem("fav")||"[]");
 let recent = JSON.parse(localStorage.getItem("recent")||"[]");
 
 const grid = document.getElementById("grid");
+const search = document.getElementById("searchBox");
+const type = document.getElementById("typeSelect");
+
 
 function applyFilter() {{
   const t = type.value;
@@ -178,6 +197,14 @@ function toggleFav(id) {{
     : favorites.concat(id);
   localStorage.setItem("fav",JSON.stringify(favorites));
 }}
+
+// 🎲 Cosa guardiamo stasera
+document.getElementById("randomPick").onclick = () => {{
+  if (current.length === 0) return;
+  const pick = current[Math.floor(Math.random() * current.length)];
+  openInfo(pick);
+}};
+
 
 search.oninput=applyFilter;
 type.onchange=applyFilter;
