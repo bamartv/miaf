@@ -132,7 +132,17 @@ def build_html(entries, latest_entries):
   gtag('config', 'G-4Z7RJ384ZY');
 </script>
 <style>
-body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
+body{{
+  margin:0;
+  font-family: Arial, sans-serif;
+  color:#fff;
+  background: linear-gradient(
+    180deg,
+    #1e3c72 0%,
+    #2a5298 45%,
+    #0f2027 100%
+  );
+}}
 h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
@@ -286,9 +296,24 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </style>
 </head>
 <body>
+<div class="topbar">
+  🔍 <input type="text" id="searchBox" placeholder="Cerca titolo...">
+  
+  🎭
+  <select id="typeSelect">
+    <option value="movie">Film</option>
+    <option value="tv">Serie TV</option>
+    <option value="favorites">⭐ Preferiti</option>
+    <option value="recent">🕘 Visti di recente</option>
+  </select>
+
+  <button id="randomPick">🎲 Random</button>
+</div>
+
 <h1>Aggiunti di recente</h1>
-<div id='latest'>
-{latest_entries}
+<div id="latest" class="row">
+    {latest_entries}
+  </div>
 </div>
 
 <h1>Movies & Series</h1>
