@@ -1,291 +1,208 @@
-import json
-import os
 import requests
+import time
+import os
 from datetime import datetime
 
-TMDB_API_KEY = os.environ.get("TMDB_API_KEY")
+API_KEY = os.getenv("TMDB_API_KEY")
+BASE = "https://api.themoviedb.org/3"
 
-ENTRIES_FILE = "entries.json"
-OUTPUT_HTML = "index.html"
+LANG = "it-IT"
+REGION = "IT"
 
-SRC_URL = "https://api.themoviedb.org/3/discover/{type}"
-DETAIL_URL = "https://api.themoviedb.org/3/{type}/{id}"
-RELEASE_URL = "https://api.themoviedb.org/3/{type}/{id}/release_dates"
-RATING_URL = "https://api.themoviedb.org/3/{type}/{id}/content_ratings"
+HEADERS = {
+    "accept": "application/json"
+}
 
-HEADERS = {"accept": "application/json"}
-
-# =========================
-# UTILS
-# =========================
-
-def tmdb_get(url, params=None):
-    params = params or {}
-    params["api_key"] = TMDB_API_KEY
-    r = requests.get(url, headers=HEADERS, params=params, timeout=20)
-    r.raise_for_status()
-    return r.json()
-
-def load_old_entries():
-    if not os.path.exists(ENTRIES_FILE):
-        return {}
-    with open(ENTRIES_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return {e["id"]: e for e in data}
-
-def save_entries(entries):
-    with open(ENTRIES_FILE, "w", encoding="utf-8") as f:
-        json.dump(entries, f, indent=2, ensure_ascii=False)
-
-# =========================
-# PEGI EUROPEO
-# =========================
-
-def get_pegi(type_, tmdb_id):
+# ---------------------------
+# TMDB SAFE REQUEST
+# ---------------------------
+def tmdb_get(endpoint, params=None):
     try:
-        if type_ == "movie":
-            data = tmdb_get(RELEASE_URL.format(type=type_, id=tmdb_id))
-            for r in data.get("results", []):
-                if r["iso_3166_1"] in ("IT", "FR", "DE", "ES", "GB"):
-                    for rel in r.get("release_dates", []):
-                        if rel.get("certification"):
-                            return rel["certification"]
-        else:
-            data = tmdb_get(RATING_URL.format(type=type_, id=tmdb_id))
-            for r in data.get("results", []):
-                if r["iso_3166_1"] in ("IT", "FR", "DE", "ES", "GB"):
-                    return r.get("rating")
-    except:
-        pass
-    return ""
+        r = requests.get(
+            f"{BASE}{endpoint}",
+            params=params,
+            headers=HEADERS,
+            timeout=10
+        )
+        if r.status_code != 200:
+            return None
+        return r.json()
+    except requests.RequestException:
+        return None
 
-# =========================
-# FETCH TMDB
-# =========================
+# ---------------------------
+# FETCH ALL MOVIES
+# ---------------------------
+def fetch_all():
+    results = []
 
-def fetch_all(type_):
     page = 1
-    all_items = []
+    while page <= 500:
+        data = tmdb_get(
+            "/discover/movie",
+            {
+                "api_key": API_KEY,
+                "language": LANG,
+                "sort_by": "primary_release_date.desc",
+                "page": page,
+                "include_adult": "false"
+            }
+        )
 
-    while page <= 500:   # <<< LIMITE TMDB
-        try:
-            data = tmdb_get(
-                SRC_URL.format(type=type_),
-                params={
-                    "page": page,
-                    "sort_by": "primary_release_date.desc",
-                    "language": "it-IT",
-                },
-            )
-        except Exception as e:
-            print(f"Errore TMDB pagina {page}: {e}")
+        if not data or "results" not in data:
             break
 
-        results = data.get("results", [])
-        if not results:
+        results.extend(data["results"])
+
+        if page >= data.get("total_pages", 0):
             break
 
-        all_items.extend(results)
         page += 1
 
-    return all_items
+    return results
 
+# ---------------------------
+# PEGI SOLO EUROPA
+# ---------------------------
+def get_pegi_eu(movie_id):
+    data = tmdb_get(
+        f"/movie/{movie_id}/release_dates",
+        {"api_key": API_KEY}
+    )
 
-# =========================
-# BUILD ENTRIES
-# =========================
+    if not data:
+        return None
 
+    for country in data.get("results", []):
+        if country["iso_3166_1"] in ("IT", "FR", "DE", "ES"):
+            for r in country.get("release_dates", []):
+                cert = r.get("certification")
+                if cert:
+                    return cert
+
+    return None
+
+# ---------------------------
+# BUILD SINGLE ENTRY
+# ---------------------------
+def build_entry(movie):
+    movie_id = movie.get("id")
+    if not movie_id:
+        return None
+
+    detail = tmdb_get(
+        f"/movie/{movie_id}",
+        {
+            "api_key": API_KEY,
+            "language": LANG
+        }
+    )
+
+    if not detail:
+        return None
+
+    return {
+        "id": movie_id,
+        "title": detail.get("title") or detail.get("original_title"),
+        "overview": detail.get("overview", ""),
+        "poster": f"https://image.tmdb.org/t/p/w500{detail['poster_path']}" if detail.get("poster_path") else "",
+        "backdrop": f"https://image.tmdb.org/t/p/w780{detail['backdrop_path']}" if detail.get("backdrop_path") else "",
+        "genres": [g["name"] for g in detail.get("genres", [])],
+        "release_date": detail.get("release_date"),
+        "vote": detail.get("vote_average"),
+        "pegi": get_pegi_eu(movie_id),
+        "added": int(time.time())
+    }
+
+# ---------------------------
+# BUILD ALL ENTRIES
+# ---------------------------
 def build_entries():
-    old_entries = load_old_entries()
-    new_entries = {}
+    movies = fetch_all()
+    entries = []
 
-    for type_ in ("movie", "tv"):
-        items = fetch_all(type_)
+    for m in movies:
+        entry = build_entry(m)
+        if entry:
+            entries.append(entry)
 
-        for it in items:
-            tmdb_id = it["id"]
-            key = f"{type_}_{tmdb_id}"
+    return entries
 
-            if key in old_entries:
-                new_entries[key] = old_entries[key]
-                continue
-
-            detail = tmdb_get(
-                DETAIL_URL.format(type=type_, id=tmdb_id),
-                params={"language": "it-IT"},
-            )
-
-            poster = (
-                f"https://image.tmdb.org/t/p/w500{detail.get('poster_path')}"
-                if detail.get("poster_path")
-                else ""
-            )
-
-            entry = {
-                "id": key,
-                "tmdb_id": tmdb_id,
-                "type": type_,
-                "title": detail.get("title") or detail.get("name") or "",
-                "overview": detail.get("overview") or "",
-                "poster": poster,
-                "year": (detail.get("release_date") or detail.get("first_air_date") or "")[:4],
-                "runtime": detail.get("runtime") or (
-                    detail.get("episode_run_time")[0]
-                    if detail.get("episode_run_time")
-                    else ""
-                ),
-                "genres": [g["name"] for g in detail.get("genres", [])],
-                "vote": detail.get("vote_average", 0),
-                "age": get_pegi(type_, tmdb_id),
-                "added": datetime.utcnow().isoformat(),
-            }
-
-            new_entries[key] = entry
-
-    # merge
-    merged = {**old_entries, **new_entries}
-    return list(merged.values())
-
-# =========================
+# ---------------------------
 # BUILD HTML
-# =========================
-
+# ---------------------------
 def build_html(entries):
-    latest = entries[:30]
+    entries.sort(key=lambda x: x.get("added", 0), reverse=True)
 
-    def card(item):
-        age = f"<div class='badge'>{item['age']}</div>" if item.get("age") else ""
-        return f"""
-        <div class="card" onclick='openInfo({json.dumps(item)})'>
-          <img src="{item['poster']}">
-          {age}
+    cards = []
+    for e in entries[:200]:
+        cards.append(f"""
+        <div class="card">
+            <img src="{e['poster']}" />
+            <div class="title">{e['title']}</div>
+            <div class="pegi">{e['pegi'] or ''}</div>
         </div>
-        """
+        """)
 
-    latest_html = "".join(card(i) for i in latest)
-
-    return f"""<!DOCTYPE html>
+    return f"""
+<!DOCTYPE html>
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<title>TV Home</title>
-
+<title>Catalogo Film</title>
 <style>
 body {{
-  margin:0;
-  font-family: Arial, sans-serif;
-  color:#fff;
-  background: linear-gradient(180deg,#1e3c72,#2a5298,#0f2027);
+    margin:0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff512f, #dd2476);
+    color: white;
 }}
-
-.topbar {{
-  position:sticky;
-  top:0;
-  display:flex;
-  gap:10px;
-  padding:12px 20px;
-  background:rgba(10,20,40,.9);
+.grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+    gap: 15px;
+    padding: 20px;
 }}
-
-.topbar input, .topbar select, .topbar button {{
-  padding:8px 14px;
-  border-radius:10px;
-  border:none;
-  background:#243b6b;
-  color:#fff;
-}}
-
-.hero {{
-  height:45vh;
-  padding:40px;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  background:
-    linear-gradient(to right,rgba(10,20,40,.9),rgba(10,20,40,.3)),
-    url('{latest[0]["poster"]}');
-  background-size:cover;
-}}
-
-.section {{
-  padding-left:40px;
-  margin-top:30px;
-}}
-
-.row {{
-  display:flex;
-  gap:16px;
-  overflow-x:auto;
-}}
-
 .card {{
-  min-width:180px;
-  height:270px;
-  border-radius:14px;
-  overflow:hidden;
-  position:relative;
-  cursor:pointer;
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
 }}
-
 .card img {{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+    width: 100%;
 }}
-
-.badge {{
-  position:absolute;
-  bottom:8px;
-  left:8px;
-  background:rgba(0,0,0,.75);
-  padding:4px 8px;
-  border-radius:6px;
-  font-size:12px;
+.title {{
+    padding: 5px;
+    font-size: 14px;
+}}
+.pegi {{
+    font-size: 12px;
+    opacity: 0.8;
 }}
 </style>
 </head>
-
 <body>
-
-<div class="topbar">
-  <input id="searchBox" placeholder="Cerca...">
-  <select id="genreSelect"><option>Tutti</option></select>
-  <button id="randomPick">🎲 Random</button>
+<h1 style="padding:20px;">🎬 Ultimi aggiunti</h1>
+<div class="grid">
+{''.join(cards)}
 </div>
-
-<div class="hero">
-  <h1>{latest[0]["title"]}</h1>
-  <p>{latest[0]["overview"]}</p>
-</div>
-
-<div class="section">
-  <h2>Ultimi aggiunti</h2>
-  <div class="row">{latest_html}</div>
-</div>
-
-<script>
-const allData = {json.dumps(entries)};
-function openInfo(item) {{
-  alert(item.title);
-}}
-</script>
-
 </body>
 </html>
 """
 
-# =========================
+# ---------------------------
 # MAIN
-# =========================
-
+# ---------------------------
 def main():
     entries = build_entries()
-    print("Totale entries da salvare:", len(entries))
-    save_entries(entries)
+    print(f"Totale entries da salvare: {len(entries)}")
 
     html = build_html(entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+
+    with open("index.html", "w", encoding="utf-8") as f:
         f.write(html)
 
+# ---------------------------
 if __name__ == "__main__":
     main()
