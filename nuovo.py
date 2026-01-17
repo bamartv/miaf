@@ -10,6 +10,7 @@ SRC_URLS = {
 
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
 TMDB_IMAGE = "https://image.tmdb.org/t/p/w342"
+
 OUTPUT_HTML = "index2.html"
 ARCHIVE_FILE = "entries.json"
 
@@ -33,7 +34,8 @@ def fetch_list(url):
 
 def extract_ids(data):
     ids = []
-    for i in data if isinstance(data, list) else data.get("results", []):
+    items = data if isinstance(data, list) else data.get("results", [])
+    for i in items:
         if isinstance(i, dict):
             for k in ("tmdb_id", "tmdbId", "id"):
                 if k in i:
@@ -78,16 +80,16 @@ def build_html(entries):
 <style>
 body {{
   margin:0;
-  background:linear-gradient(135deg,#1f2933,#111827,#020617);
+  background:linear-gradient(135deg,#7f1d1d,#450a0a,#020617);
   color:#fff;
-  font-family:Arial;
+  font-family:Arial,sans-serif;
 }}
 
 .topbar {{
   position:sticky;
   top:0;
   z-index:100;
-  background:rgba(0,0,0,.85);
+  background:rgba(0,0,0,.9);
   padding:12px;
   display:flex;
   gap:10px;
@@ -103,7 +105,7 @@ body {{
   padding:8px 14px;
   border-radius:10px;
   border:none;
-  background:#2563eb;
+  background:#dc2626;
   color:#fff;
   font-weight:bold;
   cursor:pointer;
@@ -205,6 +207,7 @@ body {{
 
 <script>
 const DATA = {entries_json};
+
 const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
@@ -214,27 +217,22 @@ let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentPool = [];
 
-/* generi */
-[...new Set(DATA.flatMap(x=>x.genres||[]))].sort().forEach(g=>{
+/* popolamento generi */
+[...new Set(DATA.flatMap(x => x.genres || []))].sort().forEach(g => {{
   genreSelect.innerHTML += `<option value="${{g}}">${{g}}</option>`;
-});
+}});
 
 function poster(item) {{
-  return `<div class="poster" onclick='openInfo(${JSON.stringify(item).replace(/'/g,"&apos;")})'>
-            <img src="${{item.poster}}">
-          </div>`;
-}}
-
-function buildHome(list) {{
-  content.innerHTML = "";
-  addRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
-  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g=>{
-    addRow(g, list.filter(x=>x.genres?.includes(g)));
-  });
+  return `
+    <div class="poster" onclick='openInfo(${{
+      JSON.stringify(item).replace(/'/g,"&apos;")
+    }})'>
+      <img loading="lazy" src="${{item.poster}}">
+    </div>`;
 }}
 
 function addRow(title, items) {{
-  if(!items.length) return;
+  if (!items.length) return;
   content.innerHTML += `
     <div class="row">
       <h2>${{title}}</h2>
@@ -242,6 +240,14 @@ function addRow(title, items) {{
         ${{items.slice(0,25).map(poster).join("")}}
       </div>
     </div>`;
+}}
+
+function buildHome(list) {{
+  content.innerHTML = "";
+  addRow("🔥 Ultime uscite", [...list].sort((a,b)=>b.added.localeCompare(a.added)));
+  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g => {{
+    addRow(g, list.filter(x => x.genres?.includes(g)));
+  }});
 }}
 
 function buildGrid(list) {{
@@ -254,46 +260,50 @@ function rebuild() {{
   const t = typeSelect.value;
 
   let list = DATA;
-  if(t==="favorites") list = DATA.filter(x=>favorites.includes(x.id));
-  else if(t==="recent") list = DATA.filter(x=>recent.includes(x.id));
-  else list = DATA.filter(x=>x.type===t);
 
-  if(q) list = list.filter(x=>x.title.toLowerCase().includes(q));
-  if(g) list = list.filter(x=>x.genres?.includes(g));
+  if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
+  else if (t === "recent") list = DATA.filter(x => recent.includes(x.id));
+  else list = DATA.filter(x => x.type === t);
+
+  if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
+  if (g) list = list.filter(x => x.genres?.includes(g));
 
   currentPool = list;
 
-  if(q || g) buildGrid(list);
+  if (q || g || t === "favorites" || t === "recent") buildGrid(list);
   else buildHome(list);
 }}
 
 function openInfo(item) {{
   infoTitle.textContent = item.title;
   infoOverview.textContent = item.overview;
-  playBtn.onclick = ()=>window.open(item.link,"_blank");
-  favBtn.onclick = ()=>toggleFav(item.id);
-  infoCard.style.display="flex";
+  playBtn.onclick = () => window.open(item.link, "_blank");
+  favBtn.onclick = () => toggleFav(item.id);
+  infoCard.style.display = "flex";
 
-  recent=[item.id,...recent.filter(x=>x!==item.id)].slice(0,20);
-  localStorage.setItem("recent",JSON.stringify(recent));
+  recent = [item.id, ...recent.filter(x => x !== item.id)].slice(0,20);
+  localStorage.setItem("recent", JSON.stringify(recent));
 }}
 
 function closeInfo() {{
-  infoCard.style.display="none";
+  infoCard.style.display = "none";
 }}
 
 function toggleFav(id) {{
-  favorites = favorites.includes(id) ? favorites.filter(x=>x!==id) : [...favorites,id];
-  localStorage.setItem("fav",JSON.stringify(favorites));
+  favorites = favorites.includes(id)
+    ? favorites.filter(x => x !== id)
+    : [...favorites, id];
+  localStorage.setItem("fav", JSON.stringify(favorites));
 }}
 
-document.getElementById("randomPick").onclick=()=>{
-  if(currentPool.length) openInfo(currentPool[Math.floor(Math.random()*currentPool.length)]);
-};
+document.getElementById("randomPick").onclick = () => {{
+  if (currentPool.length)
+    openInfo(currentPool[Math.floor(Math.random() * currentPool.length)]);
+}};
 
-search.oninput=rebuild;
-genreSelect.onchange=rebuild;
-typeSelect.onchange=rebuild;
+search.oninput = rebuild;
+genreSelect.onchange = rebuild;
+typeSelect.onchange = rebuild;
 
 rebuild();
 </script>
@@ -318,7 +328,7 @@ def main():
 
             new.append({
                 "id": tmdb_id,
-                "title": info.get("title") or info.get("name"),
+                "title": info.get("title") or info.get("name") or "",
                 "poster": TMDB_IMAGE + info["poster_path"] if info.get("poster_path") else "",
                 "overview": info.get("overview",""),
                 "type": t,
@@ -333,10 +343,11 @@ def main():
     entries = list(old.values())
     save_archive(entries)
 
-    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(build_html(entries))
 
-    print(f"✅ index2.html generato con {len(entries)} titoli")
+    print(f"✅ {OUTPUT_HTML} generato con {len(entries)} titoli")
+
 
 if __name__ == "__main__":
     main()
