@@ -141,14 +141,14 @@ function applyFilter() {{
 }}
 
 function loadMore() {{
-  current.slice(shown, shown+STEP).forEach(item=>{
+  current.slice(shown, shown+STEP).forEach(item=>{{
     const c=document.createElement("div");
     c.className="card";
     c.tabIndex=0;
     c.innerHTML=`<img src="${{item.poster}}">`;
     c.onclick=()=>openInfo(item);
     grid.appendChild(c);
-  });
+  }});
   shown+=STEP;
 }}
 
@@ -159,10 +159,10 @@ window.onscroll=()=> {{
 function openInfo(item) {{
   infoTitle.textContent=item.title;
   infoOverview.textContent=item.overview;
-  favBtn.classList.toggle("active", favorites.includes(item.id));
   favBtn.onclick=()=>toggleFav(item.id);
   playBtn.onclick=()=>window.open(item.link,"_blank");
   infoCard.style.display="flex";
+
   recent.unshift(item.id);
   recent=[...new Set(recent)].slice(0,20);
   localStorage.setItem("recent",JSON.stringify(recent));
