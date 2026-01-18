@@ -77,6 +77,9 @@ def build_html(entries):
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TV Media Center</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+
 <style>
 body {
   margin:0;
@@ -108,6 +111,19 @@ body {
   z-index:10;
   user-select:none;
 }
+
+.row h2 {
+  font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
+}
+
+.row:first-of-type h2 {
+  font-size: 26px;
+  color: #fff;
+  text-shadow:
+    0 3px 10px rgba(0,0,0,0.9),
+    0 0 18px rgba(220,38,38,0.6);
+}
+
 
 .row:hover .row-arrow {
   opacity:1;
@@ -180,7 +196,34 @@ body {
 }
 
 
-.row h2 { margin:10px; }
+.row h2 {
+  margin: 10px 10px 6px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #f5f5f5;
+  text-shadow:
+    0 2px 6px rgba(0,0,0,0.8),
+    0 0 12px rgba(220,38,38,0.35);
+  position: relative;
+}
+
+/* linea cinematografica sotto il titolo */
+.row h2::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin-top: 6px;
+  background: linear-gradient(
+    90deg,
+    #dc2626,
+    rgba(220,38,38,0.2)
+  );
+  border-radius: 3px;
+}
+
 
 .row-content {
   display:flex;
@@ -367,7 +410,7 @@ function addRow(title, items) {
 function buildHome(list) {
   content.innerHTML="";
   addRow(
-  "🔥 Ultime uscite",
+  "🎬 Ultime uscite",
   [...list]
     .filter(x => x.added)
     .sort((a,b)=>b.added.localeCompare(a.added))
