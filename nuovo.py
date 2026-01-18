@@ -241,7 +241,7 @@ select.episode {
     <option value="favorites">★ Preferiti</option>
     <option value="recent">🕘 Recenti</option>
   </select>
-  <select id="genreSelect" multiple size="1">
+  <select id="genreSelect" multiple>
   </select>
 
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
@@ -332,30 +332,36 @@ function buildGrid(list) {
 }
 
 function rebuild() {
-  const q=search.value.toLowerCase();
-  const t=typeSelect.value;
+  const q = search.value.toLowerCase();
+  const t = typeSelect.value;
+  const selectedGenres = [...genreSelect.selectedOptions].map(o => o.value);
 
-  let list=DATA;
-  if(t==="favorites") list=DATA.filter(x=>favorites.includes(x.id));
-  else if(t==="recent") list=DATA.filter(x=>recent.includes(x.id));
-  else list=DATA.filter(x=>x.type===t);
+  let list = DATA;
 
-  if(q) list=list.filter(x=>x.title.toLowerCase().includes(q));
-  const selectedGenres = [...genreSelect.selectedOptions].map(o=>o.value);
+  if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
+  else if (t === "recent") list = DATA.filter(x => recent.includes(x.id));
+  else list = DATA.filter(x => x.type === t);
+
+  if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
 
   if (selectedGenres.length) {
     list = list.filter(item =>
       selectedGenres.every(g => item.genres?.includes(g))
-   );
+    );
+  }
+
+  // 🔥 LOGICA CORRETTA
+  if (q || selectedGenres.length || t !== "movie") {
+    buildGrid(list);
+  } else {
+    buildHome(list);
+  }
 }
 
-  if(q||g||t!=="movie") buildGrid(list);
-  else buildHome(list);
-}
 
 function randomPick() {
   const q = search.value.toLowerCase();
-  const g = genreSelect.value;
+  const selectedGenres = [...genreSelect.selectedOptions].map(o => o.value);
   const t = typeSelect.value;
 
   let list = DATA;
@@ -365,7 +371,11 @@ function randomPick() {
   else list = DATA.filter(x => x.type === t);
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
-  if (g) list = list.filter(x => x.genres?.includes(g));
+  if (selectedGenres.length) {
+  list = list.filter(item =>
+    selectedGenres.every(g => item.genres?.includes(g))
+  );
+}
 
   if (!list.length) {
     alert("Nessun titolo disponibile con questi filtri 😅");
