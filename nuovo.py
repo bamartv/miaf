@@ -532,6 +532,8 @@ def main():
             if not poster_path:
                 continue  # salta titoli senza locandina
 
+            existing = old.get(tmdb_id)
+            
             new.append({
                 "id": tmdb_id,
                 "title": info.get("title") or info.get("name") or "",
@@ -540,8 +542,9 @@ def main():
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
-                "added": datetime.utcnow().isoformat()
-            })
+                # 🔥 se esiste già, tieni la vecchia data
+                "added": existing["added"] if existing else datetime.utcnow().isoformat()
+})
 
     for e in new:
         old[e["id"]] = e
