@@ -282,6 +282,79 @@ body {
   padding:20px;
 }
 
+.poster {
+  position: relative;
+  min-width:150px;
+  border-radius:12px;
+  overflow:hidden;
+  cursor:pointer;
+  transition: transform .25s ease, box-shadow .25s;
+}
+
+.poster:hover,
+.poster:focus-within {
+  transform: scale(1.08);
+  box-shadow: 0 10px 30px rgba(0,0,0,.8);
+  z-index:5;
+}
+
+/* overlay */
+.poster-overlay {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to top,
+    rgba(0,0,0,.85),
+    rgba(0,0,0,.2),
+    transparent
+  );
+  opacity:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  padding:10px;
+  transition:opacity .25s;
+}
+
+.poster:hover .poster-overlay,
+.poster:focus-within .poster-overlay {
+  opacity:1;
+}
+
+/* info rapide */
+.poster-meta {
+  font-size:13px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.poster-meta .pegi {
+  background:#dc2626;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:bold;
+}
+
+/* freccia */
+.poster-more {
+  margin-top:6px;
+  align-self:flex-end;
+  background:rgba(0,0,0,.6);
+  border:none;
+  color:#fff;
+  font-size:18px;
+  border-radius:50%;
+  width:36px;
+  height:36px;
+  cursor:pointer;
+}
+
+.poster-more:focus {
+  outline:2px solid #dc2626;
+}
+
+
 /* INFOCARD */
 #infoCard {
   position:fixed;
@@ -418,10 +491,25 @@ GENRES.forEach(g => {
 
 function poster(item) {
   return `
-    <div class="poster" onclick="openInfoById('${item.id}')">
+    <div class="poster" tabindex="0">
       <img loading="lazy" src="${item.poster}">
+
+      <div class="poster-overlay">
+        <div class="poster-meta">
+          <span>${item.year || "—"}</span>
+          <span>${item.runtime ? item.runtime + " min" : ""}</span>
+          <span class="pegi">${item.pegi ? "18+" : "T"}</span>
+        </div>
+
+        <button class="poster-more"
+          onclick="event.stopPropagation(); openInfoById('${item.id}')"
+          tabindex="0">
+          ↓
+        </button>
+      </div>
     </div>`;
 }
+
 
 function addRow(title, items) {
   if(!items.length) return;
@@ -656,7 +744,10 @@ def main():
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
                 # 🔥 mantiene la data se già esiste
-                "added": existing["added"] if existing else datetime.utcnow().isoformat()
+                "added": existing["added"] if existing else datetime.utcnow().isoformat(),
+                "year": (info.get("release_date") or info.get("first_air_date") or "")[:4],
+                "runtime": info.get("runtime") or (info.get("episode_run_time") or [None])[0],
+                "pegi": info.get("adult")
             })
 
     # 🔁 MERGE DEFINITIVO
