@@ -277,6 +277,7 @@ const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
 const genreSelect = document.getElementById("genreSelect");
+const randomPickBtn = document.getElementById("randomPick");
 
 let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
@@ -347,6 +348,30 @@ function rebuild() {
   else buildHome(list);
 }
 
+function randomPick() {
+  const q = search.value.toLowerCase();
+  const g = genreSelect.value;
+  const t = typeSelect.value;
+
+  let list = DATA;
+
+  if (t === "favorites") list = DATA.filter(x => favorites.includes(x.id));
+  else if (t === "recent") list = DATA.filter(x => recent.includes(x.id));
+  else list = DATA.filter(x => x.type === t);
+
+  if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
+  if (g) list = list.filter(x => x.genres?.includes(g));
+
+  if (!list.length) {
+    alert("Nessun titolo disponibile con questi filtri 😅");
+    return;
+  }
+
+  const pick = list[Math.floor(Math.random() * list.length)];
+  openInfoById(pick.id);
+}
+
+
 function openInfoById(id){
   const item = DATA.find(x=>x.id===id);
   if(!item) return;
@@ -396,6 +421,7 @@ document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.dis
 search.oninput=rebuild;
 genreSelect.onchange=rebuild;
 typeSelect.onchange=rebuild;
+randomPickBtn.onclick = randomPick;
 rebuild();
 </script>
 
