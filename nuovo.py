@@ -183,7 +183,7 @@ body {
   inset:0;
   background-size:cover;
   background-position:center;
-  filter:blur(10px) brightness(.4);
+  filter:blur(8px) brightness(.65);
 }
 
 #infoOverlay {
