@@ -524,11 +524,13 @@ rebuild();
 
 def main():
     api_key = get_api_key()
+
+    # 🔥 CARICA ARCHIVIO E SISTEMA added SE MANCA
     old = {}
-for e in load_archive():
-    if "added" not in e:
-        e["added"] = datetime.utcnow().isoformat()
-    old[e["id"]] = e
+    for e in load_archive():
+        if "added" not in e:
+            e["added"] = datetime.utcnow().isoformat()
+        old[e["id"]] = e
 
     new = []
 
@@ -544,19 +546,20 @@ for e in load_archive():
                 continue  # salta titoli senza locandina
 
             existing = old.get(tmdb_id)
-            
+
             new.append({
                 "id": tmdb_id,
                 "title": info.get("title") or info.get("name") or "",
                 "poster": TMDB_IMAGE + poster_path,
-                "overview": info.get("overview",""),
+                "overview": info.get("overview", ""),
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
-                # 🔥 se esiste già, tieni la vecchia data
+                # 🔥 mantiene la data se già esiste
                 "added": existing["added"] if existing else datetime.utcnow().isoformat()
-})
+            })
 
+    # 🔁 MERGE DEFINITIVO
     for e in new:
         old[e["id"]] = e
 
@@ -567,6 +570,7 @@ for e in load_archive():
         f.write(build_html(entries))
 
     print(f"✅ {OUTPUT_HTML} generato con {len(entries)} titoli")
+
 
 
 if __name__ == "__main__":
