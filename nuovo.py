@@ -241,9 +241,9 @@ select.episode {
     <option value="favorites">★ Preferiti</option>
     <option value="recent">🕘 Recenti</option>
   </select>
-  <select id="genreSelect">
-    <option value="">🎭 Tutti i generi</option>
+  <select id="genreSelect" multiple size="1">
   </select>
+
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
 
@@ -333,7 +333,6 @@ function buildGrid(list) {
 
 function rebuild() {
   const q=search.value.toLowerCase();
-  const g=genreSelect.value;
   const t=typeSelect.value;
 
   let list=DATA;
@@ -342,7 +341,13 @@ function rebuild() {
   else list=DATA.filter(x=>x.type===t);
 
   if(q) list=list.filter(x=>x.title.toLowerCase().includes(q));
-  if(g) list=list.filter(x=>x.genres?.includes(g));
+  const selectedGenres = [...genreSelect.selectedOptions].map(o=>o.value);
+
+  if (selectedGenres.length) {
+    list = list.filter(item =>
+      selectedGenres.every(g => item.genres?.includes(g))
+   );
+}
 
   if(q||g||t!=="movie") buildGrid(list);
   else buildHome(list);
@@ -419,7 +424,7 @@ document.getElementById("closeBtnBottom").onclick = () => {
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
 
 search.oninput=rebuild;
-genreSelect.onchange=rebuild;
+genreSelect.oninput = rebuild;
 typeSelect.onchange=rebuild;
 randomPickBtn.onclick = randomPick;
 rebuild();
