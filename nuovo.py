@@ -1,25 +1,14 @@
 import json
 
-# ======= DATI DI INPUT =======
-# Struttura attesa per ogni film:
-# {
-#   "title": "...",
-#   "description": "...",
-#   "genre": "Action",
-#   "poster": "URL POSTER UFFICIALE",
-#   "duration": "2h 14m",
-#   "pegi": "16+"
-# }
-
 with open("entries.json", "r", encoding="utf-8") as f:
     movies = json.load(f)
 
-# Raggruppa per genere
+# Raggruppa per genere (fallback sicuro)
 genres = {}
 for m in movies:
-    genres.setdefault(m["genre"], []).append(m)
+    genre = m.get("genre", "Altro")
+    genres.setdefault(genre, []).append(m)
 
-# ======= HTML =======
 html = f"""
 <!DOCTYPE html>
 <html lang="it">
@@ -92,13 +81,8 @@ body {{
     opacity: 1;
 }}
 
-.arrow.left {{
-    left: 0;
-}}
-
-.arrow.right {{
-    right: 0;
-}}
+.arrow.left {{ left: 0; }}
+.arrow.right {{ right: 0; }}
 
 #info {{
     position: fixed;
@@ -153,10 +137,11 @@ for genre, items in genres.items():
     """
 
     for m in items:
+        poster = m.get("poster", "")
         html += f"""
         <div class="poster"
-             style="background-image:url('{m["poster"]}')"
-             onclick='openInfo({json.dumps(m)})'>
+             style="background-image:url('{poster}')"
+             onclick='openInfo({json.dumps(m, ensure_ascii=False)})'>
         </div>
         """
 
@@ -187,11 +172,11 @@ function scrollRow(el, dir) {{
 
 function openInfo(m) {{
     document.getElementById("info").style.display = "block";
-    document.getElementById("infoPoster").style.backgroundImage = `url(${m.poster})`;
-    document.getElementById("infoTitle").innerText = m.title;
-    document.getElementById("infoDesc").innerText = m.description;
-    document.getElementById("infoDur").innerText = m.duration;
-    document.getElementById("infoPegi").innerText = m.pegi;
+    document.getElementById("infoPoster").style.backgroundImage = `url(${m.poster || ""})`;
+    document.getElementById("infoTitle").innerText = m.title || "";
+    document.getElementById("infoDesc").innerText = m.description || "";
+    document.getElementById("infoDur").innerText = m.duration || "";
+    document.getElementById("infoPegi").innerText = m.pegi || "";
 }}
 
 function closeInfo() {{
@@ -203,7 +188,7 @@ function closeInfo() {{
 </html>
 """
 
-with open("index.html", "w", encoding="utf-8") as f:
+with open("index2.html", "w", encoding="utf-8") as f:
     f.write(html)
 
-print("index.html generato correttamente")
+print("index2.html generato correttamente")
