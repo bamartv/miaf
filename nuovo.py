@@ -88,6 +88,38 @@ body {
   font-family:Arial,sans-serif;
 }
 
+.row-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.browse-all {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .25s, color .25s;
+}
+
+/* appare quando la riga è attiva (hover o focus TV) */
+.row:hover .browse-all,
+.row:focus-within .browse-all {
+  opacity: 1;
+}
+
+/* focus telecomando */
+.browse-all:focus {
+  outline: 2px solid #dc2626;
+  border-radius: 6px;
+  color: #fff;
+}
+
+
 .row {
   margin:20px 10px;
   position:relative;
@@ -395,7 +427,14 @@ function addRow(title, items) {
   if(!items.length) return;
   content.innerHTML += `
     <div class="row">
-      <h2>${title}</h2>
+      <div class="row-title">
+  <h2>${title}</h2>
+  <button class="browse-all"
+    onclick="browseGenre('${title}')"
+    tabindex="0">
+    Sfoglia tutti →
+  </button>
+</div>
 
       <div class="row-arrow left" onclick="scrollRow(this,-1)">‹</div>
       <div class="row-arrow right" onclick="scrollRow(this,1)">›</div>
@@ -446,6 +485,24 @@ function scrollRow(el, dir){
 
 function buildGrid(list) {
   content.innerHTML=`<div class="grid">${list.map(poster).join("")}</div>`;
+}
+
+function browseGenre(genre) {
+  // reset ricerca
+  search.value = "";
+
+  // reset dropdown generi
+  genreMenu.querySelectorAll("input").forEach(c => {
+    c.checked = (c.value === genre);
+  });
+
+  // forza vista griglia
+  buildGrid(
+    DATA.filter(x =>
+      x.type === typeSelect.value &&
+      x.genres?.includes(genre)
+    )
+  );
 }
 
 function rebuild() {
