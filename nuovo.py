@@ -366,7 +366,13 @@ function addRow(title, items) {
 
 function buildHome(list) {
   content.innerHTML="";
-  addRow("🔥 Ultime uscite",[...list].sort((a,b)=>b.added.localeCompare(a.added)));
+  addRow(
+  "🔥 Ultime uscite",
+  [...list]
+    .filter(x => x.added)
+    .sort((a,b)=>b.added.localeCompare(a.added))
+);
+
   [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g=>{
     addRow(g,list.filter(x=>x.genres?.includes(g)));
   });
@@ -518,7 +524,12 @@ rebuild();
 
 def main():
     api_key = get_api_key()
-    old = {e["id"]: e for e in load_archive()}
+    old = {}
+for e in load_archive():
+    if "added" not in e:
+        e["added"] = datetime.utcnow().isoformat()
+    old[e["id"]] = e
+
     new = []
 
     for t, url in SRC_URLS.items():
