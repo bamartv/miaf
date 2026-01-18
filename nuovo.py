@@ -327,11 +327,18 @@ let currentItem = null;
 /* generi */
 const GENRES = [...new Set(DATA.flatMap(x=>x.genres||[]))].sort();
 
-GENRES.forEach(g=>{
+GENRES.forEach(g => {
   const label = document.createElement("label");
   label.innerHTML = `<input type="checkbox" value="${g}"> ${g}`;
+
+  const checkbox = label.querySelector("input");
+
+  // 🔥 QUANDO CLICCHI UN GENERE → RICOSTRUISCE LA GRIGLIA
+  checkbox.addEventListener("change", rebuild);
+
   genreMenu.appendChild(label);
 });
+
 
 
 function poster(item) {
