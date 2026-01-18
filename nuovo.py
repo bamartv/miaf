@@ -282,162 +282,6 @@ body {
   padding:20px;
 }
 
-.poster {
-  position: relative;
-  min-width:150px;
-  border-radius:12px;
-  overflow:hidden;
-  cursor:pointer;
-  transition: transform .25s ease, box-shadow .25s;
-}
-
-.poster:hover,
-.poster:focus-within {
-  transform: scale(1.08);
-  box-shadow: 0 10px 30px rgba(0,0,0,.8);
-  z-index:5;
-}
-
-/* overlay */
-.poster-overlay {
-  position:absolute;
-  inset:0;
-  background:linear-gradient(
-    to top,
-    rgba(0,0,0,.85),
-    rgba(0,0,0,.2),
-    transparent
-  );
-  opacity:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  padding:10px;
-  transition:opacity .25s;
-}
-
-.poster:hover .poster-overlay,
-.poster:focus-within .poster-overlay {
-  opacity:1;
-}
-
-/* info rapide */
-.poster-meta {
-  font-size:13px;
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-
-.poster-meta .pegi {
-  background:#dc2626;
-  padding:2px 6px;
-  border-radius:4px;
-  font-weight:bold;
-}
-
-/* freccia */
-.poster-more {
-  margin-top:6px;
-  align-self:flex-end;
-  background:rgba(0,0,0,.6);
-  border:none;
-  color:#fff;
-  font-size:18px;
-  border-radius:50%;
-  width:36px;
-  height:36px;
-  cursor:pointer;
-}
-
-.poster-more:focus {
-  outline:2px solid #dc2626;
-}
-
-.poster-wrapper {
-  position: relative;
-  min-width:150px;
-  transition: transform .25s;
-  z-index:1;
-}
-
-.poster-wrapper:focus-within,
-.poster-wrapper:hover {
-  z-index:20;
-}
-
-.poster-img {
-  width:100%;
-  border-radius:12px;
-  display:block;
-}
-
-/* CARD ESPANSA */
-.poster-card {
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-110px;
-  background:#111;
-  padding:10px;
-  border-radius:0 0 12px 12px;
-  opacity:0;
-  transform:scaleY(.85);
-  transform-origin:top;
-  transition:opacity .25s, transform .25s;
-}
-
-.poster-wrapper:hover .poster-card,
-.poster-wrapper:focus-within .poster-card {
-  opacity:1;
-  transform:scaleY(1);
-}
-
-/* pulsanti */
-.card-buttons {
-  display:flex;
-  gap:10px;
-  margin-bottom:8px;
-}
-
-.card-buttons button {
-  background:#222;
-  border:none;
-  color:#fff;
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  cursor:pointer;
-  font-size:16px;
-}
-
-.card-buttons button:hover {
-  background:#dc2626;
-}
-
-/* meta */
-.card-meta {
-  font-size:13px;
-  opacity:.9;
-}
-
-.card-meta .pegi {
-  margin-left:6px;
-  padding:2px 6px;
-  background:#dc2626;
-  border-radius:4px;
-  font-weight:bold;
-}
-
-/* generi */
-.card-genres {
-  font-size:12px;
-  opacity:.7;
-  margin-top:4px;
-}
-
-
-
 /* INFOCARD */
 #infoCard {
   position:fixed;
@@ -574,30 +418,10 @@ GENRES.forEach(g => {
 
 function poster(item) {
   return `
-    <div class="poster-wrapper" tabindex="0">
-      <img class="poster-img" src="${item.poster}" loading="lazy">
-
-      <div class="poster-card">
-        <div class="card-buttons">
-          <button onclick="openInfoById('${item.id}')">▶</button>
-          <button onclick="toggleFav('${item.id}')">★</button>
-          <button onclick="openInfoById('${item.id}')">ℹ</button>
-        </div>
-
-        <div class="card-meta">
-          ${item.year || ""}
-          ${item.type === "tv" ? " • Serie TV" : ""}
-          ${item.pegi ? `<span class="pegi">18+</span>` : ""}
-        </div>
-
-        <div class="card-genres">
-          ${(item.genres || []).slice(0,2).join(" • ")}
-        </div>
-      </div>
+    <div class="poster" onclick="openInfoById('${item.id}')">
+      <img loading="lazy" src="${item.poster}">
     </div>`;
 }
-
-
 
 function addRow(title, items) {
   if(!items.length) return;
@@ -832,10 +656,7 @@ def main():
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
                 # 🔥 mantiene la data se già esiste
-                "added": existing["added"] if existing else datetime.utcnow().isoformat(),
-                "year": (info.get("release_date") or info.get("first_air_date") or "")[:4],
-                "runtime": info.get("runtime") or (info.get("episode_run_time") or [None])[0],
-                "pegi": info.get("adult")
+                "added": existing["added"] if existing else datetime.utcnow().isoformat()
             })
 
     # 🔁 MERGE DEFINITIVO
