@@ -85,6 +85,38 @@ body {
   font-family:Arial,sans-serif;
 }
 
+.row {
+  margin:20px 10px;
+  position:relative;
+}
+
+.row-arrow {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:50px;
+  height:120px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  font-size:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity .3s;
+  z-index:10;
+  user-select:none;
+}
+
+.row:hover .row-arrow {
+  opacity:1;
+}
+
+.row-arrow.left { left:0; }
+.row-arrow.right { right:0; }
+
+
 .topbar {
   position:sticky;
   top:0;
@@ -111,7 +143,6 @@ body {
   cursor:pointer;
 }
 
-.row { margin:20px 10px; }
 .row h2 { margin:10px; }
 
 .row-content {
@@ -267,11 +298,16 @@ function addRow(title, items) {
   content.innerHTML += `
     <div class="row">
       <h2>${title}</h2>
+
+      <div class="row-arrow left" onclick="scrollRow(this,-1)">‹</div>
+      <div class="row-arrow right" onclick="scrollRow(this,1)">›</div>
+
       <div class="row-content">
         ${items.slice(0,25).map(poster).join("")}
       </div>
     </div>`;
 }
+
 
 function buildHome(list) {
   content.innerHTML="";
@@ -280,6 +316,12 @@ function buildHome(list) {
     addRow(g,list.filter(x=>x.genres?.includes(g)));
   });
 }
+
+function scrollRow(el, dir){
+  const row = el.parentElement.querySelector(".row-content");
+  row.scrollLeft += dir * 400;
+}
+
 
 function buildGrid(list) {
   content.innerHTML=`<div class="grid">${list.map(poster).join("")}</div>`;
