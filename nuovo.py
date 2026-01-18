@@ -354,6 +354,89 @@ body {
   outline:2px solid #dc2626;
 }
 
+.poster-wrapper {
+  position: relative;
+  min-width:150px;
+  transition: transform .25s;
+  z-index:1;
+}
+
+.poster-wrapper:focus-within,
+.poster-wrapper:hover {
+  z-index:20;
+}
+
+.poster-img {
+  width:100%;
+  border-radius:12px;
+  display:block;
+}
+
+/* CARD ESPANSA */
+.poster-card {
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-110px;
+  background:#111;
+  padding:10px;
+  border-radius:0 0 12px 12px;
+  opacity:0;
+  transform:scaleY(.85);
+  transform-origin:top;
+  transition:opacity .25s, transform .25s;
+}
+
+.poster-wrapper:hover .poster-card,
+.poster-wrapper:focus-within .poster-card {
+  opacity:1;
+  transform:scaleY(1);
+}
+
+/* pulsanti */
+.card-buttons {
+  display:flex;
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.card-buttons button {
+  background:#222;
+  border:none;
+  color:#fff;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.card-buttons button:hover {
+  background:#dc2626;
+}
+
+/* meta */
+.card-meta {
+  font-size:13px;
+  opacity:.9;
+}
+
+.card-meta .pegi {
+  margin-left:6px;
+  padding:2px 6px;
+  background:#dc2626;
+  border-radius:4px;
+  font-weight:bold;
+}
+
+/* generi */
+.card-genres {
+  font-size:12px;
+  opacity:.7;
+  margin-top:4px;
+}
+
+
 
 /* INFOCARD */
 #infoCard {
@@ -491,24 +574,29 @@ GENRES.forEach(g => {
 
 function poster(item) {
   return `
-    <div class="poster" tabindex="0">
-      <img loading="lazy" src="${item.poster}">
+    <div class="poster-wrapper" tabindex="0">
+      <img class="poster-img" src="${item.poster}" loading="lazy">
 
-      <div class="poster-overlay">
-        <div class="poster-meta">
-          <span>${item.year || "—"}</span>
-          <span>${item.runtime ? item.runtime + " min" : ""}</span>
-          <span class="pegi">${item.pegi ? "18+" : "T"}</span>
+      <div class="poster-card">
+        <div class="card-buttons">
+          <button onclick="openInfoById('${item.id}')">▶</button>
+          <button onclick="toggleFav('${item.id}')">★</button>
+          <button onclick="openInfoById('${item.id}')">ℹ</button>
         </div>
 
-        <button class="poster-more"
-          onclick="event.stopPropagation(); openInfoById('${item.id}')"
-          tabindex="0">
-          ↓
-        </button>
+        <div class="card-meta">
+          ${item.year || ""}
+          ${item.type === "tv" ? " • Serie TV" : ""}
+          ${item.pegi ? `<span class="pegi">18+</span>` : ""}
+        </div>
+
+        <div class="card-genres">
+          ${(item.genres || []).slice(0,2).join(" • ")}
+        </div>
       </div>
     </div>`;
 }
+
 
 
 function addRow(title, items) {
