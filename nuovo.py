@@ -495,7 +495,6 @@ document.getElementById("closeBtnBottom").onclick = () => {
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
 
 search.oninput=rebuild;
-genreSelect.oninput = rebuild;
 typeSelect.onchange=rebuild;
 randomPickBtn.onclick = randomPick;
 rebuild();
