@@ -222,6 +222,7 @@ body {
 
 .play { background:#dc2626; color:#fff; }
 .fav { background:#2563eb; color:#fff; }
+.close { background:#374151; color:#fff; }
 
 select.episode {
   padding:8px;
@@ -252,7 +253,6 @@ select.episode {
   <div id="infoBackdrop"></div>
   <div id="infoOverlay"></div>
   <div id="infoBox">
-    <div id="closeBtn">✕</div>
     <h1 id="infoTitle"></h1>
     <div id="infoMeta"></div>
     <p id="infoOverview"></p>
@@ -265,6 +265,7 @@ select.episode {
     <div class="actions">
       <button class="play" id="playBtn">▶ Guarda</button>
       <button class="fav" id="favBtn">★ Preferiti</button>
+      <button class="close" id="closeBtnBottom">✕ Chiudi</button>
     </div>
   </div>
 </div>
@@ -387,7 +388,9 @@ function toggleFav(id){
   localStorage.setItem("fav",JSON.stringify(favorites));
 }
 
-document.getElementById("closeBtn").onclick=()=>infoCard.style.display="none";
+document.getElementById("closeBtnBottom").onclick = () => {
+  document.getElementById("infoCard").style.display = "none";
+};
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
 
 search.oninput=rebuild;
