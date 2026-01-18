@@ -367,18 +367,23 @@ def main():
     new = []
 
     for t, url in SRC_URLS.items():
-        for tmdb_id in extract_ids(fetch_list(url)):
+        data = fetch_list(url)
+        for tmdb_id in extract_ids(data):
             info = tmdb_get(api_key, t, tmdb_id)
             if not info:
                 continue
 
+            poster_path = info.get("poster_path")
+            if not poster_path:
+                continue  # salta titoli senza locandina
+
             new.append({
                 "id": tmdb_id,
                 "title": info.get("title") or info.get("name") or "",
-                "poster": TMDB_IMAGE + info["backdrop_path"] if info.get("backdrop_path") else "",
+                "poster": TMDB_IMAGE + poster_path,
                 "overview": info.get("overview",""),
                 "type": t,
-                "genres": [g["name"] for g in info.get("genres",[])],
+                "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
                 "added": datetime.utcnow().isoformat()
             })
@@ -389,7 +394,7 @@ def main():
     entries = list(old.values())
     save_archive(entries)
 
-    with open(OUTPUT_HTML,"w",encoding="utf-8") as f:
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
         f.write(build_html(entries))
 
     print(f"✅ {OUTPUT_HTML} generato con {len(entries)} titoli")
