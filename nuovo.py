@@ -181,10 +181,12 @@ body {
 #infoBackdrop {
   position:absolute;
   inset:0;
-  background-size:cover;
-  background-position:center;
-  filter:blur(8px) brightness(.65);
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  filter: blur(6px) brightness(.72);
 }
+
 
 #infoOverlay {
   position:absolute;
