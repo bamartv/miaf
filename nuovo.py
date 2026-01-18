@@ -9,7 +9,7 @@ SRC_URLS = {
 }
 
 TMDB_BASE = "https://api.themoviedb.org/3/{type}/{id}"
-TMDB_POSTER = "https://image.tmdb.org/t/p/w500"  # LOCANDINE
+TMDB_IMAGE = "https://image.tmdb.org/t/p/w780"
 
 OUTPUT_HTML = "index2.html"
 ARCHIVE_FILE = "entries.json"
@@ -36,10 +36,11 @@ def extract_ids(data):
     ids = []
     items = data if isinstance(data, list) else data.get("results", [])
     for i in items:
-        for k in ("tmdb_id", "tmdbId", "id"):
-            if k in i:
-                ids.append(str(i[k]))
-                break
+        if isinstance(i, dict):
+            for k in ("tmdb_id", "tmdbId", "id"):
+                if k in i:
+                    ids.append(str(i[k]))
+                    break
     return ids
 
 
@@ -131,6 +132,13 @@ body {
 .poster:hover { transform:scale(1.08); }
 .poster img { width:100%; display:block; }
 
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:14px;
+  padding:20px;
+}
+
 /* INFOCARD */
 #infoCard {
   position:fixed;
@@ -144,13 +152,13 @@ body {
   inset:0;
   background-size:cover;
   background-position:center;
-  filter:blur(12px) brightness(.35);
+  filter:blur(10px) brightness(.4);
 }
 
 #infoOverlay {
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,.75);
+  background:linear-gradient(to right, rgba(0,0,0,.9) 30%, rgba(0,0,0,.4) 70%);
 }
 
 #infoBox {
@@ -162,15 +170,29 @@ body {
   z-index:2;
 }
 
-#closeBig {
-  margin-top:30px;
-  padding:14px 40px;
-  font-size:20px;
-  background:#dc2626;
-  border:none;
-  color:#fff;
-  border-radius:10px;
+#closeBtn {
+  position:absolute;
+  top:20px;
+  right:20px;
+  font-size:26px;
   cursor:pointer;
+}
+
+.actions button {
+  padding:10px 16px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  margin-right:10px;
+  cursor:pointer;
+}
+
+.play { background:#dc2626; color:#fff; }
+.fav { background:#2563eb; color:#fff; }
+
+select.episode {
+  padding:8px;
+  margin-right:8px;
 }
 </style>
 </head>
@@ -182,6 +204,11 @@ body {
   <select id="typeSelect">
     <option value="movie">🎬 Film</option>
     <option value="tv">📺 Serie TV</option>
+    <option value="favorites">★ Preferiti</option>
+    <option value="recent">🕘 Recenti</option>
+  </select>
+  <select id="genreSelect">
+    <option value="">🎭 Tutti i generi</option>
   </select>
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
@@ -192,50 +219,143 @@ body {
   <div id="infoBackdrop"></div>
   <div id="infoOverlay"></div>
   <div id="infoBox">
+    <div id="closeBtn">✕</div>
     <h1 id="infoTitle"></h1>
+    <div id="infoMeta"></div>
     <p id="infoOverview"></p>
-    <button id="closeBig">CHIUDI</button>
+
+    <div id="tvControls" style="display:none">
+      <select id="seasonSel" class="episode"></select>
+      <select id="episodeSel" class="episode"></select>
+    </div>
+
+    <div class="actions">
+      <button class="play" id="playBtn">▶ Guarda</button>
+      <button class="fav" id="favBtn">★ Preferiti</button>
+    </div>
   </div>
 </div>
 
 <script>
 const DATA = __DATA__;
+
 const content = document.getElementById("content");
+const search = document.getElementById("searchBox");
+const typeSelect = document.getElementById("typeSelect");
+const genreSelect = document.getElementById("genreSelect");
+
+let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
+let recent = JSON.parse(localStorage.getItem("recent") || "[]");
+let currentItem = null;
+
+/* generi */
+[...new Set(DATA.flatMap(x=>x.genres||[]))].sort().forEach(g=>{
+  const o=document.createElement("option");
+  o.value=g; o.textContent=g;
+  genreSelect.appendChild(o);
+});
 
 function poster(item) {
   return `
-    <div class="poster" onclick="openInfo('${item.id}')">
+    <div class="poster" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
     </div>`;
 }
 
-function build() {
-  content.innerHTML = `
+function addRow(title, items) {
+  if(!items.length) return;
+  content.innerHTML += `
     <div class="row">
-      <h2>Ultimi aggiunti</h2>
+      <h2>${title}</h2>
       <div class="row-content">
-        ${DATA.slice(0,30).map(poster).join("")}
+        ${items.slice(0,25).map(poster).join("")}
       </div>
     </div>`;
 }
 
-function openInfo(id){
-  const item = DATA.find(x=>x.id===id);
-  if(!item) return;
-
-  infoBackdrop.style.backgroundImage=`url(${item.poster})`;
-  infoTitle.textContent=item.title;
-  infoOverview.textContent=item.overview;
-  infoCard.style.display="block";
+function buildHome(list) {
+  content.innerHTML="";
+  addRow("🔥 Ultime uscite",[...list].sort((a,b)=>b.added.localeCompare(a.added)));
+  [...new Set(list.flatMap(x=>x.genres||[]))].forEach(g=>{
+    addRow(g,list.filter(x=>x.genres?.includes(g)));
+  });
 }
 
-closeBig.onclick=()=>infoCard.style.display="none";
-build();
+function buildGrid(list) {
+  content.innerHTML=`<div class="grid">${list.map(poster).join("")}</div>`;
+}
+
+function rebuild() {
+  const q=search.value.toLowerCase();
+  const g=genreSelect.value;
+  const t=typeSelect.value;
+
+  let list=DATA;
+  if(t==="favorites") list=DATA.filter(x=>favorites.includes(x.id));
+  else if(t==="recent") list=DATA.filter(x=>recent.includes(x.id));
+  else list=DATA.filter(x=>x.type===t);
+
+  if(q) list=list.filter(x=>x.title.toLowerCase().includes(q));
+  if(g) list=list.filter(x=>x.genres?.includes(g));
+
+  if(q||g||t!=="movie") buildGrid(list);
+  else buildHome(list);
+}
+
+function openInfoById(id){
+  const item = DATA.find(x=>x.id===id);
+  if(!item) return;
+  currentItem=item;
+
+  document.getElementById("infoBackdrop").style.backgroundImage=`url(${item.poster})`;
+  infoTitle.textContent=item.title;
+  infoOverview.textContent=item.overview;
+  infoMeta.textContent=item.genres.join(" • ");
+
+  const tvControls=document.getElementById("tvControls");
+  tvControls.style.display=item.type==="tv"?"block":"none";
+
+  if(item.type==="tv"){
+    seasonSel.innerHTML="";
+    episodeSel.innerHTML="";
+    for(let s=1;s<=5;s++){
+      seasonSel.innerHTML+=`<option value="${s}">Stagione ${s}</option>`;
+    }
+    for(let e=1;e<=10;e++){
+      episodeSel.innerHTML+=`<option value="${e}">Episodio ${e}</option>`;
+    }
+  }
+
+  playBtn.onclick=()=>{
+    if(item.type==="tv"){
+      window.open(`https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}`);
+    } else {
+      window.open(item.link);
+    }
+  };
+
+  favBtn.onclick=()=>toggleFav(item.id);
+  document.getElementById("infoCard").style.display="block";
+}
+
+function toggleFav(id){
+  favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];
+  localStorage.setItem("fav",JSON.stringify(favorites));
+}
+
+document.getElementById("closeBtn").onclick=()=>infoCard.style.display="none";
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
+
+search.oninput=rebuild;
+genreSelect.onchange=rebuild;
+typeSelect.onchange=rebuild;
+rebuild();
 </script>
 
 </body>
 </html>
 """
+
     return html.replace("__DATA__", entries_json)
 
 
@@ -252,14 +372,10 @@ def main():
             if not info:
                 continue
 
-            poster_path = info.get("poster_path")
-            if not poster_path:
-                continue  # NIENTE IMMAGINI A CASO
-
             new.append({
                 "id": tmdb_id,
                 "title": info.get("title") or info.get("name") or "",
-                "poster": TMDB_POSTER + poster_path,
+                "poster": TMDB_IMAGE + info["backdrop_path"] if info.get("backdrop_path") else "",
                 "overview": info.get("overview",""),
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres",[])],
