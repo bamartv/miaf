@@ -143,6 +143,43 @@ body {
   cursor:pointer;
 }
 
+.genre-dropdown {
+  position: relative;
+}
+
+#genreBtn {
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#1f2933;
+  color:#fff;
+  cursor:pointer;
+}
+
+.genre-menu {
+  position:absolute;
+  top:110%;
+  left:0;
+  background:#111;
+  border-radius:10px;
+  padding:10px;
+  max-height:260px;
+  overflow:auto;
+  display:none;
+  z-index:200;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+
+.genre-menu label {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:14px;
+  cursor:pointer;
+  padding:4px 0;
+}
+
+
 .row h2 { margin:10px; }
 
 .row-content {
@@ -241,8 +278,11 @@ select.episode {
     <option value="favorites">★ Preferiti</option>
     <option value="recent">🕘 Recenti</option>
   </select>
-  <select id="genreSelect" multiple>
-  </select>
+  <div class="genre-dropdown">
+   <button id="genreBtn">🎭 Generi ▼</button>
+   <div id="genreMenu" class="genre-menu"></div>
+  </div>
+
 
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
@@ -276,7 +316,8 @@ const DATA = __DATA__;
 const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
-const genreSelect = document.getElementById("genreSelect");
+const genreBtn = document.getElementById("genreBtn");
+const genreMenu = document.getElementById("genreMenu");
 const randomPickBtn = document.getElementById("randomPick");
 
 let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
@@ -284,11 +325,14 @@ let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
 
 /* generi */
-[...new Set(DATA.flatMap(x=>x.genres||[]))].sort().forEach(g=>{
-  const o=document.createElement("option");
-  o.value=g; o.textContent=g;
-  genreSelect.appendChild(o);
+const GENRES = [...new Set(DATA.flatMap(x=>x.genres||[]))].sort();
+
+GENRES.forEach(g=>{
+  const label = document.createElement("label");
+  label.innerHTML = `<input type="checkbox" value="${g}"> ${g}`;
+  genreMenu.appendChild(label);
 });
+
 
 function poster(item) {
   return `
@@ -321,6 +365,23 @@ function buildHome(list) {
   });
 }
 
+genreBtn.onclick = () => {
+  genreMenu.style.display =
+    genreMenu.style.display === "block" ? "none" : "block";
+};
+
+document.addEventListener("click", e => {
+  if (!e.target.closest(".genre-dropdown")) {
+    genreMenu.style.display = "none";
+  }
+});
+
+function getSelectedGenres() {
+  return [...genreMenu.querySelectorAll("input:checked")]
+    .map(x => x.value);
+}
+
+
 function scrollRow(el, dir){
   const row = el.parentElement.querySelector(".row-content");
   row.scrollLeft += dir * 400;
@@ -334,7 +395,7 @@ function buildGrid(list) {
 function rebuild() {
   const q = search.value.toLowerCase();
   const t = typeSelect.value;
-  const selectedGenres = [...genreSelect.selectedOptions].map(o => o.value);
+  const selectedGenres = getSelectedGenres();
 
   let list = DATA;
 
@@ -361,7 +422,7 @@ function rebuild() {
 
 function randomPick() {
   const q = search.value.toLowerCase();
-  const selectedGenres = [...genreSelect.selectedOptions].map(o => o.value);
+  const selectedGenres = getSelectedGenres();
   const t = typeSelect.value;
 
   let list = DATA;
