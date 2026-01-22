@@ -193,14 +193,21 @@ body {
 
 
 .topbar {
-  position: relative;   /* 🔥 NON sticky */
-  z-index: 1;
+  position: sticky;
+  top: 0;
+  z-index: 50;
   background: rgba(0,0,0,.95);
   padding: 12px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
 }
+
+/* 🔥 quando ci vai col telecomando */
+.topbar:focus-within {
+  z-index: 999;
+}
+
 
 .topbar *:focus {
   outline: none;
@@ -262,6 +269,16 @@ body {
   cursor:pointer;
   padding:4px 0;
 }
+
+.genre-menu input {
+  pointer-events: auto;
+}
+
+.genre-menu label:focus-within {
+  outline: 2px solid #dc2626;
+  border-radius: 6px;
+}
+
 
 
 .row h2 {
@@ -411,7 +428,7 @@ select.episode {
     <option value="recent">🕘 Recenti</option>
   </select>
   <div class="genre-dropdown">
-   <button id="genreBtn">🎭 Generi ▼</button>
+   <button id="genreBtn" tabindex="0">🎭 Generi ▼</button>
    <div id="genreMenu" class="genre-menu"></div>
   </div>
 
@@ -575,9 +592,25 @@ function buildHome(list) {
 }
 
 genreBtn.onclick = () => {
-  genreMenu.style.display =
-    genreMenu.style.display === "block" ? "none" : "block";
+  const open = genreMenu.style.display === "block";
+  genreMenu.style.display = open ? "none" : "block";
+
+  if (!open) {
+    // 🔥 focus automatico sul primo genere
+    const first = genreMenu.querySelector("input");
+    if (first) first.focus();
+  }
 };
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Backspace" || e.key === "Escape") {
+    if (genreMenu.style.display === "block") {
+      genreMenu.style.display = "none";
+      genreBtn.focus();
+    }
+  }
+});
+
 
 document.addEventListener("focusin", e => {
   const el = e.target;
