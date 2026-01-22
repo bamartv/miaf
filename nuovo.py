@@ -610,15 +610,24 @@ function buildGrid(list) {
 }
 
 function browseGenre(genre) {
-  // reset ricerca
   search.value = "";
+
+  // 🔥 CASO SPECIALE: ULTIME USCITE
+  if (genre.includes("Ultime")) {
+    buildGrid(
+      DATA
+        .filter(x => x.type === typeSelect.value && x.added)
+        .sort((a, b) => b.added.localeCompare(a.added))
+    );
+    return;
+  }
 
   // reset dropdown generi
   genreMenu.querySelectorAll("input").forEach(c => {
     c.checked = (c.value === genre);
   });
 
-  // forza vista griglia
+  // vista griglia per generi normali
   buildGrid(
     DATA.filter(x =>
       x.type === typeSelect.value &&
@@ -626,6 +635,8 @@ function browseGenre(genre) {
     )
   );
 }
+
+
 
 function rebuild() {
   const q = search.value.toLowerCase();
