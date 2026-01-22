@@ -45,6 +45,48 @@ def extract_ids(data):
 
 
 def tmdb_get(api_key, type_, tmdb_id):
+    def tmdb_get_rating(api_key, type_, tmdb_id):
+    if type_ == "movie":
+        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
+        r = requests.get(url, params={"api_key": api_key}, timeout=15)
+        if r.status_code != 200:
+            return None
+
+        for c in r.json().get("results", []):
+            if c.get("iso_3166_1") in ("IT", "US"):
+                for rel in c.get("release_dates", []):
+                    cert = rel.get("certification")
+                    if cert:
+                        return cert
+
+    else:  # TV
+        url = f"https://api.themoviedb.org/3/tv/{tmdb_id}/content_ratings"
+        r = requests.get(url, params={"api_key": api_key}, timeout=15)
+        if r.status_code != 200:
+            return None
+
+        for c in r.json().get("results", []):
+            if c.get("iso_3166_1") in ("IT", "US"):
+                return c.get("rating")
+
+    return None
+def map_to_pegi(cert):
+    if not cert:
+        return "?"
+    cert = cert.upper()
+
+    if cert in ("G", "TV-G"):
+        return "3"
+    if cert in ("PG"):
+        return "7"
+    if cert in ("PG-13", "TV-14"):
+        return "12"
+    if cert in ("R", "TV-MA", "18"):
+        return "18"
+
+    return cert
+
+    
     r = requests.get(
         TMDB_BASE.format(type=type_, id=tmdb_id),
         params={"api_key": api_key, "language": "it-IT"},
@@ -275,6 +317,20 @@ body {
 .poster:hover { transform:scale(1.08); }
 .poster img { width:100%; display:block; }
 
+.pegi {
+  position:absolute;
+  top:6px;
+  left:6px;
+  background:#dc2626;
+  color:#fff;
+  font-weight:bold;
+  font-size:13px;
+  padding:4px 6px;
+  border-radius:6px;
+  z-index:5;
+}
+
+
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -471,7 +527,8 @@ GENRES.forEach(g => {
 
 function poster(item) {
   return `
-    <div class="poster" onclick="openInfoById('${item.id}')">
+    <div class="poster" onclick="openInfoById('${item.id}')" style="position:relative">
+      ${item.pegi ? `<div class="pegi">PEGI ${item.pegi}</div>` : ""}
       <img loading="lazy" src="${item.poster}">
     </div>`;
 }
@@ -725,6 +782,9 @@ def main():
         data = fetch_list(url)
         for tmdb_id in extract_ids(data):
             info = tmdb_get(api_key, t, tmdb_id)
+            raw_rating = tmdb_get_rating(api_key, t, tmdb_id)
+            pegi = map_to_pegi(raw_rating)
+
             if not info:
                 continue
 
@@ -739,6 +799,7 @@ def main():
                 "title": info.get("title") or info.get("name") or "",
                 "poster": TMDB_IMAGE + poster_path,
                 "overview": info.get("overview", ""),
+                "pegi": pegi,
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
