@@ -45,7 +45,15 @@ def extract_ids(data):
 
 
 def tmdb_get(api_key, type_, tmdb_id):
-    def tmdb_get_rating(api_key, type_, tmdb_id):
+    r = requests.get(
+        TMDB_BASE.format(type=type_, id=tmdb_id),
+        params={"api_key": api_key, "language": "it-IT"},
+        timeout=15
+    )
+    return r.json() if r.status_code == 200 else None
+
+
+def tmdb_get_rating(api_key, type_, tmdb_id):
     if type_ == "movie":
         url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
         r = requests.get(url, params={"api_key": api_key}, timeout=15)
@@ -70,9 +78,12 @@ def tmdb_get(api_key, type_, tmdb_id):
                 return c.get("rating")
 
     return None
+
+
 def map_to_pegi(cert):
     if not cert:
-        return "?"
+        return None
+
     cert = cert.upper()
 
     if cert in ("G", "TV-G"):
@@ -85,6 +96,7 @@ def map_to_pegi(cert):
         return "18"
 
     return cert
+
 
     
     r = requests.get(
