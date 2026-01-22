@@ -193,9 +193,8 @@ body {
 
 
 .topbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  position: relative;   /* ← FONDAMENTALE */
+  z-index: 10;
   background: rgba(0,0,0,.95);
   padding: 12px;
   display: flex;
@@ -203,15 +202,20 @@ body {
   flex-wrap: wrap;
 }
 
+
 /* 🔥 quando ci vai col telecomando */
 .topbar:focus-within {
   z-index: 999;
 }
 
-
-.topbar *:focus {
-  outline: none;
+.topbar input:focus,
+.topbar select:focus,
+.topbar button:focus {
+  outline: 3px solid #dc2626;
+  box-shadow: 0 0 10px rgba(220,38,38,.8);
+  border-radius: 8px;
 }
+
 
 
 .topbar input, .topbar select {
@@ -260,6 +264,21 @@ body {
   z-index:200;
   box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
+
+.genre-menu label {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:15px;
+  padding:6px 8px;
+  border-radius:6px;
+}
+
+.genre-menu label:focus {
+  outline: 3px solid #dc2626;
+  background: rgba(220,38,38,.25);
+}
+
 
 .genre-menu label {
   display:flex;
@@ -529,7 +548,9 @@ const GENRES = [...new Set(DATA.flatMap(x=>x.genres||[]))].sort();
 
 GENRES.forEach(g => {
   const label = document.createElement("label");
-  label.innerHTML = `<input type="checkbox" value="${g}"> ${g}`;
+  label.tabIndex = 0;
+  label.innerHTML = `<input type="checkbox" value="${g}" tabindex="-1"> ${g}`;
+
 
   const checkbox = label.querySelector("input");
 
@@ -537,6 +558,16 @@ GENRES.forEach(g => {
 
   // 🔥 QUANDO CLICCHI UN GENERE → RICOSTRUISCE LA GRIGLIA
   checkbox.addEventListener("change", rebuild);
+
+  label.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    checkbox.checked = !checkbox.checked;
+    rebuild();
+  }
+});
+
+
+  
 
   genreMenu.appendChild(label);
 });
