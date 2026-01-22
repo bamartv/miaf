@@ -362,6 +362,21 @@ select.episode {
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
 
+<div id="playerOverlay" style="
+  position:fixed;
+  inset:0;
+  background:#000;
+  display:none;
+  z-index:2000;
+">
+  <iframe id="playerFrame"
+    allow="autoplay; fullscreen"
+    allowfullscreen
+    style="width:100%;height:100%;border:none">
+  </iframe>
+</div>
+
+
 <div id="content"></div>
 
 <div id="infoCard">
@@ -387,6 +402,42 @@ select.episode {
 
 <script>
 const DATA = __DATA__;
+const playerOverlay = document.getElementById("playerOverlay");
+const playerFrame = document.getElementById("playerFrame");
+
+function openPlayer(item, push=true){
+  let url;
+
+  if(item.type==="tv"){
+    url = `https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}?autoplay=1`;
+  } else {
+    url = `https://vixsrc.to/movie/${item.id}?autoplay=1`;
+  }
+
+  playerFrame.src = url;
+  playerOverlay.style.display = "block";
+
+  if (playerOverlay.requestFullscreen) {
+    playerOverlay.requestFullscreen();
+  }
+
+  if(push){
+    history.pushState({page:"player", id:item.id}, "", "#player-"+item.id);
+  }
+}
+
+function closePlayer(push=true){
+  playerFrame.src="";
+  playerOverlay.style.display="none";
+
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
+
+  if(push && currentItem){
+    history.pushState({page:"info", id:currentItem.id}, "", "#info-"+currentItem.id);
+  }
+}
 
 const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
@@ -407,6 +458,8 @@ GENRES.forEach(g => {
   label.innerHTML = `<input type="checkbox" value="${g}"> ${g}`;
 
   const checkbox = label.querySelector("input");
+
+  
 
   // 🔥 QUANDO CLICCHI UN GENERE → RICOSTRUISCE LA GRIGLIA
   checkbox.addEventListener("change", rebuild);
@@ -596,16 +649,17 @@ function openInfoById(id){
     }
   }
 
-  playBtn.onclick=()=>{
-    if(item.type==="tv"){
-      window.open(`https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}`);
-    } else {
-      window.open(item.link);
-    }
-  };
+  playBtn.onclick = () => openPlayer(item);
+
 
   favBtn.onclick=()=>toggleFav(item.id);
   document.getElementById("infoCard").style.display="block";
+  history.pushState(
+  { page: "info", id: item.id },
+  "",
+  "#info-" + item.id
+);
+
 }
 
 function toggleFav(id){
@@ -623,6 +677,27 @@ search.oninput=rebuild;
 typeSelect.onchange=rebuild;
 randomPickBtn.onclick = randomPick;
 rebuild();
+window.addEventListener("popstate", e => {
+  const s = e.state;
+
+  // se stavo guardando un video → torna a infocard
+  if (s && s.page === "player") {
+    openPlayer(currentItem, false);
+    return;
+  }
+
+  // se stavo in infocard → chiudi player e mostra info
+  if (s && s.page === "info") {
+    closePlayer(false);
+    openInfoById(s.id);
+    return;
+  }
+
+  // fallback → home
+  closePlayer(false);
+  closeInfoCard();
+});
+
 </script>
 
 </body>
