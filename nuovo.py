@@ -329,6 +329,13 @@ body {
 .poster:hover { transform:scale(1.08); }
 .poster img { width:100%; display:block; }
 
+.poster:focus {
+  outline: 4px solid #dc2626;
+  transform: scale(1.08);
+  z-index: 10;
+}
+
+
 .pegi {
   position:absolute;
   top:6px;
@@ -539,7 +546,12 @@ GENRES.forEach(g => {
 
 function poster(item) {
   return `
-    <div class="poster" onclick="openInfoById('${item.id}')" style="position:relative">
+    <div class="poster"
+         tabindex="0"
+         onclick="openInfoById('${item.id}')"
+         onkeydown="if(event.key==='Enter'){openInfoById('${item.id}')}"
+         style="position:relative">
+
       ${item.pegi ? `<div class="pegi">PEGI ${item.pegi}</div>` : ""}
       <img loading="lazy" src="${item.poster}">
     </div>`;
@@ -586,6 +598,18 @@ genreBtn.onclick = () => {
   genreMenu.style.display =
     genreMenu.style.display === "block" ? "none" : "block";
 };
+
+document.addEventListener("focusin", e => {
+  const el = e.target;
+  if (el.classList.contains("poster")) {
+    el.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center"
+    });
+  }
+});
+
 
 document.addEventListener("click", e => {
   if (!e.target.closest(".genre-dropdown")) {
