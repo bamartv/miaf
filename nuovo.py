@@ -220,15 +220,19 @@ body {
 
 
 .topbar {
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:rgba(0,0,0,.9);
-  padding:12px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+  position: relative;   /* 🔥 NON sticky */
+  z-index: 1;
+  background: rgba(0,0,0,.95);
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
+
+.topbar *:focus {
+  outline: none;
+}
+
 
 .topbar input, .topbar select {
   padding:8px;
@@ -257,6 +261,11 @@ body {
   color:#fff;
   cursor:pointer;
 }
+
+#content {
+  margin-top: 10px;
+}
+
 
 .genre-menu {
   position:absolute;
@@ -788,6 +797,10 @@ search.oninput=rebuild;
 typeSelect.onchange=rebuild;
 randomPickBtn.onclick = randomPick;
 rebuild();
+setTimeout(() => {
+  const firstPoster = document.querySelector(".poster");
+  if (firstPoster) firstPoster.focus();
+}, 300);
 window.addEventListener("popstate", e => {
   const s = e.state;
 
