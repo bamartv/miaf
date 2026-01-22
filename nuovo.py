@@ -702,7 +702,14 @@ function openInfoById(id){
   document.getElementById("infoBackdrop").style.backgroundImage=`url(${item.poster})`;
   infoTitle.textContent=item.title;
   infoOverview.textContent=item.overview;
-  infoMeta.textContent=item.genres.join(" • ");
+  let meta = item.genres.join(" • ");
+
+  if (item.pegi) {
+  meta += ` • <span class="pegi">VM${item.pegi}</span>`;
+}
+
+infoMeta.innerHTML = meta;
+
 
   const tvControls=document.getElementById("tvControls");
   tvControls.style.display=item.type==="tv"?"block":"none";
