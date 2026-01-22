@@ -560,6 +560,17 @@ function randomPick() {
   openInfoById(pick.id);
 }
 
+function closeInfoCard() {
+  const card = document.getElementById("infoCard");
+  if (card && card.style.display === "block") {
+    card.style.display = "none";
+    currentItem = null;
+    return true; // dice ad Android: "ho gestito io il back"
+  }
+  return false;
+}
+
+
 
 function openInfoById(id){
   const item = DATA.find(x=>x.id===id);
@@ -602,10 +613,11 @@ function toggleFav(id){
   localStorage.setItem("fav",JSON.stringify(favorites));
 }
 
-document.getElementById("closeBtnBottom").onclick = () => {
-  document.getElementById("infoCard").style.display = "none";
-};
-document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
+document.getElementById("closeBtnBottom").onclick = closeInfoCard;
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeInfoCard();
+});
+
 
 search.oninput=rebuild;
 typeSelect.onchange=rebuild;
