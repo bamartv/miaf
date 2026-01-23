@@ -612,21 +612,6 @@ function openInfoById(id){
 };
 
 
-  document.getElementById("playerClose").onclick = () => {
-  const frame = document.getElementById("playerFrame");
-  frame.src = "";
-  document.getElementById("playerOverlay").style.display = "none";
-};
-
-
-  document.addEventListener("keydown", e => {
-  if (e.key === "Escape") {
-    document.getElementById("playerClose").click();
-  }
-});
-
-
-
 
 
   favBtn.onclick=()=>toggleFav(item.id);
@@ -664,8 +649,6 @@ window.addEventListener("popstate", () => {
 });
 </script>
 
-</script>
-
 </body>
 </html>
 """
@@ -690,9 +673,14 @@ def main():
     for t, url in SRC_URLS.items():
         data = fetch_list(url)
         for tmdb_id in extract_ids(data):
-            info = tmdb_get(api_key, t, tmdb_id)
-            if not info:
-                continue
+
+    # ✅ SE GIÀ IN CACHE → SALTA TMDB
+    if tmdb_id in old:
+        continue
+
+    info = tmdb_get(api_key, t, tmdb_id)
+    if not info:
+        continue
 
             poster_path = info.get("poster_path")
             if not poster_path:
