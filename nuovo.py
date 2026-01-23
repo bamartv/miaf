@@ -661,7 +661,7 @@ window.addEventListener("popstate", () => {
 def main():
     api_key = get_api_key()
 
-    # 🔥 CARICA ARCHIVIO E SISTEMA added SE MANCA
+    # 🔥 carica archivio
     old = {}
     for e in load_archive():
         if "added" not in e:
@@ -670,38 +670,38 @@ def main():
 
     new = []
 
-for t, url in SRC_URLS.items():
-    data = fetch_list(url)
+    for t, url in SRC_URLS.items():
+        print(f"➡️ Scarico lista {t}")
+        data = fetch_list(url)
 
-    for tmdb_id in extract_ids(data):
+        for tmdb_id in extract_ids(data):
 
-        # ✅ già presente → salta
-        if tmdb_id in old:
-            continue
+            # ✅ già presente → salta TMDB
+            if tmdb_id in old:
+                continue
 
-        info = tmdb_get(api_key, t, tmdb_id)
-        if not info:
-            continue
+            info = tmdb_get(api_key, t, tmdb_id)
+            if not info:
+                continue
 
-        poster_path = info.get("poster_path")
-        if not poster_path:
-            continue  # salta titoli senza locandina
+            poster_path = info.get("poster_path")
+            if not poster_path:
+                continue
 
-        existing = old.get(tmdb_id)
+            existing = old.get(tmdb_id)
 
-        new.append({
-            "id": tmdb_id,
-            "title": info.get("title") or info.get("name") or "",
-            "poster": TMDB_IMAGE + poster_path,
-            "overview": info.get("overview", ""),
-            "type": t,
-            "genres": [g["name"] for g in info.get("genres", [])],
-            "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
-            "added": existing["added"] if existing else datetime.utcnow().isoformat()
-        })
+            new.append({
+                "id": tmdb_id,
+                "title": info.get("title") or info.get("name") or "",
+                "poster": TMDB_IMAGE + poster_path,
+                "overview": info.get("overview", ""),
+                "type": t,
+                "genres": [g["name"] for g in info.get("genres", [])],
+                "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
+                "added": existing["added"] if existing else datetime.utcnow().isoformat()
+            })
 
-
-    # 🔁 MERGE DEFINITIVO
+    # 🔁 merge
     for e in new:
         old[e["id"]] = e
 
@@ -712,6 +712,7 @@ for t, url in SRC_URLS.items():
         f.write(build_html(entries))
 
     print(f"✅ {OUTPUT_HTML} generato con {len(entries)} titoli")
+
 
 
 
