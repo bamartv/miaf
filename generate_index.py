@@ -569,10 +569,7 @@ function populateGenres(){{
 function updateType(t){{
     currentType=t;
     if(t==="movie" || t==="tv"){{
-        currentList = allData
-          .filter(x => x.type === t)
-          .sort((a, b) => (b.is_new === true) - (a.is_new === true));
-
+        currentList=allData.filter(x=>x.type===t);
         genreSelect.style.display='inline';
         populateGenres();
     }} else if(t==="favorites"){{
@@ -650,8 +647,7 @@ def main():
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
             directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
 
-            is_new = not any(str(tmdb_id) == e["id"] for e in old_entries)
-            
+
             entries.append({
                 "id": str(tmdb_id),
                 "title": title,
