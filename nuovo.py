@@ -39,6 +39,32 @@ def tmdb_get(api_key, type_, tmdb_id):
         return None
 
 
+def tmdb_get_pegi(api_key, type_, tmdb_id):
+    try:
+        if type_ == "tv":
+            url = f"https://api.themoviedb.org/3/tv/{tmdb_id}/content_ratings"
+            r = requests.get(url, params={"api_key": api_key}, timeout=15)
+            if r.status_code == 200:
+                for c in r.json().get("results", []):
+                    if c.get("iso_3166_1") == "IT":
+                        return c.get("rating") or None
+
+        else:  # movie
+            url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
+            r = requests.get(url, params={"api_key": api_key}, timeout=15)
+            if r.status_code == 200:
+                for c in r.json().get("results", []):
+                    if c.get("iso_3166_1") == "IT":
+                        for rel in c.get("release_dates", []):
+                            if rel.get("certification"):
+                                return rel.get("certification") or None
+    except:
+        pass
+
+    return None
+
+
+
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
@@ -249,6 +275,23 @@ body {
 .poster:hover { transform:scale(1.08); }
 .poster img { width:100%; display:block; }
 
+.pegi {
+  position:absolute;
+  bottom:8px;
+  left:8px;
+  background:#dc2626;
+  color:#fff;
+  font-size:13px;
+  font-weight:bold;
+  padding:4px 8px;
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,.6);
+}
+.poster {
+  position:relative;
+}
+
+
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -438,8 +481,10 @@ function poster(item) {
   return `
     <div class="poster" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
+      ${item.pegi ? `<div class="pegi">${item.pegi}</div>` : ""}
     </div>`;
 }
+
 
 function addRow(title, items) {
   if(!items.length) return;
@@ -690,6 +735,8 @@ def main():
 
             existing = old.get(tmdb_id)
 
+            pegi = tmdb_get_pegi(api_key, t, tmdb_id)
+
             new.append({
                 "id": tmdb_id,
                 "title": info.get("title") or info.get("name") or "",
@@ -697,6 +744,7 @@ def main():
                 "overview": info.get("overview", ""),
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
+                "pegi": pegi,
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
                 "added": existing["added"] if existing else datetime.utcnow().isoformat()
             })
