@@ -374,7 +374,6 @@ select.episode {
 
 
 <div id="playerOverlay" style="display:none">
-  <div id="playerClose">✕</div>
   <iframe
     id="playerFrame"
     allowfullscreen
@@ -589,8 +588,14 @@ function openInfoById(id){
     url = currentItem.link;
   }
 
-  document.getElementById("playerFrame").src = url;
-  document.getElementById("playerOverlay").style.display = "block";
+  const overlay = document.getElementById("playerOverlay");
+  const frame = document.getElementById("playerFrame");
+
+  frame.src = url;
+  overlay.style.display = "block";
+
+  // 🔥 QUESTO È IL PUNTO CHIAVE
+  history.pushState({ player: true }, "");
 };
 
 
@@ -625,11 +630,27 @@ document.getElementById("closeBtnBottom").onclick = () => {
 };
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
 
-search.oninput=rebuild;
-typeSelect.onchange=rebuild;
+search.oninput = rebuild;
+typeSelect.onchange = rebuild;
 randomPickBtn.onclick = randomPick;
 genreSelect.onchange = rebuild;
 rebuild();
+
+/* 🔥 BACK ANDROID → TORNA ALLA INFOCARD */
+window.addEventListener("popstate", () => {
+  const overlay = document.getElementById("playerOverlay");
+  const frame = document.getElementById("playerFrame");
+
+  if (overlay.style.display === "block") {
+    frame.src = "";
+    overlay.style.display = "none";
+
+    // blocca ritorno alla home
+    history.pushState({}, "");
+  }
+});
+</script>
+
 </script>
 
 </body>
