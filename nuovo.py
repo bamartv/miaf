@@ -125,45 +125,6 @@ body {
   position:relative;
 }
 
-.row-arrow {
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:50px;
-  height:120px;
-  background:rgba(0,0,0,0.6);
-  color:#fff;
-  font-size:40px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  opacity:0;
-  transition:opacity .3s;
-  z-index:10;
-  user-select:none;
-}
-
-.row h2 {
-  font-family: "Oswald", "Arial Narrow", Arial, sans-serif;
-}
-
-.row:first-of-type h2 {
-  font-size: 26px;
-  color: #fff;
-  text-shadow:
-    0 3px 10px rgba(0,0,0,0.9),
-    0 0 18px rgba(220,38,38,0.6);
-}
-
-
-.row:hover .row-arrow {
-  opacity:1;
-}
-
-.row-arrow.left { left:0; }
-.row-arrow.right { right:0; }
-
 
 .topbar {
   position:sticky;
@@ -441,8 +402,7 @@ function addRow(title, items) {
   </button>
 </div>
 
-      <div class="row-arrow left" onclick="scrollRow(this,-1)">‹</div>
-      <div class="row-arrow right" onclick="scrollRow(this,1)">›</div>
+      
 
       <div class="row-content">
         ${items.slice(0,25).map(poster).join("")}
@@ -476,12 +436,6 @@ function getSelectedGenres() {
   return [...genreSelect.selectedOptions].map(o => o.value);
 }
 
-
-
-function scrollRow(el, dir){
-  const row = el.parentElement.querySelector(".row-content");
-  row.scrollLeft += dir * 400;
-}
 
 
 function buildGrid(list) {
