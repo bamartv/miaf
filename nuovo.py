@@ -4,7 +4,7 @@ from datetime import datetime
 
 # ================= CONFIG =================
 
-FORCE_PEGI_REFRESH = False
+FORCE_PEGI_REFRESH = True
 SRC_URLS = {
     "movie": "https://vixsrc.to/api/list/movie?lang=it",
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
@@ -389,6 +389,28 @@ body {
   cursor:pointer;
 }
 
+.vote-circle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: #444;
+  box-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+.vote-good { background: #16a34a; }   /* verde */
+.vote-mid  { background: #f59e0b; }   /* giallo */
+.vote-bad  { background: #dc2626; }   /* rosso */
+
+
 .play { background:#dc2626; color:#fff; }
 .fav { background:#2563eb; color:#fff; }
 .close { background:#374151; color:#fff; }
@@ -480,12 +502,27 @@ GENRES.forEach(g => {
 
 
 function poster(item) {
+  let voteBadge = "";
+
+  if (item.vote && item.vote > 0) {
+    let cls = "vote-mid";
+    if (item.vote >= 7.5) cls = "vote-good";
+    else if (item.vote < 5.5) cls = "vote-bad";
+
+    voteBadge = `
+      <div class="vote-circle ${cls}">
+        ${item.vote}
+      </div>`;
+  }
+
   return `
     <div class="poster" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
       ${item.pegi ? `<div class="pegi">${item.pegi}</div>` : ""}
+      ${voteBadge}
     </div>`;
 }
+
 
 
 function addRow(title, items) {
@@ -748,6 +785,7 @@ def main():
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "pegi": pegi,
+                "vote": round(info.get("vote_average", 0), 1),
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
                 "added": existing.get("added", datetime.utcnow().isoformat())
             })
