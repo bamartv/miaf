@@ -53,60 +53,6 @@ def tmdb_get(api_key, type_, tmdb_id):
     return r.json() if r.status_code == 200 else None
 
 
-def tmdb_get_rating(api_key, type_, tmdb_id):
-    if type_ == "movie":
-        url = f"https://api.themoviedb.org/3/movie/{tmdb_id}/release_dates"
-        r = requests.get(url, params={"api_key": api_key}, timeout=15)
-        if r.status_code != 200:
-            return None
-
-        for c in r.json().get("results", []):
-            if c.get("iso_3166_1") in ("IT", "US"):
-                for rel in c.get("release_dates", []):
-                    cert = rel.get("certification")
-                    if cert:
-                        return cert
-
-    else:  # TV
-        url = f"https://api.themoviedb.org/3/tv/{tmdb_id}/content_ratings"
-        r = requests.get(url, params={"api_key": api_key}, timeout=15)
-        if r.status_code != 200:
-            return None
-
-        for c in r.json().get("results", []):
-            if c.get("iso_3166_1") in ("IT", "US"):
-                return c.get("rating")
-
-    return None
-
-
-def map_to_pegi(cert):
-    if not cert:
-        return None
-
-    cert = cert.upper()
-
-    if cert in ("G", "TV-G"):
-        return "3"
-    if cert in ("PG"):
-        return "7"
-    if cert in ("PG-13", "TV-14"):
-        return "12"
-    if cert in ("R", "TV-MA", "18"):
-        return "18"
-
-    return cert
-
-
-    
-    r = requests.get(
-        TMDB_BASE.format(type=type_, id=tmdb_id),
-        params={"api_key": api_key, "language": "it-IT"},
-        timeout=15
-    )
-    return r.json() if r.status_code == 200 else None
-
-
 def load_archive():
     if os.path.exists(ARCHIVE_FILE):
         with open(ARCHIVE_FILE, "r", encoding="utf-8") as f:
@@ -149,10 +95,53 @@ body {
   padding: 0 10px;
 }
 
+.browse-all {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .25s, color .25s;
+}
+
+/* appare quando la riga è attiva (hover o focus TV) */
+.row:hover .browse-all,
+.row:focus-within .browse-all {
+  opacity: 1;
+}
+
+/* focus telecomando */
+.browse-all:focus {
+  outline: 2px solid #dc2626;
+  border-radius: 6px;
+  color: #fff;
+}
+
 
 .row {
   margin:20px 10px;
   position:relative;
+}
+
+.row-arrow {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:50px;
+  height:120px;
+  background:rgba(0,0,0,0.6);
+  color:#fff;
+  font-size:40px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  opacity:0;
+  transition:opacity .3s;
+  z-index:10;
+  user-select:none;
 }
 
 .row h2 {
@@ -168,31 +157,24 @@ body {
 }
 
 
+.row:hover .row-arrow {
+  opacity:1;
+}
+
+.row-arrow.left { left:0; }
+.row-arrow.right { right:0; }
+
+
 .topbar {
-  position: relative;   /* ← FONDAMENTALE */
-  z-index: 10;
-  background: rgba(0,0,0,.95);
-  padding: 12px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  position:sticky;
+  top:0;
+  z-index:100;
+  background:rgba(0,0,0,.9);
+  padding:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
-
-
-/* 🔥 quando ci vai col telecomando */
-.topbar:focus-within {
-  z-index: 999;
-}
-
-.topbar input:focus,
-.topbar select:focus,
-.topbar button:focus {
-  outline: 3px solid #dc2626;
-  box-shadow: 0 0 10px rgba(220,38,38,.8);
-  border-radius: 8px;
-}
-
-
 
 .topbar input, .topbar select {
   padding:8px;
@@ -209,19 +191,32 @@ body {
   cursor:pointer;
 }
 
-
-
-
-#content {
-  margin-top: 10px;
+.genre-dropdown {
+  position: relative;
 }
 
-
-.genre-menu label:focus {
-  outline: 3px solid #dc2626;
-  background: rgba(220,38,38,.25);
+#genreBtn {
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#1f2933;
+  color:#fff;
+  cursor:pointer;
 }
 
+.genre-menu {
+  position:absolute;
+  top:110%;
+  left:0;
+  background:#111;
+  border-radius:10px;
+  padding:10px;
+  max-height:260px;
+  overflow:auto;
+  display:none;
+  z-index:200;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
 
 .genre-menu label {
   display:flex;
@@ -231,12 +226,6 @@ body {
   cursor:pointer;
   padding:4px 0;
 }
-
-.genre-menu label:focus-within {
-  outline: 2px solid #dc2626;
-  border-radius: 6px;
-}
-
 
 
 .row h2 {
@@ -286,27 +275,6 @@ body {
 .poster:hover { transform:scale(1.08); }
 .poster img { width:100%; display:block; }
 
-.poster:focus {
-  outline: 4px solid #dc2626;
-  transform: scale(1.08);
-  z-index: 10;
-}
-
-
-.pegi {
-  position:absolute;
-  top:6px;
-  left:6px;
-  background:#dc2626;
-  color:#fff;
-  font-weight:bold;
-  font-size:13px;
-  padding:4px 6px;
-  border-radius:6px;
-  z-index:5;
-}
-
-
 .grid {
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
@@ -355,6 +323,15 @@ body {
   cursor:pointer;
 }
 
+#genreSelect {
+  padding:8px;
+  font-size:16px;
+  background:#111;
+  color:#fff;
+  border-radius:8px;
+}
+
+
 .actions button {
   padding:10px 16px;
   border:none;
@@ -386,29 +363,14 @@ select.episode {
     <option value="recent">🕘 Recenti</option>
   </select>
 
-  <select id="genreSelect">
-    <option value="">🎭 Tutti i generi</option>
-  </select>
+  <select id="genreSelect" multiple size="1">
+  <option value="" disabled>🎭 Generi</option>
+</select>
 
 
 
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
 </div>
-
-<div id="playerOverlay" style="
-  position:fixed;
-  inset:0;
-  background:#000;
-  display:none;
-  z-index:2000;
-">
-  <iframe id="playerFrame"
-    allow="autoplay; fullscreen"
-    allowfullscreen
-    style="width:100%;height:100%;border:none">
-  </iframe>
-</div>
-
 
 <div id="content"></div>
 
@@ -435,12 +397,19 @@ select.episode {
 
 <script>
 const DATA = __DATA__;
-const playerOverlay = document.getElementById("playerOverlay");
-const playerFrame = document.getElementById("playerFrame");
 
+const content = document.getElementById("content");
+const search = document.getElementById("searchBox");
+const typeSelect = document.getElementById("typeSelect");
 const genreSelect = document.getElementById("genreSelect");
+const randomPickBtn = document.getElementById("randomPick");
 
-const GENRES = [...new Set(DATA.flatMap(x => x.genres || []))].sort();
+let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
+let recent = JSON.parse(localStorage.getItem("recent") || "[]");
+let currentItem = null;
+
+/* generi */
+const GENRES = [...new Set(DATA.flatMap(x=>x.genres||[]))].sort();
 
 GENRES.forEach(g => {
   const opt = document.createElement("option");
@@ -449,64 +418,12 @@ GENRES.forEach(g => {
   genreSelect.appendChild(opt);
 });
 
-genreSelect.onchange = rebuild;
-
-
-
-function openPlayer(item, push=true){
-  let url;
-
-  if(item.type==="tv"){
-    url = `https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}?autoplay=1`;
-  } else {
-    url = `https://vixsrc.to/movie/${item.id}?autoplay=1`;
-  }
-
-  playerFrame.src = url;
-  playerOverlay.style.display = "block";
-
-  if (playerOverlay.requestFullscreen) {
-    playerOverlay.requestFullscreen();
-  }
-
-  if(push){
-    history.pushState({page:"player", id:item.id}, "", "#player-"+item.id);
-  }
-}
-
-function closePlayer(push=true){
-  playerFrame.src="";
-  playerOverlay.style.display="none";
-
-  if (document.fullscreenElement) {
-    document.exitFullscreen();
-  }
-
-  if(push && currentItem){
-    history.pushState({page:"info", id:currentItem.id}, "", "#info-"+currentItem.id);
-  }
-}
-
-const content = document.getElementById("content");
-const search = document.getElementById("searchBox");
-const typeSelect = document.getElementById("typeSelect");
-const randomPickBtn = document.getElementById("randomPick");
-
-let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
-let recent = JSON.parse(localStorage.getItem("recent") || "[]");
-let currentItem = null;
 
 
 
 function poster(item) {
   return `
-    <div class="poster"
-         tabindex="0"
-         onclick="openInfoById('${item.id}')"
-         onkeydown="if(event.key==='Enter'){openInfoById('${item.id}')}"
-         style="position:relative">
-
-      ${item.pegi ? `<div class="pegi">PEGI ${item.pegi}</div>` : ""}
+    <div class="poster" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
     </div>`;
 }
@@ -516,15 +433,22 @@ function addRow(title, items) {
   content.innerHTML += `
     <div class="row">
       <div class="row-title">
-        <h2>${title}</h2>
-      </div>
+  <h2>${title}</h2>
+  <button class="browse-all"
+    onclick="browseGenre('${title}')"
+    tabindex="0">
+    Sfoglia tutti →
+  </button>
+</div>
+
+      <div class="row-arrow left" onclick="scrollRow(this,-1)">‹</div>
+      <div class="row-arrow right" onclick="scrollRow(this,1)">›</div>
 
       <div class="row-content">
         ${items.slice(0,25).map(poster).join("")}
       </div>
     </div>`;
 }
-
 
 
 function buildHome(list) {
@@ -542,24 +466,38 @@ function buildHome(list) {
 }
 
 
-document.addEventListener("focusin", e => {
-  const el = e.target;
-  if (el.classList.contains("poster")) {
-    el.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center"
-    });
+document.addEventListener("click", e => {
+  if (!e.target.closest(".genre-dropdown")) {
+    genreMenu.style.display = "none";
   }
 });
 
+function getSelectedGenres() {
+  return [...genreSelect.selectedOptions].map(o => o.value);
+}
+
+
+
+function scrollRow(el, dir){
+  const row = el.parentElement.querySelector(".row-content");
+  row.scrollLeft += dir * 400;
+}
 
 
 function buildGrid(list) {
   content.innerHTML=`<div class="grid">${list.map(poster).join("")}</div>`;
 }
 
-  // vista griglia per generi normali
+function browseGenre(genre) {
+  // reset ricerca
+  search.value = "";
+
+  // reset dropdown generi
+  genreMenu.querySelectorAll("input").forEach(c => {
+    c.checked = (c.value === genre);
+  });
+
+  // forza vista griglia
   buildGrid(
     DATA.filter(x =>
       x.type === typeSelect.value &&
@@ -571,7 +509,7 @@ function buildGrid(list) {
 function rebuild() {
   const q = search.value.toLowerCase();
   const t = typeSelect.value;
-  const selectedGenre = genreSelect.value;
+  const selectedGenres = getSelectedGenres();
 
   let list = DATA;
 
@@ -581,13 +519,14 @@ function rebuild() {
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
 
-  if (selectedGenre) {
+  if (selectedGenres.length) {
     list = list.filter(item =>
-      item.genres?.includes(selectedGenre)
+      selectedGenres.every(g => item.genres?.includes(g))
     );
   }
 
-  if (q || selectedGenre || t !== "movie") {
+  // 🔥 LOGICA CORRETTA
+  if (q || selectedGenres.length || t !== "movie") {
     buildGrid(list);
   } else {
     buildHome(list);
@@ -595,10 +534,9 @@ function rebuild() {
 }
 
 
-
 function randomPick() {
   const q = search.value.toLowerCase();
-  const selectedGenre = genreSelect.value;
+  const selectedGenres = getSelectedGenres();
   const t = typeSelect.value;
 
   let list = DATA;
@@ -608,27 +546,20 @@ function randomPick() {
   else list = DATA.filter(x => x.type === t);
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
-  if (selectedGenre) {
-    list = list.filter(item =>
-      item.genres?.includes(selectedGenre)
-    );
-  }
+  if (selectedGenres.length) {
+  list = list.filter(item =>
+    selectedGenres.every(g => item.genres?.includes(g))
+  );
+}
 
   if (!list.length) {
     alert("Nessun titolo disponibile con questi filtri 😅");
     return;
   }
 
-  function closeInfoCard() {
-  document.getElementById("infoCard").style.display = "none";
-}
-
-
   const pick = list[Math.floor(Math.random() * list.length)];
   openInfoById(pick.id);
 }
-
-
 
 
 function openInfoById(id){
@@ -639,14 +570,7 @@ function openInfoById(id){
   document.getElementById("infoBackdrop").style.backgroundImage=`url(${item.poster})`;
   infoTitle.textContent=item.title;
   infoOverview.textContent=item.overview;
-  let meta = item.genres.join(" • ");
-
-  if (item.pegi) {
-  meta += ` • <span class="pegi">VM${item.pegi}</span>`;
-}
-
-infoMeta.innerHTML = meta;
-
+  infoMeta.textContent=item.genres.join(" • ");
 
   const tvControls=document.getElementById("tvControls");
   tvControls.style.display=item.type==="tv"?"block":"none";
@@ -662,17 +586,16 @@ infoMeta.innerHTML = meta;
     }
   }
 
-  playBtn.onclick = () => openPlayer(item);
-
+  playBtn.onclick=()=>{
+    if(item.type==="tv"){
+      window.open(`https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}`);
+    } else {
+      window.open(item.link);
+    }
+  };
 
   favBtn.onclick=()=>toggleFav(item.id);
   document.getElementById("infoCard").style.display="block";
-  history.pushState(
-  { page: "info", id: item.id },
-  "",
-  "#info-" + item.id
-);
-
 }
 
 function toggleFav(id){
@@ -680,38 +603,16 @@ function toggleFav(id){
   localStorage.setItem("fav",JSON.stringify(favorites));
 }
 
-document.getElementById("closeBtnBottom").onclick = closeInfoCard;
-
+document.getElementById("closeBtnBottom").onclick = () => {
+  document.getElementById("infoCard").style.display = "none";
+};
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
 
 search.oninput=rebuild;
 typeSelect.onchange=rebuild;
 randomPickBtn.onclick = randomPick;
+genreSelect.onchange = rebuild;
 rebuild();
-setTimeout(() => {
-  const firstPoster = document.querySelector(".poster");
-  if (firstPoster) firstPoster.focus();
-}, 300);
-window.addEventListener("popstate", e => {
-  const s = e.state;
-
-  // se stavo guardando un video → torna a infocard
-  if (s && s.page === "player") {
-    openPlayer(currentItem, false);
-    return;
-  }
-
-  // se stavo in infocard → chiudi player e mostra info
-  if (s && s.page === "info") {
-    closePlayer(false);
-    openInfoById(s.id);
-    return;
-  }
-
-  // fallback → home
-  closePlayer(false);
-  closeInfoCard();
-});
-
 </script>
 
 </body>
@@ -739,9 +640,6 @@ def main():
         data = fetch_list(url)
         for tmdb_id in extract_ids(data):
             info = tmdb_get(api_key, t, tmdb_id)
-            raw_rating = tmdb_get_rating(api_key, t, tmdb_id)
-            pegi = map_to_pegi(raw_rating)
-
             if not info:
                 continue
 
@@ -756,7 +654,6 @@ def main():
                 "title": info.get("title") or info.get("name") or "",
                 "poster": TMDB_IMAGE + poster_path,
                 "overview": info.get("overview", ""),
-                "pegi": pegi,
                 "type": t,
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
