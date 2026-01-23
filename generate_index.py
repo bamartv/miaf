@@ -512,6 +512,7 @@ let currentType='movie', currentList=[], shown=0;
 
 function render(reset=false) {{
     if(reset){{ grid.innerHTML=''; shown=0; }}
+    shown = 0;
     let count=0;
     let s = document.getElementById('searchBox').value.toLowerCase();
     let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
