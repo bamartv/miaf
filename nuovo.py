@@ -671,12 +671,21 @@ def main():
     new = []
 
     for t, url in SRC_URLS.items():
-        data = fetch_list(url)
-        for tmdb_id in extract_ids(data):
+    data = fetch_list(url)
+    for tmdb_id in extract_ids(data):
 
     # ✅ SE GIÀ IN CACHE → SALTA TMDB
     if tmdb_id in old:
         continue
+
+    info = tmdb_get(api_key, t, tmdb_id)
+    if not info:
+        continue
+
+        poster_path = info.get("poster_path")
+        if not poster_path:
+            continue
+
 
     info = tmdb_get(api_key, t, tmdb_id)
     if not info:
