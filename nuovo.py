@@ -3,6 +3,8 @@ import os, sys, json, requests
 from datetime import datetime
 
 # ================= CONFIG =================
+
+FORCE_PEGI_REFRESH = True
 SRC_URLS = {
     "movie": "https://vixsrc.to/api/list/movie?lang=it",
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
@@ -721,9 +723,10 @@ def main():
 
         for tmdb_id in extract_ids(data):
 
-            # ✅ già presente → salta TMDB
-            if tmdb_id in old:
+            # ✅ già presente
+            if tmdb_id in old and not FORCE_PEGI_REFRESH:
                 continue
+
 
             info = tmdb_get(api_key, t, tmdb_id)
             if not info:
@@ -733,7 +736,7 @@ def main():
             if not poster_path:
                 continue
 
-            existing = old.get(tmdb_id)
+            existing = old.get(tmdb_id, {})
 
             pegi = tmdb_get_pegi(api_key, t, tmdb_id)
 
@@ -746,7 +749,7 @@ def main():
                 "genres": [g["name"] for g in info.get("genres", [])],
                 "pegi": pegi,
                 "link": f"https://vixsrc.to/{t}/{tmdb_id}/",
-                "added": existing["added"] if existing else datetime.utcnow().isoformat()
+                "added": existing.get("added", datetime.utcnow().isoformat())
             })
 
     # 🔁 merge
