@@ -251,6 +251,8 @@ body {
   z-index:1000;
 }
 
+
+
 #infoBackdrop {
   position:absolute;
   inset:0;
@@ -291,6 +293,33 @@ body {
   color:#fff;
   border-radius:8px;
 }
+
+#playerOverlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 2000;
+}
+
+#playerFrame {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+#playerClose {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 2100;
+  font-size: 26px;
+  color: white;
+  cursor: pointer;
+  background: rgba(0,0,0,.6);
+  padding: 6px 12px;
+  border-radius: 10px;
+}
+
 
 
 .actions button {
@@ -342,6 +371,17 @@ select.episode {
     <h1 id="infoTitle"></h1>
     <div id="infoMeta"></div>
     <p id="infoOverview"></p>
+
+
+<div id="playerOverlay" style="display:none">
+  <div id="playerClose">✕</div>
+  <iframe
+    id="playerFrame"
+    allowfullscreen
+    allow="autoplay; fullscreen"
+  ></iframe>
+</div>
+    
 
     <div id="tvControls" style="display:none">
       <select id="seasonSel" class="episode"></select>
@@ -540,13 +580,36 @@ function openInfoById(id){
     }
   }
 
-  playBtn.onclick=()=>{
-    if(item.type==="tv"){
-      window.open(`https://vixsrc.to/tv/${item.id}/${seasonSel.value}/${episodeSel.value}`);
-    } else {
-      window.open(item.link);
-    }
-  };
+  playBtn.onclick = () => {
+  let url;
+
+  if (currentItem.type === "tv") {
+    url = `https://vixsrc.to/tv/${currentItem.id}/${seasonSel.value}/${episodeSel.value}`;
+  } else {
+    url = currentItem.link;
+  }
+
+  document.getElementById("playerFrame").src = url;
+  document.getElementById("playerOverlay").style.display = "block";
+};
+
+
+  document.getElementById("playerClose").onclick = () => {
+  const frame = document.getElementById("playerFrame");
+  frame.src = "";
+  document.getElementById("playerOverlay").style.display = "none";
+};
+
+
+  document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    document.getElementById("playerClose").click();
+  }
+});
+
+
+
+
 
   favBtn.onclick=()=>toggleFav(item.id);
   document.getElementById("infoCard").style.display="block";
