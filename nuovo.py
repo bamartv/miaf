@@ -26,6 +26,19 @@ def get_api_key():
     return key
 
 
+def tmdb_get(api_key, type_, tmdb_id):
+    try:
+        r = requests.get(
+            TMDB_BASE.format(type=type_, id=tmdb_id),
+            params={"api_key": api_key, "language": "it-IT"},
+            timeout=30
+        )
+        return r.json() if r.status_code == 200 else None
+    except requests.exceptions.RequestException as e:
+        print(f"⚠️ TMDB timeout / errore su ID {tmdb_id}: {e}")
+        return None
+
+
 def fetch_list(url):
     r = requests.get(url, headers=HEADERS, timeout=20)
     r.raise_for_status()
