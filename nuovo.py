@@ -4,7 +4,7 @@ from datetime import datetime
 
 # ================= CONFIG =================
 
-FORCE_PEGI_REFRESH = True
+FORCE_PEGI_REFRESH = False
 SRC_URLS = {
     "movie": "https://vixsrc.to/api/list/movie?lang=it",
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
