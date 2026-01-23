@@ -209,46 +209,13 @@ body {
   cursor:pointer;
 }
 
-.genre-dropdown {
-  position: relative;
-}
 
-#genreBtn {
-  padding:8px 14px;
-  border-radius:10px;
-  border:none;
-  background:#1f2933;
-  color:#fff;
-  cursor:pointer;
-}
+
 
 #content {
   margin-top: 10px;
 }
 
-
-.genre-menu {
-  position:absolute;
-  top:110%;
-  left:0;
-  background:#111;
-  border-radius:10px;
-  padding:10px;
-  max-height:260px;
-  overflow:auto;
-  display:none;
-  z-index:200;
-  box-shadow:0 10px 30px rgba(0,0,0,.6);
-}
-
-.genre-menu label {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:15px;
-  padding:6px 8px;
-  border-radius:6px;
-}
 
 .genre-menu label:focus {
   outline: 3px solid #dc2626;
@@ -263,10 +230,6 @@ body {
   font-size:14px;
   cursor:pointer;
   padding:4px 0;
-}
-
-.genre-menu input {
-  pointer-events: auto;
 }
 
 .genre-menu label:focus-within {
@@ -422,10 +385,11 @@ select.episode {
     <option value="favorites">★ Preferiti</option>
     <option value="recent">🕘 Recenti</option>
   </select>
-  <div class="genre-dropdown">
-   <button id="genreBtn" tabindex="0">🎭 Generi ▼</button>
-   <div id="genreMenu" class="genre-menu"></div>
-  </div>
+
+  <select id="genreSelect">
+    <option value="">🎭 Tutti i generi</option>
+  </select>
+
 
 
   <button id="randomPick">🎲 Cosa guardiamo stasera?</button>
@@ -474,6 +438,21 @@ const DATA = __DATA__;
 const playerOverlay = document.getElementById("playerOverlay");
 const playerFrame = document.getElementById("playerFrame");
 
+const genreSelect = document.getElementById("genreSelect");
+
+const GENRES = [...new Set(DATA.flatMap(x => x.genres || []))].sort();
+
+GENRES.forEach(g => {
+  const opt = document.createElement("option");
+  opt.value = g;
+  opt.textContent = g;
+  genreSelect.appendChild(opt);
+});
+
+genreSelect.onchange = rebuild;
+
+
+
 function openPlayer(item, push=true){
   let url;
 
@@ -511,42 +490,11 @@ function closePlayer(push=true){
 const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
 const typeSelect = document.getElementById("typeSelect");
-const genreBtn = document.getElementById("genreBtn");
-const genreMenu = document.getElementById("genreMenu");
 const randomPickBtn = document.getElementById("randomPick");
 
 let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
-
-/* generi */
-const GENRES = [...new Set(DATA.flatMap(x=>x.genres||[]))].sort();
-
-GENRES.forEach(g => {
-  const label = document.createElement("label");
-  label.tabIndex = 0;
-  label.innerHTML = `<input type="checkbox" value="${g}" tabindex="-1"> ${g}`;
-
-
-  const checkbox = label.querySelector("input");
-
-  
-
-  // 🔥 QUANDO CLICCHI UN GENERE → RICOSTRUISCE LA GRIGLIA
-  checkbox.addEventListener("change", rebuild);
-
-  label.addEventListener("keydown", e => {
-  if (e.key === "Enter") {
-    checkbox.checked = !checkbox.checked;
-    rebuild();
-  }
-});
-
-
-  
-
-  genreMenu.appendChild(label);
-});
 
 
 
@@ -593,26 +541,6 @@ function buildHome(list) {
   });
 }
 
-genreBtn.onclick = () => {
-  const open = genreMenu.style.display === "block";
-  genreMenu.style.display = open ? "none" : "block";
-
-  if (!open) {
-    // 🔥 focus automatico sul primo genere
-    const first = genreMenu.querySelector("input");
-    if (first) first.focus();
-  }
-};
-
-document.addEventListener("keydown", e => {
-  if (e.key === "Backspace" || e.key === "Escape") {
-    if (genreMenu.style.display === "block") {
-      genreMenu.style.display = "none";
-      genreBtn.focus();
-    }
-  }
-});
-
 
 document.addEventListener("focusin", e => {
   const el = e.target;
@@ -626,39 +554,10 @@ document.addEventListener("focusin", e => {
 });
 
 
-document.addEventListener("click", e => {
-  if (!e.target.closest(".genre-dropdown")) {
-    genreMenu.style.display = "none";
-  }
-});
-
-function getSelectedGenres() {
-  return [...genreMenu.querySelectorAll("input:checked")]
-    .map(x => x.value);
-}
-
 
 function buildGrid(list) {
   content.innerHTML=`<div class="grid">${list.map(poster).join("")}</div>`;
 }
-
-function browseGenre(genre) {
-  search.value = "";
-
-  // 🔥 CASO SPECIALE: ULTIME USCITE
-  if (genre.includes("Ultime")) {
-    buildGrid(
-      DATA
-        .filter(x => x.type === typeSelect.value && x.added)
-        .sort((a, b) => b.added.localeCompare(a.added))
-    );
-    return;
-  }
-
-  // reset dropdown generi
-  genreMenu.querySelectorAll("input").forEach(c => {
-    c.checked = (c.value === genre);
-  });
 
   // vista griglia per generi normali
   buildGrid(
@@ -669,12 +568,10 @@ function browseGenre(genre) {
   );
 }
 
-
-
 function rebuild() {
   const q = search.value.toLowerCase();
   const t = typeSelect.value;
-  const selectedGenres = getSelectedGenres();
+  const selectedGenre = genreSelect.value;
 
   let list = DATA;
 
@@ -684,14 +581,13 @@ function rebuild() {
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
 
-  if (selectedGenres.length) {
+  if (selectedGenre) {
     list = list.filter(item =>
-      selectedGenres.every(g => item.genres?.includes(g))
+      item.genres?.includes(selectedGenre)
     );
   }
 
-  // 🔥 LOGICA CORRETTA
-  if (q || selectedGenres.length || t !== "movie") {
+  if (q || selectedGenre || t !== "movie") {
     buildGrid(list);
   } else {
     buildHome(list);
@@ -699,9 +595,10 @@ function rebuild() {
 }
 
 
+
 function randomPick() {
   const q = search.value.toLowerCase();
-  const selectedGenres = getSelectedGenres();
+  const selectedGenre = genreSelect.value;
   const t = typeSelect.value;
 
   let list = DATA;
@@ -711,30 +608,26 @@ function randomPick() {
   else list = DATA.filter(x => x.type === t);
 
   if (q) list = list.filter(x => x.title.toLowerCase().includes(q));
-  if (selectedGenres.length) {
-  list = list.filter(item =>
-    selectedGenres.every(g => item.genres?.includes(g))
-  );
-}
+  if (selectedGenre) {
+    list = list.filter(item =>
+      item.genres?.includes(selectedGenre)
+    );
+  }
 
   if (!list.length) {
     alert("Nessun titolo disponibile con questi filtri 😅");
     return;
   }
 
+  function closeInfoCard() {
+  document.getElementById("infoCard").style.display = "none";
+}
+
+
   const pick = list[Math.floor(Math.random() * list.length)];
   openInfoById(pick.id);
 }
 
-function closeInfoCard() {
-  const card = document.getElementById("infoCard");
-  if (card && card.style.display === "block") {
-    card.style.display = "none";
-    currentItem = null;
-    return true; // dice ad Android: "ho gestito io il back"
-  }
-  return false;
-}
 
 
 
@@ -788,9 +681,6 @@ function toggleFav(id){
 }
 
 document.getElementById("closeBtnBottom").onclick = closeInfoCard;
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeInfoCard();
-});
 
 
 search.oninput=rebuild;
