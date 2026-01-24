@@ -456,15 +456,6 @@ select.episode {
     <h1 id="infoTitle"></h1>
     <div id="infoMeta"></div>
     <p id="infoOverview"></p>
-
-
-<div id="playerOverlay" style="display:none">
-  <iframe
-  id="playerFrame"
-  tabindex="0"
-  allow="autoplay; fullscreen"
-  allowfullscreen
-></iframe>
     
 
     <div id="tvControls" style="display:none">
@@ -479,6 +470,18 @@ select.episode {
     </div>
   </div>
 </div>
+
+<div id="playerOverlay" style="display:none">
+  <iframe
+  id="playerFrame"
+  tabindex="0"
+  allow="autoplay; fullscreen"
+  allowfullscreen
+></iframe>
+
+
+
+<script>
 
 // 🎯 NAVIGAZIONE PERFETTA NELLA GRID
 document.addEventListener("keydown", e => {
@@ -521,8 +524,6 @@ document.addEventListener("keydown", e => {
   }
 });
 
-
-<script>
 const DATA = __DATA__;
 
 const content = document.getElementById("content");
@@ -725,16 +726,7 @@ function openInfoById(id){
   }
 
   playBtn.onclick = () => {
-  frame.src = url;
-  overlay.style.display = "block";
-
-  frame.onload = () => {
-    frame.focus();
-  };
-
-  history.pushState({ player: true }, "");
   let url;
-
   const params = "?lang=it&sottotitoli=off&autoplay=1&quality=1080p";
 
   if (currentItem.type === "tv") {
@@ -743,16 +735,16 @@ function openInfoById(id){
     url = `${currentItem.link}${params}`;
   }
 
-
   const overlay = document.getElementById("playerOverlay");
   const frame = document.getElementById("playerFrame");
 
   frame.src = url;
   overlay.style.display = "block";
 
-  // 🔥 QUESTO È IL PUNTO CHIAVE
+  frame.onload = () => frame.focus();
   history.pushState({ player: true }, "");
 };
+
 
 
 
