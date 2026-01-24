@@ -724,6 +724,23 @@ randomPickBtn.onclick = randomPick;
 genreSelect.onchange = rebuild;
 rebuild();
 
+// 🔥 FIRE TV: primo ArrowDown → prima locandina
+document.addEventListener("keydown", e => {
+  if (e.key !== "ArrowDown") return;
+
+  const active = document.activeElement;
+
+  // se NON siamo già su una locandina
+  if (!active.classList.contains("poster")) {
+    const firstPoster = document.querySelector(".poster");
+    if (firstPoster) {
+      e.preventDefault();
+      firstPoster.focus();
+    }
+  }
+});
+
+
 /* 🔥 BACK ANDROID → TORNA ALLA INFOCARD */
 window.addEventListener("popstate", () => {
   const overlay = document.getElementById("playerOverlay");
