@@ -743,6 +743,26 @@ document.addEventListener("keydown", e => {
   }
 });
 
+// 🔥 FIX NAVIGAZIONE FIRE TV: TOPBAR → LOCANDINE
+document.addEventListener("keydown", e => {
+  if (e.key !== "ArrowDown") return;
+
+  const active = document.activeElement;
+
+  // se siamo nella topbar
+  if (active.closest(".topbar")) {
+    e.preventDefault();
+
+    // prima locandina visibile
+    const firstPoster = document.querySelector(".poster");
+
+    if (firstPoster) {
+      firstPoster.focus();
+    }
+  }
+});
+
+
 </script>
 
 </body>
