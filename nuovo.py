@@ -462,6 +462,29 @@ select.episode {
 // 🎯 NAVIGAZIONE PERFETTA NELLA GRID
 document.addEventListener("keydown", e => {
   const active = document.activeElement;
+
+  // 🔥 ArrowUp dalla prima locandina → focus sulla topbar
+  if (e.key === "ArrowUp") {
+    const row = active.closest(".row");
+    if (row && row.previousElementSibling === null) { 
+      // siamo sulla prima riga
+      e.preventDefault();
+      const firstInput = document.querySelector(".topbar input, .topbar select, .topbar button");
+      if (firstInput) firstInput.focus();
+      return;
+    }
+  }
+
+  // 🔥 ArrowDown dalla topbar → prima locandina
+  const topbarEls = document.querySelectorAll(".topbar input, .topbar select, .topbar button");
+  if ([...topbarEls].includes(active) && e.key === "ArrowDown") {
+    e.preventDefault();
+    const firstPoster = document.querySelector(".poster");
+    if (firstPoster) firstPoster.focus();
+    return;
+  }
+
+  // 🔹 se non siamo su un poster, ignoriamo tutto il resto
   if (!active.classList.contains("poster")) return;
 
   const grid = active.closest(".grid");
