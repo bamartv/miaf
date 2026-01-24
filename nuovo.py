@@ -136,30 +136,6 @@ body {
   padding: 0 10px;
 }
 
-.browse-all {
-  background: none;
-  border: none;
-  color: #bbb;
-  font-size: 14px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  opacity: 0;
-  transition: opacity .25s, color .25s;
-}
-
-/* appare quando la riga è attiva (hover o focus TV) */
-.row:hover .browse-all,
-.row:focus-within .browse-all {
-  opacity: 1;
-}
-
-/* focus telecomando */
-.browse-all:focus {
-  outline: 2px solid #dc2626;
-  border-radius: 6px;
-  color: #fff;
-}
-
 
 .row {
   margin:20px 10px;
@@ -579,11 +555,6 @@ function addRow(title, items) {
     <div class="row">
       <div class="row-title">
   <h2>${title}</h2>
-  <button class="browse-all"
-    onclick="browseGenre('${title}')"
-    tabindex="0">
-    Sfoglia tutti →
-  </button>
 </div>
 
       
