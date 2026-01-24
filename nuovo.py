@@ -712,8 +712,22 @@ function openInfoById(id){
   frame.src = url;
   overlay.style.display = "block";
 
-  frame.onload = () => frame.focus();
-  history.pushState({ player: true }, "");
+// Imposta SRC DOPO aver reso visibile l'overlay
+setTimeout(() => {
+  frame.src = url;
+
+  // 🔥 Forza autofocus sul player dopo un piccolo delay
+  setTimeout(() => {
+    frame.focus();
+
+    // 🔥 Per Fire TV / Android TV: simuliamo un click per far partire controlli remoti
+    try { frame.contentWindow.focus(); } catch(e){}
+
+  }, 200);  // 200ms di delay aiutano le TV a registrare focus
+}, 50);
+
+history.pushState({ player: true }, "");
+
 };
 
 
