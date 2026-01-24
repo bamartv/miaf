@@ -521,7 +521,7 @@ function render(reset=false) {{
     let listToShow = s ? allData : currentList;
 
     while(shown<listToShow.length && count<40) {{
-        let m = listToShow[shown++];
+        let m = listToShow[shown];
         let isFav = favorites.includes(m.id);
         let genreMatch = gSel.length===0 || gSel[0]==='all' || gSel.every(g => m.genres.includes(g));
 
