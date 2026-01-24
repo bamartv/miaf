@@ -743,24 +743,46 @@ document.addEventListener("keydown", e => {
   }
 });
 
-// 🔥 FIX NAVIGAZIONE FIRE TV: TOPBAR → LOCANDINE
 document.addEventListener("keydown", e => {
-  if (e.key !== "ArrowDown") return;
-
   const active = document.activeElement;
+  if (!active.classList.contains("poster")) return;
 
-  // se siamo nella topbar
-  if (active.closest(".topbar")) {
+  const row = active.closest(".row");
+  if (!row) return;
+
+  const posters = [...row.querySelectorAll(".poster")];
+  const index = posters.indexOf(active);
+  if (index === -1) return;
+
+  // ⬇️ riga sotto
+  if (e.key === "ArrowDown") {
     e.preventDefault();
+    const nextRow = row.nextElementSibling;
+    if (!nextRow || !nextRow.classList.contains("row")) return;
 
-    // prima locandina visibile
-    const firstPoster = document.querySelector(".poster");
+    const nextPosters = nextRow.querySelectorAll(".poster");
+    if (nextPosters[index]) {
+      nextPosters[index].focus();
+    } else if (nextPosters.length) {
+      nextPosters[nextPosters.length - 1].focus();
+    }
+  }
 
-    if (firstPoster) {
-      firstPoster.focus();
+  // ⬆️ riga sopra
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    const prevRow = row.previousElementSibling;
+    if (!prevRow || !prevRow.classList.contains("row")) return;
+
+    const prevPosters = prevRow.querySelectorAll(".poster");
+    if (prevPosters[index]) {
+      prevPosters[index].focus();
+    } else if (prevPosters.length) {
+      prevPosters[prevPosters.length - 1].focus();
     }
   }
 });
+
 
 
 </script>
