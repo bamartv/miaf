@@ -462,29 +462,6 @@ select.episode {
 // 🎯 NAVIGAZIONE PERFETTA NELLA GRID
 document.addEventListener("keydown", e => {
   const active = document.activeElement;
-
-  // 🔥 ArrowUp dalla prima locandina → focus sulla topbar
-  if (e.key === "ArrowUp") {
-    const row = active.closest(".row");
-    if (row && row.previousElementSibling === null) { 
-      // siamo sulla prima riga
-      e.preventDefault();
-      const firstInput = document.querySelector(".topbar input, .topbar select, .topbar button");
-      if (firstInput) firstInput.focus();
-      return;
-    }
-  }
-
-  // 🔥 ArrowDown dalla topbar → prima locandina
-  const topbarEls = document.querySelectorAll(".topbar input, .topbar select, .topbar button");
-  if ([...topbarEls].includes(active) && e.key === "ArrowDown") {
-    e.preventDefault();
-    const firstPoster = document.querySelector(".poster");
-    if (firstPoster) firstPoster.focus();
-    return;
-  }
-
-  // 🔹 se non siamo su un poster, ignoriamo tutto il resto
   if (!active.classList.contains("poster")) return;
 
   const grid = active.closest(".grid");
@@ -735,22 +712,8 @@ function openInfoById(id){
   frame.src = url;
   overlay.style.display = "block";
 
-// Imposta SRC DOPO aver reso visibile l'overlay
-setTimeout(() => {
-  frame.src = url;
-
-  // 🔥 Forza autofocus sul player dopo un piccolo delay
-  setTimeout(() => {
-    frame.focus();
-
-    // 🔥 Per Fire TV / Android TV: simuliamo un click per far partire controlli remoti
-    try { frame.contentWindow.focus(); } catch(e){}
-
-  }, 200);  // 200ms di delay aiutano le TV a registrare focus
-}, 50);
-
-history.pushState({ player: true }, "");
-
+  frame.onload = () => frame.focus();
+  history.pushState({ player: true }, "");
 };
 
 
