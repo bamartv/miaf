@@ -168,8 +168,7 @@ body {
 
 
 .topbar {
-  position:sticky;
-  top:0;
+  position: relative;   /* 🔥 NON sticky */
   z-index:100;
   background:rgba(0,0,0,.9);
   padding:12px;
@@ -177,6 +176,7 @@ body {
   gap:10px;
   flex-wrap:wrap;
 }
+
 
 .topbar input, .topbar select {
   padding:8px;
