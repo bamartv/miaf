@@ -257,7 +257,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <option value='favorites'>★ Preferiti</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
-<select id='genreSelect' multiple size=1></select>
+<select id='genreSelect' multiple size=5></select>
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
@@ -511,8 +511,10 @@ window.addEventListener("popstate", function(e) {{
 let currentType='movie', currentList=[], shown=0;
 
 function render(reset=false) {{
-    if(reset){{ grid.innerHTML=''; shown=0; }}
-    shown = 0;
+    if(reset){
+      grid.innerHTML='';
+      shown=0;
+}
     let count=0;
     let s = document.getElementById('searchBox').value.toLowerCase();
     let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
@@ -599,7 +601,7 @@ document.getElementById('randomPick').onclick = () => {{
 history.replaceState({{page:"grid"}}, "", "#grid");
 
 updateType('movie');
-showLatest();
+setTimeout(showLatest, 1000);
 </script>
 </body>
 </html>
