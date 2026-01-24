@@ -460,11 +460,11 @@ select.episode {
 
 <div id="playerOverlay" style="display:none">
   <iframe
-    id="playerFrame"
-    allowfullscreen
-    allow="autoplay; fullscreen"
-  ></iframe>
-</div>
+  id="playerFrame"
+  tabindex="0"
+  allow="autoplay; fullscreen"
+  allowfullscreen
+></iframe>
     
 
     <div id="tvControls" style="display:none">
@@ -725,6 +725,14 @@ function openInfoById(id){
   }
 
   playBtn.onclick = () => {
+  frame.src = url;
+  overlay.style.display = "block";
+
+  frame.onload = () => {
+    frame.focus();
+  };
+
+  history.pushState({ player: true }, "");
   let url;
 
   const params = "?lang=it&sottotitoli=off&autoplay=1&quality=1080p";
@@ -762,6 +770,18 @@ document.getElementById("closeBtnBottom").onclick = () => {
   document.getElementById("infoCard").style.display = "none";
 };
 document.addEventListener("keydown",e=>{ if(e.key==="Escape") infoCard.style.display="none"; });
+
+document.addEventListener("keydown", e => {
+  const overlay = document.getElementById("playerOverlay");
+  if (overlay.style.display !== "block") return;
+
+  // OK / SPACE → play-pause
+  if (e.key === " " || e.key === "Enter") {
+    e.preventDefault();
+    document.getElementById("playerFrame").focus();
+  }
+});
+
 
 search.oninput = rebuild;
 typeSelect.onchange = rebuild;
