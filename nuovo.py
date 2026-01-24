@@ -620,12 +620,13 @@ function rebuild() {
     );
   }
 
-  // 🔥 LOGICA CORRETTA
-  if (q || selectedGenres.length || t !== "movie") {
-    buildGrid(list);
-  } else {
+  // HOME a righe SOLO senza filtri e SOLO film
+  if (!q && !selectedGenres.length && t === "movie") {
     buildHome(list);
+  } else {
+    buildGrid(list);
   }
+
 }
 
 
