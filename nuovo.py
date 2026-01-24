@@ -520,6 +520,15 @@ function poster(item) {
       </div>`;
   }
 
+  return `
+    <div class="poster" tabindex="0" onclick="openInfoById('${item.id}')">
+      <img loading="lazy" src="${item.poster}">
+      ${item.pegi ? `<div class="pegi">${item.pegi}</div>` : ""}
+      ${voteBadge}
+    </div>`;
+}
+
+
   frame.src = url;
 
   // fullscreen (Fire TV / Android TV friendly)
