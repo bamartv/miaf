@@ -520,6 +520,14 @@ function poster(item) {
       </div>`;
   }
 
+  frame.src = url;
+
+  // fullscreen (Fire TV / Android TV friendly)
+  const overlay = document.getElementById("playerOverlay");
+  if (overlay.requestFullscreen) overlay.requestFullscreen();
+}
+
+
   return `
     <div class="poster" tabindex="0" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
@@ -657,6 +665,34 @@ function randomPick() {
   openInfoById(pick.id);
 }
 
+function openPlayer(item) {
+  const frame = document.getElementById("playerFrame");
+  const overlay = document.getElementById("playerOverlay");
+
+  let url = "";
+
+  if (item.type === "tv") {
+    const season = document.getElementById("seasonSel").value || 1;
+    const episode = document.getElementById("episodeSel").value || 1;
+
+    url = `https://vixsrc.to/tv/${item.id}/${season}/${episode}` +
+          `?lang=it&audio=it&sub=it-forced&autoplay=1&quality=1080p`;
+  } else {
+    url = `https://vixsrc.to/movie/${item.id}` +
+          `?lang=it&audio=it&sub=it-forced&autoplay=1&quality=1080p`;
+  }
+
+  frame.src = url;
+  overlay.style.display = "block";
+
+  // fullscreen Fire TV
+  if (overlay.requestFullscreen) overlay.requestFullscreen();
+
+  // 🔥 BACK → resta nella infocard
+  history.pushState({ player: true }, "");
+}
+
+
 
 function openInfoById(id){
   const item = DATA.find(x=>x.id===id);
@@ -682,27 +718,7 @@ function openInfoById(id){
     }
   }
 
-  playBtn.onclick = () => {
-  let url;
-
-  if (currentItem.type === "tv") {
-    url = `https://vixsrc.to/tv/${currentItem.id}/${seasonSel.value}/${episodeSel.value}`;
-  } else {
-    url = currentItem.link;
-  }
-
-  const overlay = document.getElementById("playerOverlay");
-  const frame = document.getElementById("playerFrame");
-
-  frame.src = url;
-  overlay.style.display = "block";
-
-  // 🔥 QUESTO È IL PUNTO CHIAVE
-  history.pushState({ player: true }, "");
-};
-
-
-
+  playBtn.onclick = () => openPlayer(currentItem);
 
   favBtn.onclick=()=>toggleFav(item.id);
   document.getElementById("infoCard").style.display="block";
