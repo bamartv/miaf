@@ -685,11 +685,14 @@ function openInfoById(id){
   playBtn.onclick = () => {
   let url;
 
+  const params = "?lang=it&sottotitoli=off&autoplay=1&quality=1080p";
+
   if (currentItem.type === "tv") {
-    url = `https://vixsrc.to/tv/${currentItem.id}/${seasonSel.value}/${episodeSel.value}`;
+    url = `https://vixsrc.to/tv/${currentItem.id}/${seasonSel.value}/${episodeSel.value}${params}`;
   } else {
-    url = currentItem.link;
+    url = `${currentItem.link}${params}`;
   }
+
 
   const overlay = document.getElementById("playerOverlay");
   const frame = document.getElementById("playerFrame");
