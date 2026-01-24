@@ -511,10 +511,7 @@ window.addEventListener("popstate", function(e) {{
 let currentType='movie', currentList=[], shown=0;
 
 function render(reset=false) {{
-    if(reset){
-      grid.innerHTML='';
-      shown=0;
-}
+    if(reset){{ grid.innerHTML=''; shown=0; }}
     let count=0;
     let s = document.getElementById('searchBox').value.toLowerCase();
     let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
@@ -523,10 +520,9 @@ function render(reset=false) {{
     let listToShow = s ? allData : currentList;
 
     while(shown<listToShow.length && count<40) {{
-        let m = listToShow[shown];
+        let m = listToShow[shown++];
         let isFav = favorites.includes(m.id);
-        let genreMatch = gSel.length===0 || gSel[0]==='all' || gSel.every(g => m.genres.includes(g));
-
+        let genreMatch = gSel.length===0 || gSel.includes('all') || gSel.every(g => m.genres.includes(g));
 
         if(genreMatch && (
             m.title.toLowerCase().includes(s) ||
@@ -601,7 +597,7 @@ document.getElementById('randomPick').onclick = () => {{
 history.replaceState({{page:"grid"}}, "", "#grid");
 
 updateType('movie');
-setTimeout(showLatest, 1000);
+showLatest();
 </script>
 </body>
 </html>
