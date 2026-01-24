@@ -346,6 +346,11 @@ body {
   border: none;
 }
 
+#playerFrame:focus {
+  outline: none;   /* rimuove cornice gialla */
+}
+
+
 #playerClose {
   position: absolute;
   top: 16px;
