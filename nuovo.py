@@ -275,6 +275,11 @@ body {
   transition:transform .2s;
 }
 .poster:hover { transform:scale(1.08); }
+.poster:focus {
+  outline: 3px solid #dc2626;
+  transform: scale(1.12);
+  z-index: 10;
+}
 .poster img { width:100%; display:block; }
 
 .pegi {
@@ -516,7 +521,7 @@ function poster(item) {
   }
 
   return `
-    <div class="poster" onclick="openInfoById('${item.id}')">
+    <div class="poster" tabindex="0" onclick="openInfoById('${item.id}')">
       <img loading="lazy" src="${item.poster}">
       ${item.pegi ? `<div class="pegi">${item.pegi}</div>` : ""}
       ${voteBadge}
@@ -731,6 +736,12 @@ window.addEventListener("popstate", () => {
     history.pushState({}, "");
   }
 });
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && document.activeElement.classList.contains("poster")) {
+    document.activeElement.click();
+  }
+});
+
 </script>
 
 </body>
