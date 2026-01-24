@@ -739,11 +739,22 @@ function openInfoById(id){
   const frame = document.getElementById("playerFrame");
 
   frame.src = url;
-  overlay.style.display = "block";
+overlay.style.display = "block";
 
-  frame.onload = () => frame.focus();
-  history.pushState({ player: true }, "");
+frame.onload = () => {
+  // 🔥 forza fullscreen
+  if (overlay.requestFullscreen) overlay.requestFullscreen();
+  else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
+  else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
+
+  // 🎯 autofocus reale sul player (niente cornice gialla)
+  setTimeout(() => {
+    frame.focus();
+  }, 150);
 };
+
+history.pushState({ player: true }, "");
+
 
 
 
