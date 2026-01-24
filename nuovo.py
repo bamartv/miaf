@@ -749,8 +749,15 @@ function openInfoById(id){
 
 
 
-  favBtn.onclick=()=>toggleFav(item.id);
-  document.getElementById("infoCard").style.display="block";
+  favBtn.onclick = () => toggleFav(item.id);
+
+  const card = document.getElementById("infoCard");
+  card.style.display = "block";
+
+  /* 🎯 AUTOFOCUS SUL TASTO GUARDA (TV / FIRE STICK) */
+  setTimeout(() => {
+    playBtn.focus();
+  }, 50);
 }
 
 function toggleFav(id){
