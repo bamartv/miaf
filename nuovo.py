@@ -480,6 +480,48 @@ select.episode {
   </div>
 </div>
 
+// 🎯 NAVIGAZIONE PERFETTA NELLA GRID
+document.addEventListener("keydown", e => {
+  const active = document.activeElement;
+  if (!active.classList.contains("poster")) return;
+
+  const grid = active.closest(".grid");
+  if (!grid) return; // non siamo in modalità grid
+
+  const posters = [...grid.querySelectorAll(".poster")];
+  const index = posters.indexOf(active);
+  if (index === -1) return;
+
+  // calcola numero colonne REALI
+  const gridStyle = window.getComputedStyle(grid);
+  const cols = gridStyle.gridTemplateColumns.split(" ").length;
+
+  let target = index;
+
+  switch (e.key) {
+    case "ArrowRight":
+      target = index + 1;
+      break;
+    case "ArrowLeft":
+      target = index - 1;
+      break;
+    case "ArrowDown":
+      target = index + cols;
+      break;
+    case "ArrowUp":
+      target = index - cols;
+      break;
+    default:
+      return;
+  }
+
+  if (posters[target]) {
+    e.preventDefault();
+    posters[target].focus();
+  }
+});
+
+
 <script>
 const DATA = __DATA__;
 
