@@ -473,13 +473,12 @@ select.episode {
 
 <div id="playerOverlay" style="display:none">
   <iframe
-  id="playerFrame"
-  tabindex="0"
-  allow="autoplay; fullscreen"
-  allowfullscreen
-></iframe>
-
-
+    id="playerFrame"
+    tabindex="0"
+    allow="autoplay; fullscreen"
+    allowfullscreen
+  ></iframe>
+</div>
 
 <script>
 
