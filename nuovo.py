@@ -473,12 +473,13 @@ select.episode {
 
 <div id="playerOverlay" style="display:none">
   <iframe
-    id="playerFrame"
-    tabindex="0"
-    allow="autoplay; fullscreen"
-    allowfullscreen
-  ></iframe>
-</div>
+  id="playerFrame"
+  tabindex="0"
+  allow="autoplay; fullscreen"
+  allowfullscreen
+></iframe>
+
+
 
 <script>
 
@@ -738,22 +739,11 @@ function openInfoById(id){
   const frame = document.getElementById("playerFrame");
 
   frame.src = url;
-overlay.style.display = "block";
+  overlay.style.display = "block";
 
-frame.onload = () => {
-  // 🔥 forza fullscreen
-  if (overlay.requestFullscreen) overlay.requestFullscreen();
-  else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
-  else if (overlay.msRequestFullscreen) overlay.msRequestFullscreen();
-
-  // 🎯 autofocus reale sul player (niente cornice gialla)
-  setTimeout(() => {
-    frame.focus();
-  }, 150);
+  frame.onload = () => frame.focus();
+  history.pushState({ player: true }, "");
 };
-
-history.pushState({ player: true }, "");
-
 
 
 
