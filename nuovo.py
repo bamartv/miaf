@@ -814,10 +814,18 @@ window.addEventListener("popstate", () => {
     frame.src = "";
     overlay.style.display = "none";
 
+    // ⬇️ 🔥 RIPRISTINA FOCUS SU "GUARDA"
+    setTimeout(() => {
+      if (document.getElementById("infoCard").style.display === "block") {
+        playBtn.focus();
+      }
+    }, 50);
+
     // blocca ritorno alla home
     history.pushState({}, "");
   }
 });
+
 document.addEventListener("keydown", e => {
   if (e.key === "Enter" && document.activeElement.classList.contains("poster")) {
     document.activeElement.click();
