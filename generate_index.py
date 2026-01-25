@@ -86,7 +86,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
 
 
 def build_html(entries, latest_entries):
-entries_json = json.dumps(entries, ensure_ascii=False)
+    entries_json = json.dumps(entries, ensure_ascii=False)
     html = f"""<!doctype html>
 <html lang='it'>
 <head>
