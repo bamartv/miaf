@@ -4,7 +4,7 @@ from datetime import datetime
 
 # ================= CONFIG =================
 
-FORCE_PEGI_REFRESH = True
+FORCE_PEGI_REFRESH = False
 SRC_URLS = {
     "movie": "https://vixsrc.to/api/list/movie?lang=it",
     "tv": "https://vixsrc.to/api/list/tv?lang=it"
@@ -154,9 +154,31 @@ body {
 }
 
 
-.topbar input, .topbar select {
+.topbar input,
+.topbar select {
   padding:8px;
   font-size:16px;
+
+  /* 🔥 FIX FIRE TV */
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: none;
+  border-radius: 8px;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.topbar select:focus,
+.topbar input:focus {
+  outline: 3px solid #dc2626;
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+  /* 🔥 FIRE TV / ANDROID TV – MENU SELECT */
+  select option {
+    background: #ffffff !important;
+    color: #000000 !important;
 }
 
 .topbar button {
