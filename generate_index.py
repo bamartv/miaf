@@ -349,9 +349,9 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     // autofocus sul tasto "Guarda"
-    setTimeout(() => {
+    setTimeout(() => {{
       playBtn.focus();
-    }, 0);
+    }}, 0);
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
