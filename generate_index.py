@@ -214,9 +214,8 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 }}
 
-#infoCard button:focus {{
-  outline: 3px solid gold;
-  outline-offset: 2px;
+#playerOverlay iframe:focus {{
+  outline: none !important;
 }}
 
 
@@ -275,7 +274,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 
 <div id='playerOverlay'>
-  <iframe allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
+  <iframe tabindex="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
   <div id="playerTitle"></div>
 </div>
 
@@ -409,6 +408,12 @@ infoVote.innerHTML = `
 
     playBtn.onclick = () => openPlayer(item);
 
+    // autofocus diretto sul player (senza cornice)
+    setTimeout(() => {{
+      iframe.focus();
+    }}, 300);
+
+    
     if(push) {{
         history.pushState({{page:"info", itemId:item.id}}, "", "#info-"+item.id);
     }}
