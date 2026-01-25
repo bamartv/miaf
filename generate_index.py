@@ -86,6 +86,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
 
 
 def build_html(entries, latest_entries):
+entries_json = json.dumps(entries, ensure_ascii=False)
     html = f"""<!doctype html>
 <html lang='it'>
 <head>
@@ -295,7 +296,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 </div>
 
 <script>
-const allData = {entries};
+const allData = {entries_json};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let currentItem = null;
@@ -404,7 +405,7 @@ infoVote.innerHTML = `
 
     function updateEpisodes() {{
         let season = parseInt(seasonSelect.value);
-        let epCount = item.episodes[season] || 1;
+        let epCount = item.episodes[String(season)] || 1;
         episodeSelect.innerHTML = "";
         for(let e=1;e<=epCount;e++) {{
             let o = document.createElement('option');
@@ -556,7 +557,11 @@ function render(reset=false) {{
 
 function populateGenres(){{
     const set=new Set();
-    currentList.forEach(m=>m.genres.forEach(g=>set.add(g)));
+    currentList.forEach(m=>{
+      if(Array.isArray(m.genres)){
+        m.genres.forEach(g=>set.add(g));
+      }
+    });
     const sel=document.getElementById('genreSelect');
     sel.innerHTML='<option value="all">Tutti i generi</option>';
     [...set].sort().forEach(g=>{{
