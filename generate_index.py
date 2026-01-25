@@ -557,11 +557,11 @@ function render(reset=false) {{
 
 function populateGenres(){{
     const set=new Set();
-    currentList.forEach(m=>{
-      if(Array.isArray(m.genres)){
+    currentList.forEach(m=>{{
+      if(Array.isArray(m.genres)){{
         m.genres.forEach(g=>set.add(g));
-      }
-    });
+      }}
+    }});
     const sel=document.getElementById('genreSelect');
     sel.innerHTML='<option value="all">Tutti i generi</option>';
     [...set].sort().forEach(g=>{{
