@@ -427,6 +427,49 @@ select.episode {
   padding:8px;
   margin-right:8px;
 }
+
+/* 🔥 TYPE SELECT CUSTOM (Fire TV safe) */
+.type-dropdown {
+  position: relative;
+}
+
+#typeBtn {
+  padding:8px 14px;
+  border-radius:10px;
+  border:none;
+  background:#1f2933;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+
+#typeBtn:focus {
+  outline: 3px solid #dc2626;
+}
+
+.type-menu {
+  position:absolute;
+  top:110%;
+  left:0;
+  background:#111;
+  border-radius:10px;
+  padding:8px 0;
+  display:none;
+  z-index:300;
+  min-width:200px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
+}
+
+.type-menu div {
+  padding:10px 14px;
+  cursor:pointer;
+}
+
+.type-menu div:hover,
+.type-menu div:focus {
+  background:#dc2626;
+}
+
 </style>
 </head>
 
@@ -434,12 +477,16 @@ select.episode {
 
 <div class="topbar">
   <input id="searchBox" placeholder="Cerca titolo...">
-  <select id="typeSelect">
-    <option value="movie">🎬 Film</option>
-    <option value="tv">📺 Serie TV</option>
-    <option value="favorites">★ Preferiti</option>
-    <option value="recent">🕘 Recenti</option>
-  </select>
+  <div class="type-dropdown">
+  <button id="typeBtn">🎬 Film</button>
+  <div id="typeMenu" class="type-menu">
+    <div data-value="movie">🎬 Film</div>
+    <div data-value="tv">📺 Serie TV</div>
+    <div data-value="favorites">★ Preferiti</div>
+    <div data-value="recent">🕘 Recenti</div>
+  </div>
+</div>
+
 
   <select id="genreSelect" multiple size="1">
   <option value="" disabled>🎭 Generi</option>
@@ -554,9 +601,39 @@ const DATA = __DATA__;
 
 const content = document.getElementById("content");
 const search = document.getElementById("searchBox");
-const typeSelect = document.getElementById("typeSelect");
+let typeSelect = { value: "movie" };
 const genreSelect = document.getElementById("genreSelect");
 const randomPickBtn = document.getElementById("randomPick");
+const typeBtn = document.getElementById("typeBtn");
+const typeMenu = document.getElementById("typeMenu");
+
+typeBtn.onclick = () => {
+  typeMenu.style.display =
+    typeMenu.style.display === "block" ? "none" : "block";
+};
+
+typeMenu.querySelectorAll("div").forEach(el => {
+  el.tabIndex = 0;
+
+  el.onclick = () => {
+    typeSelect.value = el.dataset.value;
+    typeBtn.textContent = el.textContent;
+    typeMenu.style.display = "none";
+    rebuild();
+  };
+
+  el.onkeydown = e => {
+    if (e.key === "Enter") el.click();
+  };
+});
+
+// click fuori → chiudi
+document.addEventListener("click", e => {
+  if (!e.target.closest(".type-dropdown")) {
+    typeMenu.style.display = "none";
+  }
+});
+
 
 let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
 let recent = JSON.parse(localStorage.getItem("recent") || "[]");
