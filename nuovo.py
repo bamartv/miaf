@@ -608,9 +608,15 @@ const typeBtn = document.getElementById("typeBtn");
 const typeMenu = document.getElementById("typeMenu");
 
 typeBtn.onclick = () => {
-  typeMenu.style.display =
-    typeMenu.style.display === "block" ? "none" : "block";
+  const open = typeMenu.style.display === "block";
+  typeMenu.style.display = open ? "none" : "block";
+
+  if (!open) {
+    const first = typeMenu.querySelector("div");
+    if (first) first.focus();
+  }
 };
+
 
 typeMenu.querySelectorAll("div").forEach(el => {
   el.tabIndex = 0;
@@ -627,8 +633,32 @@ typeMenu.querySelectorAll("div").forEach(el => {
   };
 });
 
+typeMenu.addEventListener("keydown", e => {
+  const items = [...typeMenu.querySelectorAll("div")];
+  const index = items.indexOf(document.activeElement);
+  if (index === -1) return;
+
+  if (e.key === "ArrowDown") {
+    e.preventDefault();
+    items[Math.min(index + 1, items.length - 1)].focus();
+  }
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    items[Math.max(index - 1, 0)].focus();
+  }
+
+  if (e.key === "Escape") {
+    e.preventDefault();
+    typeMenu.style.display = "none";
+    typeBtn.focus();
+  }
+});
+
+
 // click fuori → chiudi
 document.addEventListener("click", e => {
+  if (typeMenu.style.display === "block") return;
   if (!e.target.closest(".type-dropdown")) {
     typeMenu.style.display = "none";
   }
@@ -895,7 +925,6 @@ document.addEventListener("keydown", e => {
 
 
 search.oninput = rebuild;
-typeSelect.onchange = rebuild;
 randomPickBtn.onclick = randomPick;
 genreSelect.onchange = rebuild;
 rebuild();
