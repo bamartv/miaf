@@ -535,6 +535,15 @@ select.episode {
 
 // 🎯 NAVIGAZIONE PERFETTA NELLA GRID
 document.addEventListener("keydown", e => {
+
+  // ⛔ SE MENU TYPE APERTO → NON TOCCARE NULLA
+  if (typeMenu && typeMenu.style.display === "block") return;
+
+  const active = document.activeElement;
+  ...
+});
+
+document.addEventListener("keydown", e => {
   const active = document.activeElement;
 
   // 🔥 ArrowUp dalla prima locandina → focus sulla topbar
@@ -634,6 +643,8 @@ typeMenu.querySelectorAll("div").forEach(el => {
 });
 
 typeMenu.addEventListener("keydown", e => {
+  e.stopPropagation(); // ⛔ FERMA I KEYDOWN GLOBALI
+
   const items = [...typeMenu.querySelectorAll("div")];
   const index = items.indexOf(document.activeElement);
   if (index === -1) return;
@@ -642,6 +653,24 @@ typeMenu.addEventListener("keydown", e => {
     e.preventDefault();
     items[Math.min(index + 1, items.length - 1)].focus();
   }
+
+  if (e.key === "ArrowUp") {
+    e.preventDefault();
+    items[Math.max(index - 1, 0)].focus();
+  }
+
+  if (e.key === "Enter") {
+    e.preventDefault();
+    items[index].click();
+  }
+
+  if (e.key === "Escape") {
+    e.preventDefault();
+    typeMenu.style.display = "none";
+    typeBtn.focus();
+  }
+});
+
 
   if (e.key === "ArrowUp") {
     e.preventDefault();
