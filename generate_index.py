@@ -214,6 +214,12 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     box-shadow: 0 6px 14px rgba(0,0,0,0.6);
 }}
 
+#infoCard button:focus {{
+  outline: 3px solid gold;
+  outline-offset: 2px;
+}}
+
+
 #bottomControls button {{
   display:block;
   margin:10px auto;
@@ -258,7 +264,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <option value='favorites'>★ Preferiti</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
-<select id='genreSelect' multiple size=5></select>
+<select id='genreSelect' multiple size=1></select>
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
@@ -342,6 +348,10 @@ function openInfo(item, push=true) {{
     infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${{item.poster}}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
+    // autofocus sul tasto "Guarda"
+    setTimeout(() => {
+      playBtn.focus();
+    }, 0);
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
