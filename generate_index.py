@@ -669,11 +669,15 @@ def main():
             if idx < 10:
                 latest_entries += f"<img class='poster' src='{poster}' alt='{title}' title='{title}'>\n"
 
-    # --- Unione con l'archivio esistente ---
-    combined = {e["id"]: e for e in old_entries}
-    for e in entries:
-        combined[e["id"]] = e  # aggiorna o aggiunge nuovo
-    all_entries = list(combined.values())
+    # --- Unione con l'archivio esistente e metti nuovi in testa ---
+    old_dict = {e["id"]: e for e in old_entries}
+
+    # Lista finale: prima i nuovi, poi i vecchi che non sono nuovi
+    all_entries = entries.copy()  # nuovi in cima
+    for e in old_entries:
+        if e["id"] not in [n["id"] for n in entries]:
+            all_entries.append(e)
+
 
     # Debug e salvataggio
     print(f"Totale entries da salvare: {len(all_entries)}")
