@@ -121,7 +121,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   transform: rotate(-45deg);
   box-shadow: 0 2px 6px rgba(0,0,0,0.6);
   pointer-events: none;
-  z-index: 6;
+  z-index: 4;
 }}
 .card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
@@ -143,7 +143,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 }}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
-.card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
+.card .favorite-btn{{position:absolute;top:8px;left:8px;z-index:7;pointer-events:none;}}
 .circular-chart {{
   max-width: 50px;
   max-height: 50px;
@@ -589,9 +589,9 @@ function render(reset=false) {{
             const card = document.createElement('div');
             card.className='card';
             card.innerHTML = `
-                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+                <img class='poster' src='${m.poster}' alt='${m.title}'>
                 <div class="sub-ita-ribbon">SUB ITA</div>
-                <div class='badge'>${{m.vote}}</div>
+                <div class='badge'>${m.vote}</div>
                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
