@@ -668,7 +668,8 @@ def main():
             duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-                        directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
+            directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job") == "Director"] if info.get("credits") else []
+
 
             # --- PEGI (EU / ITA, NO USA) ---
             pegi = ""
