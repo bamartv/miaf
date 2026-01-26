@@ -694,9 +694,10 @@ def main():
                     if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
                         for rel in r.get("release_dates", []):
                             cert = rel.get("certification")
-                            if cert and cert.isdigit():
+                            if cert and cert.isdigit() and cert != "0":
                                 pegi = f"PEGI {cert}"
                                 break
+
                     if pegi:
                         break
 
@@ -704,9 +705,11 @@ def main():
                 for r in info.get("content_ratings", {}).get("results", []):
                     if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
                         cert = r.get("rating")
-                        if cert and any(x in cert for x in ("12", "14", "16", "18")):
-                            pegi = "PEGI " + "".join(filter(str.isdigit, cert))
+                        digits = "".join(filter(str.isdigit, cert or ""))
+                        if digits in ("12", "14", "16", "18"):
+                            pegi = f"PEGI {digits}"
                             break
+
 
 
 
