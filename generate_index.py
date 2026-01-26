@@ -76,7 +76,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     url = TMDB_BASE.format(type=type_, id=tmdb_id)
     r = requests.get(
         url,
-        params={"api_key": api_key, "language": language, "append_to_response": "credits"},
+        params={"api_key": api_key, "language": language, "append_to_response": "credits,release_dates,content_ratings"},
         timeout=15
     )
     if r.status_code == 404:
@@ -294,6 +294,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <p id="infoYear"></p>
     <p id="infoDuration"></p>
     <p id="infoCast"></p>
+    <p id="infoPegi"></p>
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
@@ -324,6 +325,7 @@ const episodeSelect=document.getElementById('episodeSelect');
 const infoYear=document.getElementById('infoYear');
 const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
+const infoPegi=document.getElementById('infoPegi');
 const genreSelect=document.getElementById('genreSelect');
 
 closeCardBtn.onclick = () => {{
@@ -382,6 +384,7 @@ infoVote.innerHTML = `
     infoYear.textContent = item.year ? "Anno: " + item.year : "";
     infoDuration.textContent = item.duration ? "Durata: " + item.duration + " min" : "";
     infoCast.textContent = item.cast && item.cast.length ? "Cast: " + item.cast.slice(0,5).join(", ") : "";
+    infoPegi.textContent = item.pegi ? "Classificazione: " + item.pegi : "";
 
     favoriteInCard.classList.toggle("active", favorites.includes(item.id));
     favoriteInCard.onclick = () => {{
@@ -666,6 +669,28 @@ def main():
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
             directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
+            # --- PEGI (EU / ITA, NO USA) ---
+pegi = ""
+
+if type_ == "movie":
+    for r in info.get("release_dates", {}).get("results", []):
+        if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
+            for rel in r.get("release_dates", []):
+                cert = rel.get("certification")
+                if cert and cert.isdigit():
+                    pegi = f"PEGI {cert}"
+                    break
+        if pegi:
+            break
+
+elif type_ == "tv":
+    for r in info.get("content_ratings", {}).get("results", []):
+        if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
+            cert = r.get("rating")
+            if cert and any(x in cert for x in ("12", "14", "16", "18")):
+                pegi = "PEGI " + "".join(filter(str.isdigit, cert))
+                break
+
 
 
             entries.append({
@@ -677,6 +702,7 @@ def main():
                 "overview": overview,
                 "link": link,
                 "type": type_,
+                "pegi": pegi,
                 "seasons": seasons,
                 "episodes": episodes,
                 "duration": duration or 0,
