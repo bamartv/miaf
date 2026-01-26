@@ -107,6 +107,22 @@ h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
 input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
+.sub-ita-ribbon {{
+  position: absolute;
+  top: 10px;
+  left: -30px;
+  width: 120px;
+  text-align: center;
+  background: #e50914;
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  pointer-events: none;
+  z-index: 6;
+}}
 .card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
 .poster{{width:100%;border-radius:0;display:block;}}
@@ -574,6 +590,7 @@ function render(reset=false) {{
             card.className='card';
             card.innerHTML = `
                 <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
+                <div class="sub-ita-ribbon">SUB ITA</div>
                 <div class='badge'>${{m.vote}}</div>
                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
