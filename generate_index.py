@@ -589,7 +589,7 @@ function render(reset=false) {{
             const card = document.createElement('div');
             card.className='card';
             card.innerHTML = `
-                <img class='poster' src='${m.poster}' alt='${m.title}'>
+                <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
                 <div class="sub-ita-ribbon">SUB ITA</div>
                 <div class='badge'>${m.vote}</div>
                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
