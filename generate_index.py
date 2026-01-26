@@ -579,7 +579,7 @@ function render(reset=false) {{
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
                 <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
-                ${m.pegi ? `<div class="pegi-badge">${{m.pegi}}</div>` : ``}}
+                ${{m.pegi ? `<div class="pegi-badge">${{m.pegi}}</div>` : ``}}
             `;
             card.onclick = () => openInfo(m);
             grid.appendChild(card);
