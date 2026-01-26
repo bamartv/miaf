@@ -668,28 +668,30 @@ def main():
             duration = info.get("runtime") or (runtime_list[0] if runtime_list else None)
 
             cast = [c["name"] for c in info.get("credits", {}).get("cast", [])] if info.get("credits") else []
-            directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
+                        directors = [c["name"] for c in info.get("credits", {}).get("crew", []) if c.get("job")=="Director"]
+
             # --- PEGI (EU / ITA, NO USA) ---
-pegi = ""
+            pegi = ""
 
-if type_ == "movie":
-    for r in info.get("release_dates", {}).get("results", []):
-        if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
-            for rel in r.get("release_dates", []):
-                cert = rel.get("certification")
-                if cert and cert.isdigit():
-                    pegi = f"PEGI {cert}"
-                    break
-        if pegi:
-            break
+            if type_ == "movie":
+                for r in info.get("release_dates", {}).get("results", []):
+                    if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
+                        for rel in r.get("release_dates", []):
+                            cert = rel.get("certification")
+                            if cert and cert.isdigit():
+                                pegi = f"PEGI {cert}"
+                                break
+                    if pegi:
+                        break
 
-elif type_ == "tv":
-    for r in info.get("content_ratings", {}).get("results", []):
-        if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
-            cert = r.get("rating")
-            if cert and any(x in cert for x in ("12", "14", "16", "18")):
-                pegi = "PEGI " + "".join(filter(str.isdigit, cert))
-                break
+            elif type_ == "tv":
+                for r in info.get("content_ratings", {}).get("results", []):
+                    if r.get("iso_3166_1") in ("IT", "FR", "DE", "ES", "GB"):
+                        cert = r.get("rating")
+                        if cert and any(x in cert for x in ("12", "14", "16", "18")):
+                            pegi = "PEGI " + "".join(filter(str.isdigit, cert))
+                            break
+
 
 
 
