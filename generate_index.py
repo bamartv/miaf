@@ -111,6 +111,20 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
+.pegi-badge{{
+  position:absolute;
+  bottom:6px;
+  right:6px;
+  background:rgba(0,0,0,0.8);
+  border:2px solid #fff;
+  color:#fff;
+  font-size:11px;
+  font-weight:bold;
+  padding:2px 6px;
+  border-radius:6px;
+  pointer-events:none;
+  z-index:5;
+}}
 .favorite-btn{{font-size:20px;color:#fff;text-shadow:0 0 4px #000;}}
 .favorite-btn.active{{color:gold;}}
 .card .favorite-btn{{position:absolute;top:8px;left:8px;pointer-events:none;}}
@@ -561,10 +575,11 @@ function render(reset=false) {{
             card.innerHTML = `
                 <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
                 <div class='badge'>${{m.vote}}</div>
-                <p style="margin:2px 0;font-size:12px;color:#ccc;">
+                <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
                 <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
+                ${m.pegi ? `<div class="pegi-badge">${{m.pegi}}</div>` : ``}}
             `;
             card.onclick = () => openInfo(m);
             grid.appendChild(card);
