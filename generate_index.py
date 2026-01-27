@@ -542,6 +542,19 @@ infoVote.innerHTML = `
     }}
 }}
 
+let titleTimeout = null;
+
+function showPlayerTitle(text){{
+    playerTitle.textContent = text;
+    playerTitle.style.display = "block";
+
+    if (titleTimeout) clearTimeout(titleTimeout);
+    titleTimeout = setTimeout(() => {{
+        playerTitle.style.display = "none";
+    }}, 3000); // 3 secondi e sparisce
+}}
+
+
 function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
     overlay.style.display='flex';
@@ -557,7 +570,26 @@ function openPlayer(item, push=true) {{
         link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1&quality=1080p`;
     }}
     iframe.src = link;
+    iframe.onclick = () => {{
+        if(item.type === "tv"){{
+            const s = seasonSelect.value || 1;
+            const e = episodeSelect.value || 1;
+            showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
+        }} else {{
+            showPlayerTitle(item.title);
+        }}
+    }};
+
     addToRecent(item.id);
+    // Titolo a scomparsa nel player
+    if(item.type === "tv"){{
+        const s = seasonSelect.value || 1;
+        const e = episodeSelect.value || 1;
+        showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
+    }} else {{
+        showPlayerTitle(item.title);
+    }}
+
 
     if (overlay.requestFullscreen) overlay.requestFullscreen();
     else if (overlay.webkitRequestFullscreen) overlay.webkitRequestFullscreen();
