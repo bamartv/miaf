@@ -325,7 +325,16 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
-    <div id="recommended" style="display:flex; justify-content:center; gap:10px; margin-top:20px; flex-wrap:wrap;"></div>
+    <div id="recommended" style="
+      display:flex;
+      gap:10px;
+      margin-top:20px;
+      overflow-x:auto;
+      padding-bottom:10px;
+      flex-wrap:nowrap;
+    ">
+    </div>
+
   </div>
 </div>
 
@@ -407,14 +416,15 @@ const recItems = allData
     x.genres.some(g => item.genres.includes(g))
   )
   .sort(() => 0.5 - Math.random())
-  .slice(0, 4);
+  .slice(0, 10);
 
 
 recItems.forEach(r => {{
     const rCard = document.createElement("img");
     rCard.src = r.poster;
     rCard.title = r.title;
-    rCard.style.width = "100px";   // leggermente più piccole
+    rCard.style.width = "100px";
+    rCard.style.flexShrink = "0";
     rCard.style.cursor = "pointer";
     rCard.style.borderRadius = "8px";
     rCard.onclick = () => openInfo(r);  // clicca per aprire
