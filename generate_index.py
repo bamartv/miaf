@@ -408,7 +408,7 @@ const recommendedDiv = document.getElementById("recommended");
 recommendedDiv.innerHTML = ""; // reset
 
 const recItems = allData
-  .map(x => {
+  .map(x => {{
     if (
       x.id === item.id ||
       !Array.isArray(x.genres) ||
@@ -416,15 +416,16 @@ const recItems = allData
     ) return null;
 
     const commonGenres = x.genres.filter(g => item.genres.includes(g));
-    return {
+    return {{
       item: x,
       commonCount: commonGenres.length
-    };
-  })
-  .filter(x => x && x.commonCount >= 2)   // 🔥 almeno 2 generi in comune
-  .sort((a, b) => b.commonCount - a.commonCount) // prima i più affini
+    }};
+  }})
+  .filter(x => x && x.commonCount >= 2)
+  .sort((a, b) => b.commonCount - a.commonCount)
   .slice(0, 10)
   .map(x => x.item);
+
 
 
 
