@@ -399,10 +399,16 @@ const recommendedDiv = document.getElementById("recommended");
 recommendedDiv.innerHTML = ""; // reset
 
 // Seleziona 4 titoli dello stesso genere, diversi dall'attuale
-const recItems = allData.filter(x => 
+const recItems = allData
+  .filter(x =>
     x.id !== item.id &&
+    Array.isArray(x.genres) &&
+    Array.isArray(item.genres) &&
     x.genres.some(g => item.genres.includes(g))
-).sort(() => 0.5 - Math.random()).slice(0,4);
+  )
+  .sort(() => 0.5 - Math.random())
+  .slice(0, 4);
+
 
 recItems.forEach(r => {{
     const rCard = document.createElement("img");
@@ -412,8 +418,8 @@ recItems.forEach(r => {{
     rCard.style.cursor = "pointer";
     rCard.style.borderRadius = "8px";
     rCard.onclick = () => openInfo(r);  // clicca per aprire
-    recommendedDiv.appendChild(rCard)
-}}
+    recommendedDiv.appendChild(rCard);
+}});
 
 infoVote.innerHTML = `
   <svg viewBox="0 0 36 36" class="circular-chart">
