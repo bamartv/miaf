@@ -394,8 +394,20 @@ function openInfo(item, push=true) {{
     infoTitle.textContent = item.title;
     // autofocus sul tasto "Guarda"
     setTimeout(() => {{
-      playBtn.focus();
+        playBtn.focus();
     }}, 0);
+
+    // Intercetta freccia giù per andare subito ai consigliati
+    playBtn.onkeydown = (e) => {{
+        if (e.key === "ArrowDown") {{
+            const firstRec = recommendedDiv.querySelector("img");
+            if (firstRec) {{
+                firstRec.focus();
+                e.preventDefault();
+            }}
+        }}
+    }};
+
     infoGenres.textContent = "Generi: " + (item.genres && item.genres.length ? item.genres.join(", ") : "");
     let vote = Math.round(item.vote * 10) / 10; // es: 7.8
     let dash = Math.round((vote / 10) * 100);   // percentuale su 100
