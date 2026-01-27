@@ -446,12 +446,13 @@ recItems.forEach(r => {{
     recommendedDiv.appendChild(rCard);
     rCard.setAttribute("tabindex", "0");
     rCard.setAttribute("role", "button");
-    rCard.onkeydown = (e) => {
-     if (e.key === "Enter" || e.key === "OK") {
-        openInfo(r);
-      }
-    };
-}});
+        rCard.onkeydown = (e) => {{
+          if (e.key === "Enter" || e.key === "OK") {{
+            openInfo(r);
+          }}
+        }};
+
+    }});
 
 infoVote.innerHTML = `
   <svg viewBox="0 0 36 36" class="circular-chart">
