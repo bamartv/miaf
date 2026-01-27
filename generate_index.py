@@ -407,16 +407,25 @@ if (vote < 5) {{
 const recommendedDiv = document.getElementById("recommended");
 recommendedDiv.innerHTML = ""; // reset
 
-// Seleziona 4 titoli dello stesso genere, diversi dall'attuale
 const recItems = allData
-  .filter(x =>
-    x.id !== item.id &&
-    Array.isArray(x.genres) &&
-    Array.isArray(item.genres) &&
-    x.genres.some(g => item.genres.includes(g))
-  )
-  .sort(() => 0.5 - Math.random())
-  .slice(0, 10);
+  .map(x => {
+    if (
+      x.id === item.id ||
+      !Array.isArray(x.genres) ||
+      !Array.isArray(item.genres)
+    ) return null;
+
+    const commonGenres = x.genres.filter(g => item.genres.includes(g));
+    return {
+      item: x,
+      commonCount: commonGenres.length
+    };
+  })
+  .filter(x => x && x.commonCount >= 2)   // 🔥 almeno 2 generi in comune
+  .sort((a, b) => b.commonCount - a.commonCount) // prima i più affini
+  .slice(0, 10)
+  .map(x => x.item);
+
 
 
 recItems.forEach(r => {{
