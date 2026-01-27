@@ -111,6 +111,19 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 .card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
+.playing-badge{{
+  position:absolute;
+  top:8px;
+  left:8px;
+  background:#e50914;
+  color:#fff;
+  padding:4px 6px;
+  font-size:11px;
+  font-weight:bold;
+  border-radius:6px;
+  z-index:6;
+}}
+
 .pegi-badge{{
   position:absolute;
   bottom:6px;
@@ -583,9 +596,22 @@ function render(reset=false) {{
         )) {{
             const card = document.createElement('div');
             card.className='card';
+            const last = lastEpisodes[m.id];
+
             card.innerHTML = `
                 <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
                 <div class='badge'>${{m.vote}}</div>
+                ${
+                  (m.type === 'tv' && last)
+                  ? `<div class="playing-badge">▶ S${{last.season}}E${{last.episode}}</div>`
+                  : ``
+                 }
+                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
+                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
+                 </p>
+                 <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
+                 ${{m.pegi ? `<div class="pegi-badge">${{m.pegi}}</div>` : ``}}
+            `;
                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
