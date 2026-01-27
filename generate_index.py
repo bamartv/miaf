@@ -325,6 +325,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
+    <div id="recommended" style="display:flex; justify-content:center; gap:10px; margin-top:20px; flex-wrap:wrap;"></div>
   </div>
 </div>
 
@@ -391,6 +392,28 @@ if (vote < 5) {{
   color = "#f44336"; // rosso
 }} else if (vote < 7) {{
   color = "#ff9800"; // arancione/giallo
+
+  // --- CONSIGLIATI ---
+const recommendedDiv = document.getElementById("recommended");
+recommendedDiv.innerHTML = ""; // reset
+
+// Seleziona 4 titoli dello stesso genere, diversi dall'attuale
+const recItems = allData.filter(x => 
+    x.id !== item.id &&
+    x.genres.some(g => item.genres.includes(g))
+).sort(() => 0.5 - Math.random()).slice(0,4);
+
+recItems.forEach(r => {
+    const rCard = document.createElement("img");
+    rCard.src = r.poster;
+    rCard.title = r.title;
+    rCard.style.width = "100px";   // leggermente più piccole
+    rCard.style.cursor = "pointer";
+    rCard.style.borderRadius = "8px";
+    rCard.onclick = () => openInfo(r);  // clicca per aprire
+    recommendedDiv.appendChild(rCard);
+});
+
 }}
 
 infoVote.innerHTML = `
