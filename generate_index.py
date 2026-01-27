@@ -101,7 +101,12 @@ def build_html(entries, latest_entries):
   gtag('js', new Date());
   gtag('config', 'G-4Z7RJ384ZY');
 </script>
+
 <style>
+#recommended img:focus {{
+  outline: 3px solid gold;
+  outline-offset: 2px;
+}}
 body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
 h1{{color:#fff;text-align:center;margin-bottom:20px;}}
 .controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
@@ -325,7 +330,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     
     <select id="seasonSelect"></select>
     <select id="episodeSelect"></select>
-    <div id="recommended" style="
+    <div id="recommended" tabindex="0" style="
       display:flex;
       gap:10px;
       margin-top:20px;
@@ -439,6 +444,13 @@ recItems.forEach(r => {{
     rCard.style.borderRadius = "8px";
     rCard.onclick = () => openInfo(r);  // clicca per aprire
     recommendedDiv.appendChild(rCard);
+    rCard.setAttribute("tabindex", "0");
+    rCard.setAttribute("role", "button");
+    rCard.onkeydown = (e) => {
+     if (e.key === "Enter" || e.key === "OK") {
+        openInfo(r);
+      }
+    };
 }});
 
 infoVote.innerHTML = `
