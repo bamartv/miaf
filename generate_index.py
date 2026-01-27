@@ -597,21 +597,16 @@ function render(reset=false) {{
             const card = document.createElement('div');
             card.className='card';
             const last = lastEpisodes[m.id];
+            let playingBadge = '';
+            if (m.type === 'tv' && last) {{
+                playingBadge = '<div class="playing-badge">▶ S' + last.season + 'E' + last.episode + '</div>';
+            }}
+
 
             card.innerHTML = `
                 <img class='poster' src='${{m.poster}}' alt='${{m.title}}'>
                 <div class='badge'>${{m.vote}}</div>
-                ${
-                  (m.type === 'tv' && last)
-                  ? `<div class="playing-badge">▶ S${{last.season}}E${{last.episode}}</div>`
-                  : ``
-                 }
-                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
-                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
-                 </p>
-                 <span class="favorite-btn ${{isFav ? 'active' : ''}}" style="pointer-events:none;">★</span>
-                 ${{m.pegi ? `<div class="pegi-badge">${{m.pegi}}</div>` : ``}}
-            `;
+                ${{playingBadge}}
                 <p style="margin:2px 30px 2px 4px;font-size:12px;color:#ccc;">
                     ${{m.duration ? m.duration + ' min • ' : ''}}${{m.year ? m.year : ''}}
                 </p>
