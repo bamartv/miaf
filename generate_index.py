@@ -392,6 +392,7 @@ if (vote < 5) {{
   color = "#f44336"; // rosso
 }} else if (vote < 7) {{
   color = "#ff9800"; // arancione/giallo
+  }}
 
   // --- CONSIGLIATI ---
 const recommendedDiv = document.getElementById("recommended");
