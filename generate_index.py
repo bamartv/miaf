@@ -554,6 +554,33 @@ function showPlayerTitle(text){{
     }}, 3000); // 3 secondi e sparisce
 }}
 
+function attachPlayerOverlayEvents(item){{
+    const show = () => {{
+        if(item.type === "tv"){{
+            const s = seasonSelect.value || 1;
+            const e = episodeSelect.value || 1;
+            showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
+        }} else {{
+            showPlayerTitle(item.title);
+        }}
+    }};
+
+    // click / tap sull’overlay
+    overlay.onclick = show;
+
+    // OK / Enter / Space da telecomando o tastiera
+    document.onkeydown = (e) => {{
+        if (
+            e.key === "Enter" ||
+            e.key === " " ||
+            e.key === "OK"
+        ) {{
+            show();
+        }}
+    }};
+}}
+
+
 
 function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
@@ -570,15 +597,8 @@ function openPlayer(item, push=true) {{
         link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1&quality=1080p`;
     }}
     iframe.src = link;
-    iframe.onclick = () => {{
-        if(item.type === "tv"){{
-            const s = seasonSelect.value || 1;
-            const e = episodeSelect.value || 1;
-            showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
-        }} else {{
-            showPlayerTitle(item.title);
-        }}
-    }};
+    attachPlayerOverlayEvents(item);
+    
 
     addToRecent(item.id);
     // Titolo a scomparsa nel player
