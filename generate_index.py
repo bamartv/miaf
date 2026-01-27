@@ -319,7 +319,7 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 const allData = {entries_json};
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
-let lastEpisodes = JSON.parse(localStorage.getItem("lastEpisodes") || "{}");
+let lastEpisodes = JSON.parse(localStorage.getItem("lastEpisodes") || "{{}}");
 let currentItem = null;
 
 const grid=document.getElementById('moviesGrid');
