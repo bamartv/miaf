@@ -404,7 +404,7 @@ const recItems = allData.filter(x =>
     x.genres.some(g => item.genres.includes(g))
 ).sort(() => 0.5 - Math.random()).slice(0,4);
 
-recItems.forEach(r => {
+recItems.forEach(r => {{
     const rCard = document.createElement("img");
     rCard.src = r.poster;
     rCard.title = r.title;
@@ -412,9 +412,7 @@ recItems.forEach(r => {
     rCard.style.cursor = "pointer";
     rCard.style.borderRadius = "8px";
     rCard.onclick = () => openInfo(r);  // clicca per aprire
-    recommendedDiv.appendChild(rCard);
-});
-
+    recommendedDiv.appendChild(rCard)
 }}
 
 infoVote.innerHTML = `
