@@ -426,35 +426,22 @@ recommendedDiv.innerHTML = ""; // reset
 
 const recItems = allData
   .map(x => {{
-    if (x.id === item.id) return null;
+    if (
+      x.id === item.id ||
+      !Array.isArray(x.genres) ||
+      !Array.isArray(item.genres)
+    ) return null;
 
-    let score = 0;
-
-    // 1️⃣ generi in comune (peso alto)
-    if (Array.isArray(x.genres) && Array.isArray(item.genres)) {{
-      const commonGenres = x.genres.filter(g => item.genres.includes(g));
-      score += commonGenres.length * 3;
-    }}
-
-    // 2️⃣ attori in comune
-    if (Array.isArray(x.cast) && Array.isArray(item.cast)) {{
-      const commonCast = x.cast.filter(a => item.cast.includes(a));
-      score += commonCast.length * 1;
-    }}
-
-    // 3️⃣ regista in comune (peso forte)
-    if (Array.isArray(x.directors) && Array.isArray(item.directors)) {{
-      const commonDirs = x.directors.filter(d => item.directors.includes(d));
-      score += commonDirs.length * 4;
-    }}
-
-    return score > 0 ? {{ item: x, score }} : null;
+    const commonGenres = x.genres.filter(g => item.genres.includes(g));
+    return {{
+      item: x,
+      commonCount: commonGenres.length
+    }};
   }})
-  .filter(Boolean)
-  .sort((a, b) => b.score - a.score)
+  .filter(x => x && x.commonCount >= 2)
+  .sort((a, b) => b.commonCount - a.commonCount)
   .slice(0, 10)
   .map(x => x.item);
-
 
 
 
@@ -578,35 +565,20 @@ function attachPlayerOverlayEvents(item){{
         }}
     }};
 
-    // SOLO click reale (mouse / touch), NON OK del telecomando
-overlay.addEventListener("pointerdown", (e) => {{
-    // se clicchi davvero sullo schermo (non iframe)
-    if (e.pointerType === "mouse" || e.pointerType === "touch") {{
-        show();
-    }}
-}});
+    // click / tap sull’overlay
+    overlay.onclick = show;
 
-
-    // SOLO freccia SU dal telecomando
+    // OK / Enter / Space da telecomando o tastiera
     document.onkeydown = (e) => {{
-    if (e.key === "ArrowUp") {{
-        show();
-        e.preventDefault();
-    }}
-}};
-
-    // SE il focus è sull'iframe → NON fare nulla
-    if (document.activeElement === iframe) return;
-
-    // Mostra titolo SOLO con freccia SU
-    if (e.key === "ArrowUp") {{
-        show();
-        e.preventDefault();
-    }}
-}};
-
+        if (
+            e.key === "Enter" ||
+            e.key === " " ||
+            e.key === "OK"
+        ) {{
+            show();
+        }}
+    }};
 }}
-
 
 
 
