@@ -578,11 +578,23 @@ function attachPlayerOverlayEvents(item){{
         }}
     }};
 
-    // SOLO click / tap
-    overlay.onclick = show;
+    // SOLO click reale (mouse / touch), NON OK del telecomando
+overlay.addEventListener("pointerdown", (e) => {{
+    // se clicchi davvero sullo schermo (non iframe)
+    if (e.pointerType === "mouse" || e.pointerType === "touch") {{
+        show();
+    }}
+}});
+
 
     // SOLO freccia SU dal telecomando
     document.onkeydown = (e) => {{
+    if (e.key === "ArrowUp") {{
+        show();
+        e.preventDefault();
+    }}
+}};
+
     // SE il focus è sull'iframe → NON fare nulla
     if (document.activeElement === iframe) return;
 
