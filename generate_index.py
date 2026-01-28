@@ -583,11 +583,16 @@ function attachPlayerOverlayEvents(item){{
 
     // SOLO freccia SU dal telecomando
     document.onkeydown = (e) => {{
-        if (e.key === "ArrowUp") {{
-            show();
-            e.preventDefault();
-        }}
-    }};
+    // SE il focus è sull'iframe → NON fare nulla
+    if (document.activeElement === iframe) return;
+
+    // Mostra titolo SOLO con freccia SU
+    if (e.key === "ArrowUp") {{
+        show();
+        e.preventDefault();
+    }}
+}};
+
 }}
 
 
