@@ -578,37 +578,21 @@ function attachPlayerOverlayEvents(item){{
         }}
     }};
 
-    // SOLO click reale (mouse / touch), NON OK del telecomando
-overlay.addEventListener("pointerdown", (e) => {{
-    // se clicchi davvero sullo schermo (non iframe)
-    if (e.pointerType === "mouse" || e.pointerType === "touch") {{
-        show();
-    }}
-}});
+    // Click reale (mouse / touch), NON telecomando
+    overlay.onpointerdown = (e) => {{
+        if (e.pointerType === "mouse" || e.pointerType === "touch") {{
+            show();
+        }}
+    }};
 
-
-    // SOLO freccia SU dal telecomando
+    // SOLO freccia SU
     document.onkeydown = (e) => {{
-    if (e.key === "ArrowUp") {{
-        show();
-        e.preventDefault();
-    }}
-}};
-
-    // SE il focus è sull'iframe → NON fare nulla
-    if (document.activeElement === iframe) return;
-
-    // Mostra titolo SOLO con freccia SU
-    if (e.key === "ArrowUp") {{
-        show();
-        e.preventDefault();
-    }}
-}};
-
-}}
-
-
-
+        if (e.key === "ArrowUp") {{
+            show();
+            e.preventDefault();
+        }}
+    }};
+}
 
 function openPlayer(item, push=true) {{
     infoCard.style.display = 'none';
