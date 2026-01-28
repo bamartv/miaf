@@ -578,9 +578,18 @@ function attachPlayerOverlayEvents(item){{
         }}
     }};
 
-    // click / tap sull’overlay
+    // SOLO click / tap
     overlay.onclick = show;
+
+    // SOLO freccia SU dal telecomando
+    document.onkeydown = (e) => {{
+        if (e.key === "ArrowUp") {{
+            show();
+            e.preventDefault();
+        }}
+    }};
 }}
+
 
 
 
