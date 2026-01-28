@@ -580,17 +580,6 @@ function attachPlayerOverlayEvents(item){{
 
     // click / tap sull’overlay
     overlay.onclick = show;
-
-    // OK / Enter / Space da telecomando o tastiera
-    document.onkeydown = (e) => {{
-        if (
-            e.key === "Enter" ||
-            e.key === " " ||
-            e.key === "OK"
-        ) {{
-            show();
-        }}
-    }};
 }}
 
 
