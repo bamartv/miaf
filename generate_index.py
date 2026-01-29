@@ -193,27 +193,51 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     width: 100%; height: 100%;
     display: none;
     z-index: 1001;
-    background-size: contain;   /* mostra SEMPRE l'intero poster */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: #141414;  /* riempie i bordi vuoti */
+    background-color: #141414;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    overflow-y: auto;
+}}
+#infoHero {{
+    position: relative;
+    width: 100%;
+    height: 40vh;  /* Hero in alto */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+    box-sizing: border-box;
+}}
+#infoHero h2 {{
+    font-size: 2.5em;
+    color: #fff;
+    margin: 0;
+}}
+#infoButtons {{
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}}
+#infoButtons button {{
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    background: #e50914;
+}}
+#infoContent {{
+    width: 90%;
+    max-width: 800px;
+    margin: 20px 0;
+    color: #ccc;
+    font-size: 0.95em;
 }}
 
-#infoCard > div {{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.5);
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 800px;
-    width: 90%;
-    text-align: center;
-}}
 #infoCard h2 {{
     font-size: 3em;
     font-weight: 800;
@@ -309,16 +333,17 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
   <iframe tabindex="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
 </div>
 
-<div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
-  <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
-    <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
-    
-    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
-      <button id="playBtn" class="btn-play">▶ Guarda</button>
-      <button id="closeCardBtn" class="btn-close">Chiudi</button>
-      <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
+<div id="infoCard">
+  <div id="infoHero">
+    <h2 id="infoTitle"></h2>
+    <div id="infoButtons">
+      <button id="playBtn">▶ Guarda</button>
+      <button id="closeCardBtn">Chiudi</button>
+      <button id="favoriteInCard" class="favorite-btn">★ Preferiti</button>
     </div>
-    
+  </div>
+
+  <div id="infoContent">
     <p id="infoGenres"></p>
     <p id="infoVote"></p>
     <p id="infoOverview"></p>
@@ -326,20 +351,9 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
     <p id="infoDuration"></p>
     <p id="infoCast"></p>
     <p id="infoPegi"></p>
-    
-    <select id="seasonSelect"></select>
-    <select id="episodeSelect"></select>
-    <div id="recommended" tabindex="0" style="
-      display:flex;
-      gap:10px;
-      margin-top:20px;
-      overflow-x:auto;
-      padding-bottom:10px;
-      flex-wrap:nowrap;
-    ">
-    </div>
-
   </div>
+</div>
+
 </div>
 
 <script>
@@ -387,7 +401,8 @@ function showLatest(){{
 function openInfo(item, push=true) {{
     currentItem = item;
     infoCard.style.display='block';
-    infoCard.style.backgroundImage = `linear-gradient(to right, rgba(20,20,20,0.85) 30%, rgba(20,20,20,0.4) 70%), url('${{item.poster}}')`;
+    const infoHero = document.getElementById('infoHero');
+    infoHero.style.backgroundImage = `url('${{item.poster}}')`;
     infoCard.style.backgroundColor = "rgba(20,20,20,0.85)";
     infoTitle.textContent = item.title;
     // autofocus sul tasto "Guarda"
