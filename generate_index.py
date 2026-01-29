@@ -426,22 +426,35 @@ recommendedDiv.innerHTML = ""; // reset
 
 const recItems = allData
   .map(x => {{
-    if (
-      x.id === item.id ||
-      !Array.isArray(x.genres) ||
-      !Array.isArray(item.genres)
-    ) return null;
+    if (x.id === item.id) return null;
 
-    const commonGenres = x.genres.filter(g => item.genres.includes(g));
-    return {{
-      item: x,
-      commonCount: commonGenres.length
-    }};
+    let score = 0;
+
+    // 1️⃣ generi in comune (peso alto)
+    if (Array.isArray(x.genres) && Array.isArray(item.genres)) {{
+      const commonGenres = x.genres.filter(g => item.genres.includes(g));
+      score += commonGenres.length * 3;
+    }}
+
+    // 2️⃣ attori in comune
+    if (Array.isArray(x.cast) && Array.isArray(item.cast)) {{
+      const commonCast = x.cast.filter(a => item.cast.includes(a));
+      score += commonCast.length * 1;
+    }}
+
+    // 3️⃣ regista in comune (peso forte)
+    if (Array.isArray(x.directors) && Array.isArray(item.directors)) {{
+      const commonDirs = x.directors.filter(d => item.directors.includes(d));
+      score += commonDirs.length * 4;
+    }}
+
+    return score > 0 ? {{ item: x, score }} : null;
   }})
-  .filter(x => x && x.commonCount >= 2)
-  .sort((a, b) => b.commonCount - a.commonCount)
+  .filter(Boolean)
+  .sort((a, b) => b.score - a.score)
   .slice(0, 10)
   .map(x => x.item);
+
 
 
 
