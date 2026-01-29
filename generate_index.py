@@ -307,7 +307,6 @@ input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
 
 <div id='playerOverlay'>
   <iframe tabindex="0" allow="autoplay; fullscreen; encrypted-media" allowfullscreen></iframe>
-  <div id="playerTitle"></div>
 </div>
 
 <div id='infoCard' style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(20,20,20,0.85); display:none; z-index:1001; backdrop-filter:blur(8px); align-items:center; justify-content:center;">
@@ -353,7 +352,6 @@ let currentItem = null;
 const grid=document.getElementById('moviesGrid');
 const overlay=document.getElementById('playerOverlay');
 const iframe=overlay.querySelector('iframe');
-const playerTitle=document.getElementById('playerTitle');
 const infoCard=document.getElementById('infoCard');
 const infoTitle=document.getElementById('infoTitle');
 const infoGenres=document.getElementById('infoGenres');
@@ -555,44 +553,6 @@ infoVote.innerHTML = `
     }}
 }}
 
-let titleTimeout = null;
-
-function showPlayerTitle(text){{
-    playerTitle.textContent = text;
-    playerTitle.style.display = "block";
-
-    if (titleTimeout) clearTimeout(titleTimeout);
-    titleTimeout = setTimeout(() => {{
-        playerTitle.style.display = "none";
-    }}, 3000); // 3 secondi e sparisce
-}}
-
-function attachPlayerOverlayEvents(item){{
-    const show = () => {{
-        if(item.type === "tv"){{
-            const s = seasonSelect.value || 1;
-            const e = episodeSelect.value || 1;
-            showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
-        }} else {{
-            showPlayerTitle(item.title);
-        }}
-    }};
-
-    // click / tap sull’overlay
-    overlay.onclick = show;
-
-    // OK / Enter / Space da telecomando o tastiera
-    document.onkeydown = (e) => {{
-        if (
-            e.key === "Enter" ||
-            e.key === " " ||
-            e.key === "OK"
-        ) {{
-            show();
-        }}
-    }};
-}}
-
 
 
 function openPlayer(item, push=true) {{
@@ -610,18 +570,9 @@ function openPlayer(item, push=true) {{
         link = `https://vixsrc.to/movie/${{item.id}}/?lang=it&sottotitoli=off&autoplay=1&quality=1080p`;
     }}
     iframe.src = link;
-    attachPlayerOverlayEvents(item);
     
 
     addToRecent(item.id);
-    // Titolo a scomparsa nel player
-    if(item.type === "tv"){{
-        const s = seasonSelect.value || 1;
-        const e = episodeSelect.value || 1;
-        showPlayerTitle(`${{item.title}} • Stagione ${{s}} Episodio ${{e}}`);
-    }} else {{
-        showPlayerTitle(item.title);
-    }}
 
 
     if (overlay.requestFullscreen) overlay.requestFullscreen();
