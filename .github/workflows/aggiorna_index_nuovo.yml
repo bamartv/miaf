@@ -1,7 +1,9 @@
 name: Aggiorna index.html (nuovo.py - TEST)
 
 on:
-  workflow_dispatch:   # SOLO manuale, nessun cron
+  schedule:
+    - cron: '0 2 * * *'  # ogni giorno alle 4:00 UTC
+  workflow_dispatch:   # permette l'esecuzione manuale
 
 jobs:
   build:
