@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Home</title>
+<title>Streaming</title>
 
 <style>
 
@@ -15,8 +15,12 @@ margin:0;
 padding:20px;
 }
 
-h1{
-text-align:center;
+#search{
+width:100%;
+padding:15px;
+font-size:18px;
+border:none;
+border-radius:10px;
 margin-bottom:20px;
 }
 
@@ -26,122 +30,62 @@ grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
 gap:15px;
 }
 
-.card{
-cursor:pointer;
-border-radius:10px;
-overflow:hidden;
-}
-
 .card img{
 width:100%;
-display:block;
 border-radius:10px;
-}
-
-.card:hover{
-transform:scale(1.05);
-}
-
-/* PLAYER */
-
-#player{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:none;
-z-index:1000;
-}
-
-#player iframe{
-width:100%;
-height:100%;
-border:none;
-}
-
-#close{
-position:absolute;
-top:20px;
-right:20px;
-background:#e50914;
-color:white;
-border:none;
-padding:10px 15px;
-font-size:18px;
-cursor:pointer;
-border-radius:8px;
 }
 
 </style>
 </head>
+
 <body>
 
-<h1>Film</h1>
+<input id="search" placeholder="Cerca film o serie...">
 
-<div class="grid">
-
-<div class="card" onclick="play('https://vixsrc.to/movie/550')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/8kNruSfhk5IoE6VjT6a0YkJc7G.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/278')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/680')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/13')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/155')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/27205')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/157336')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/603')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/f89U3ADr1oiB1s9GkdPOEpXUk5H.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/24428')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg">
-</div>
-
-<div class="card" onclick="play('https://vixsrc.to/movie/120')">
-<img loading="lazy" src="https://image.tmdb.org/t/p/w500/56zTpe2xvaA4alU51sRWPoKPYZy.jpg">
-</div>
-
-</div>
-
-
-<div id="player">
-<button id="close" onclick="closePlayer()">✖</button>
-<iframe id="frame" allowfullscreen></iframe>
-</div>
-
+<div class="grid" id="grid"></div>
 
 <script>
 
-function play(url){
-document.getElementById("player").style.display="block";
-document.getElementById("frame").src=url;
+let allData=[];
+
+fetch("data.json")
+.then(r=>r.json())
+.then(data=>{
+    allData=data;
+    render(data.slice(0,30)); // primi 30 titoli
+});
+
+function render(list){
+
+const grid=document.getElementById("grid");
+grid.innerHTML="";
+
+list.forEach(item=>{
+
+grid.innerHTML+=`
+<div class="card">
+<img loading="lazy" src="${item.poster}">
+</div>
+`;
+
+});
+
 }
 
-function closePlayer(){
-document.getElementById("player").style.display="none";
-document.getElementById("frame").src="";
+document.getElementById("search").addEventListener("input",function(){
+
+let q=this.value.toLowerCase();
+
+if(q.length<2){
+render(allData.slice(0,30));
+return;
 }
+
+let results=allData.filter(m=>m.title.toLowerCase().includes(q)).slice(0,50);
+
+render(results);
+
+});
 
 </script>
 
