@@ -374,15 +374,10 @@ closeCardBtn.onclick = () => {{
   history.replaceState({{page:"grid"}}, "", "#grid");
 }};
 
-function showLatest(){{
-    let scrollPos = 0;
-    function scroll() {{
-        scrollPos += 1;
-        if(scrollPos > latestDiv.scrollWidth - latestDiv.clientWidth) scrollPos = 0;
-        latestDiv.scrollTo({{ left: scrollPos, behavior: 'smooth' }});
-    }}
-    setInterval(scroll, 30);
-}}
+function showLatest(){
+    // Autoscroll disabilitato
+    // Le locandine restano scrollabili manualmente
+}
 
 function openInfo(item, push=true) {{
     currentItem = item;
