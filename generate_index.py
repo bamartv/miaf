@@ -132,6 +132,39 @@ h1{{
     flex-wrap:wrap;
     padding-left:8px;
 }}
+
+.genre-buttons{{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+    width:100%;
+}}
+
+.genre-btn{{
+    padding:8px 14px;
+    border:none;
+    border-radius:20px;
+    background:#2a2a2a;
+    color:#ccc;
+    cursor:pointer;
+    font-size:13px;
+    transition:all 0.25s ease;
+    box-shadow:0 2px 6px rgba(0,0,0,0.3);
+}}
+
+.genre-btn:hover{{
+    background:#3a3a3a;
+    color:#fff;
+}}
+
+.genre-btn.active{{
+    background:#e50914;
+    color:#fff;
+    box-shadow:0 0 10px rgba(229,9,20,0.6);
+}}
+
+
 input,select{{
     padding:10px 14px;
     font-size:14px;
@@ -338,7 +371,7 @@ input,select{{
   <option value='favorites'>★ Preferiti</option>
   <option value='recent'>👁 Visti di recente</option>
 </select>
-<select id='genreSelect' multiple size=1></select>
+<div id='genreButtons' class='genre-buttons'></div>
 <input type='text' id='searchBox' placeholder='Cerca...'>
 </div>
 <div id='moviesGrid' class='grid'></div>
@@ -410,7 +443,8 @@ const infoYear=document.getElementById('infoYear');
 const infoDuration=document.getElementById('infoDuration');
 const infoCast=document.getElementById('infoCast');
 const infoPegi=document.getElementById('infoPegi');
-const genreSelect=document.getElementById('genreSelect');
+const genreButtons=document.getElementById('genreButtons');
+let selectedGenres = [];
 
 closeCardBtn.onclick = () => {{
   infoCard.style.display='none';
@@ -698,7 +732,7 @@ function render(reset=false) {{
     if(reset){{ grid.innerHTML=''; shown=0; }}
     let count=0;
     let s = document.getElementById('searchBox').value.toLowerCase();
-    let gSel = Array.from(document.getElementById('genreSelect').selectedOptions).map(o=>o.value);
+    let gSel = selectedGenres;
 
     // Lista da mostrare: se c'è ricerca, cerca in tutto; altrimenti usa currentList
     let listToShow = s ? allData : currentList;
@@ -748,18 +782,38 @@ function render(reset=false) {{
 }}
 
 function populateGenres(){{
-    const set=new Set();
+    const set = new Set();
+
     currentList.forEach(m=>{{
-      if(Array.isArray(m.genres)){{
-        m.genres.forEach(g=>set.add(g));
-      }}
+        if(Array.isArray(m.genres)){{
+            m.genres.forEach(g=>set.add(g));
+        }}
     }});
-    const sel=document.getElementById('genreSelect');
-    sel.innerHTML='<option value="all">Tutti i generi</option>';
+
+    genreButtons.innerHTML = "";
+
     [...set].sort().forEach(g=>{{
-        const o=document.createElement('option');
-        o.value=o.textContent=g;
-        sel.appendChild(o);
+        const btn = document.createElement("button");
+        btn.className = "genre-btn";
+        btn.textContent = g;
+
+        if(selectedGenres.includes(g)){{
+            btn.classList.add("active");
+        }}
+
+        btn.onclick = () => {{
+            if(selectedGenres.includes(g)){{
+                selectedGenres = selectedGenres.filter(x=>x!==g);
+                btn.classList.remove("active");
+            }else{{
+                selectedGenres.push(g);
+                btn.classList.add("active");
+            }}
+
+            render(true);
+        }};
+
+        genreButtons.appendChild(btn);
     }});
 }}
 
@@ -767,21 +821,23 @@ function updateType(t){{
     currentType=t;
     if(t==="movie" || t==="tv"){{
         currentList=allData.filter(x=>x.type===t);
-        genreSelect.style.display='inline';
+        genreButtons.style.display='flex';
+        selectedGenres = [];
         populateGenres();
     }} else if(t==="favorites"){{
         currentList=allData.filter(x=>favorites.includes(x.id));
-        genreSelect.style.display='none';
+        genreButtons.style.display='none';
+        selectedGenres = [];
     }} else if(t==="recent"){{
         currentList=allData.filter(x=>recentList.includes(x.id));
-        genreSelect.style.display='none';
+        genreButtons.style.display='none';
+        selectedGenres = [];
     }}
     render(true);
 }}
 
 /* Eventi UI */
 document.getElementById('typeSelect').onchange=e=>updateType(e.target.value);
-document.getElementById('genreSelect').onchange=()=>render(true);
 document.getElementById('searchBox').oninput=()=>render(true);
 document.getElementById('loadMore').onclick=()=>render(false);
 document.getElementById('randomPick').onclick = () => {{
