@@ -867,9 +867,9 @@ fetch("data.json")
       updateType('movie');
       showLatest();
   }})
-  .catch(err => {
+  .catch(err => {{
       console.error("Errore caricamento JSON:", err);
-  });
+  }});
 </script>
 </body>
 </html>
