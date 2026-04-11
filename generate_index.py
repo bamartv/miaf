@@ -85,8 +85,7 @@ def tmdb_get(api_key, type_, tmdb_id, language="it-IT"):
     return r.json()
 
 
-def build_html(entries, latest_entries):
-    entries_json = json.dumps(entries, ensure_ascii=False)
+def build_html(latest_entries):
     html = f"""<!doctype html>
 <html lang='it'>
 <head>
@@ -431,7 +430,7 @@ input,select{{
 </div>
 
 <script>
-const allData = {entries_json};
+let allData = [];
 let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 let recentList = JSON.parse(localStorage.getItem("recent") || "[]");
 let lastEpisodes = JSON.parse(localStorage.getItem("lastEpisodes") || "{{}}");
@@ -861,8 +860,16 @@ document.getElementById('randomPick').onclick = () => {{
 /* stato iniziale nella history */
 history.replaceState({{page:"grid"}}, "", "#grid");
 
-updateType('movie');
-showLatest();
+fetch("data.json")
+  .then(res => res.json())
+  .then(data => {{
+      allData = data;
+      updateType('movie');
+      showLatest();
+  }})
+  .catch(err => {
+      console.error("Errore caricamento JSON:", err);
+  });
 </script>
 </body>
 </html>
@@ -978,10 +985,14 @@ def main():
     save_archive(all_entries)
     print(f"Archivio salvato su {ARCHIVE_FILE}")
 
-    # Genera HTML finale
-    html = build_html(all_entries, latest_entries)
-    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-        f.write(html)
+    # Salva database JSON separato
+with open("data.json", "w", encoding="utf-8") as f:
+    json.dump(all_entries, f, ensure_ascii=False)
+
+# Genera HTML finale
+html = build_html(latest_entries)
+with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+    f.write(html)
     print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
 
 
