@@ -805,7 +805,7 @@ function populateGenres(){{
             if(selectedGenres.includes(g)){{
                 selectedGenres = selectedGenres.filter(x=>x!==g);
                 btn.classList.remove("active");
-            }else{{
+            }} else {{
                 selectedGenres.push(g);
                 btn.classList.add("active");
             }}
