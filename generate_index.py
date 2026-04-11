@@ -133,6 +133,14 @@ h1{{
     padding-left:8px;
 }}
 
+.top-controls{{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+    width:100%;
+}}
+
 .genre-buttons{{
     display:flex;
     flex-wrap:wrap;
@@ -365,14 +373,18 @@ input,select{{
 
 <h1>Movies & Series</h1>
 <div class='controls'>
-<select id='typeSelect'>
-  <option value='movie'>Film</option>
-  <option value='tv'>Serie TV</option>
-  <option value='favorites'>★ Preferiti</option>
-  <option value='recent'>👁 Visti di recente</option>
-</select>
-<div id='genreButtons' class='genre-buttons'></div>
-<input type='text' id='searchBox' placeholder='Cerca...'>
+  <div class="top-controls">
+    <select id='typeSelect'>
+      <option value='movie'>Film</option>
+      <option value='tv'>Serie TV</option>
+      <option value='favorites'>★ Preferiti</option>
+      <option value='recent'>👁 Visti di recente</option>
+    </select>
+
+    <input type='text' id='searchBox' placeholder='Cerca...'>
+  </div>
+
+  <div id='genreButtons' class='genre-buttons'></div>
 </div>
 <div id='moviesGrid' class='grid'></div>
 <div id="bottomControls">
