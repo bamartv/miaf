@@ -107,13 +107,56 @@ def build_html(entries, latest_entries):
   outline: 3px solid gold;
   outline-offset: 2px;
 }}
-body{{font-family:Arial,sans-serif;background:#141414;color:#fff;margin:0;padding:20px;}}
-h1{{color:#fff;text-align:center;margin-bottom:20px;}}
-.controls{{display:flex;gap:10px;justify-content:center;margin-bottom:20px;flex-wrap:wrap;}}
-input,select{{padding:8px;font-size:14px;border-radius:4px;border:none;}}
+body{{
+    font-family:Arial,sans-serif;
+    background:
+        radial-gradient(circle at top, #2b0f14 0%, #141414 35%, #0b0b0b 100%);
+    color:#fff;
+    margin:0;
+    padding:20px;
+    min-height:100vh;
+}}
+h1{{
+    color:#fff;
+    text-align:left;
+    margin-bottom:18px;
+    font-size:28px;
+    font-weight:700;
+    padding-left:8px;
+}}
+.controls{{
+    display:flex;
+    gap:12px;
+    justify-content:flex-start;
+    margin-bottom:25px;
+    flex-wrap:wrap;
+    padding-left:8px;
+}}
+input,select{{
+    padding:10px 14px;
+    font-size:14px;
+    border-radius:6px;
+    border:none;
+    background:#222;
+    color:#fff;
+}}
 .grid{{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px;}}
-.card{{position:relative;cursor:pointer;transition: transform 0.2s;border-radius:12px;overflow:hidden;border:2px solid #444;background:#1f1f1f;}}
-.card:hover{{transform:scale(1.05);border-color:#e50914;background:#2a2a2a;}}
+.card{{
+    position:relative;
+    cursor:pointer;
+    transition:all 0.25s ease;
+    border-radius:10px;
+    overflow:hidden;
+    border:none;
+    background:#181818;
+    box-shadow:0 4px 10px rgba(0,0,0,0.35);
+}}
+.card:hover{{
+    transform:scale(1.08);
+    z-index:10;
+    box-shadow:0 12px 30px rgba(0,0,0,0.6);
+    background:#222;
+}}
 .poster{{width:100%;border-radius:0;display:block;}}
 .badge{{position:absolute;top:8px;right:8px;background:#e50914;color:#fff;padding:4px 6px;font-size:14px;font-weight:bold;border-radius:8px;text-align:center;}}
 .playing-badge{{
