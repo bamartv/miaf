@@ -985,16 +985,16 @@ def main():
     save_archive(all_entries)
     print(f"Archivio salvato su {ARCHIVE_FILE}")
 
-    # Salva database JSON separato
-with open("data.json", "w", encoding="utf-8") as f:
-    json.dump(all_entries, f, ensure_ascii=False)
+        # Salva database JSON separato
+    with open("data.json", "w", encoding="utf-8") as f:
+        json.dump(all_entries, f, ensure_ascii=False)
 
-# Genera HTML finale
-html = build_html(latest_entries)
-with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
-    f.write(html)
+    # Genera HTML finale
+    html = build_html(latest_entries)
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        f.write(html)
+
     print(f"Generato {OUTPUT_HTML} con {len(all_entries)} elementi e ultime novità scrollabili")
-
 
 if __name__ == "__main__":
     main()
