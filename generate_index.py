@@ -317,9 +317,9 @@ input,select{{
     margin: 8px 0;
     padding: 0 20px;
 
-    background: linear-gradient(135deg, #e50914, #b20710);
+    background: #ffffff;
     border: none;
-    color: #fff;
+    color: #111111;
 
     font-weight: 700;
     font-size: 18px;
@@ -331,17 +331,16 @@ input,select{{
     transition: all 0.25s ease;
     box-shadow:
         0 4px 14px rgba(0,0,0,0.55),
-        inset 0 1px 0 rgba(255,255,255,0.15);
+        inset 0 1px 0 rgba(255,255,255,0.4);
 }}
 
 #infoCard button#playBtn:hover,
 #infoCard button#closeCardBtn:hover,
 #infoCard button#favoriteInCard:hover {{
-    transform: scale(1.02);
-    filter: brightness(1.08);
+    transform: scale(1.03);
+    background: #f2f2f2;
     box-shadow:
-        0 6px 18px rgba(0,0,0,0.65),
-        0 0 12px rgba(229,9,20,0.35);
+        0 6px 18px rgba(0,0,0,0.65);
 }}
 
 #infoCard button#playBtn:hover,
