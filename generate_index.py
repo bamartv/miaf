@@ -312,19 +312,36 @@ input,select{{
 #infoCard button#playBtn,
 #infoCard button#closeCardBtn,
 #infoCard button#favoriteInCard {{
-    width: 140px;
-    height: 42px;
-    margin: 6px;
-    padding: 8px 0;
+    width: 100%;
+    height: 54px;
+    margin: 8px 0;
+    padding: 0 20px;
+
     background: linear-gradient(135deg, #e50914, #b20710);
     border: none;
     color: #fff;
-    font-weight: bold;
-    font-size: 15px;
-    border-radius: 8px;
+
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+
+    border-radius: 14px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+
+    transition: all 0.25s ease;
+    box-shadow:
+        0 4px 14px rgba(0,0,0,0.55),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+}}
+
+#infoCard button#playBtn:hover,
+#infoCard button#closeCardBtn:hover,
+#infoCard button#favoriteInCard:hover {{
+    transform: scale(1.02);
+    filter: brightness(1.08);
+    box-shadow:
+        0 6px 18px rgba(0,0,0,0.65),
+        0 0 12px rgba(229,9,20,0.35);
 }}
 
 #infoCard button#playBtn:hover,
@@ -405,7 +422,13 @@ input,select{{
   <div style="position:relative; background:transparent; border-radius:10px; padding:20px; max-width:800px; width:90%; text-align:center;">
     <h2 id="infoTitle" style="font-family:'Roboto','Helvetica Neue',Helvetica,Arial,sans-serif; font-weight:bold; font-size:2em; letter-spacing:-0px; color:#ffffff; margin-top:0;"></h2>
     
-    <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0; flex-wrap:wrap;">
+    <div style="
+    display:flex;
+    flex-direction:column;
+    width:100%;
+    gap:0;
+    margin:20px 0;
+">
       <button id="playBtn" class="btn-play">▶ Guarda</button>
       <button id="closeCardBtn" class="btn-close">Chiudi</button>
       <button id="favoriteInCard" class="favorite-btn">Preferiti</button>
