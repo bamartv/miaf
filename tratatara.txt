@@ -1,0 +1,183 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="NovaSP1" group-title="Sport",Nova Sport 1
+https://lovely.lovetier.bz/ZonaDAZN/index.m3u8?token=Wm9uYURBWk58bm9fY2hlY2tfaXB8MTc3NzkxODQwNg==.dceb0fc9d21ed751260474f08ddad48c34e1363a56ba8c54162f33f3686d3b26
+
+#EXTINF:-1 tvg-id="NovaSP2" group-title="Sport",Nova Sport 2
+https://lovely.lovetier.bz/SkySportUnoIT/index.m3u8?token=U2t5U3BvcnRVbm9JVHxub19jaGVja19pcHwxNzc3OTE4NjI1.96b1353e100fa18f7ef0c46af18a00decf51d9d03fe4e7441c43bf12d967edc5
+
+#EXTINF:-1 tvg-id="ELEVEN1" group-title="Sport",Eleven Sports 1
+#EXTVLCOPT:http-user-agent=Mozilla/5.0
+#EXTVLCOPT:http-referrer=https://www.elevensports.com/
+#EXTVLCOPT:http-origin=https://www.elevensports.com
+https://lovely.lovetier.bz/SkySportUnoIT/index.m3u8?token=U2t5U3BvcnRVbm9JVHxub19jaGVja19pcHwxNzc3OTE4NjI1.96b1353e100fa18f7ef0c46af18a00decf51d9d03fe4e7441c43bf12d967edc5
+
+#EXTINF:-1 tvg-id="test" tvg-name="Canale Test" group-title="Sport",Canale Test
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36
+#EXTVLCOPT:http-referrer=https://google.com/
+#EXTVLCOPT:http-origin=https://google.com
+https://lovely.lovetier.bz/ZonaDAZN/index.m3u8?token=Wm9uYURBWk58bm9fY2hlY2tfaXB8MTc3NzkxODQwNg==.dceb0fc9d21ed751260474f08ddad48c34e1363a56ba8c54162f33f3686d3b26
+
+#EXTINF:-1, Dokko Channel 1
+#EXTVLCOPT:http-origin=https://enz.gdplayertv.to
+#EXTVLCOPT:http-referrer=https://enz.gdplayertv.to/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+https://lovely.lovetier.bz/ZonaDAZN/index.m3u8?token=Wm9uYURBWk58bm9fY2hlY2tfaXB8MTc3NzkxODQwNg==.dceb0fc9d21ed751260474f08ddad48c34e1363a56ba8c54162f33f3686d3b26
+
+
+#EXTINF:-1 tvg-id="" tvg-name="Dubai sport 3" tvg-logo="" group-title=" (DADDY LIVE)",(Dubai sport 3)
+#EXTVLCOPT:http-referrer=https://jxoplay.xyz/
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.1 TV Safari/537.36
+https://fhlsport712.tm3abp101jamea.cfd/token-LRV4nLSTKKSG62V8kvY6n2qHlMDRgizjOS2owfVMETX77rCcHUdTFIkvshRKW1IZRWPdxTNlkP5xfpJLAQcQ%2BMlnSkM%3Da/cfall/s2001/v3b/rs1psr63nUE0pQbiY2EyYKW4qP4mrUA0oGVho25y/super/3x_677324.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Abu Dhabi sport 1" tvg-logo="" group-title=" (DADDY LIVE)", (Abu Dhabi sport 1)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+https://fhlsport712.tm3abp101jamea.cfd/token-LRV4nLSTKKSG62V8kvY6n2qHlMDRgizjOS2owfVMETX77rCcHUdTFIkvshRKW1IZRWPdxTNlkP5xfpJLAQcQ%2BMlnSkM%3Da/cfall/s2001/v3b/rs1psr63nUE0pQbiY2EyYKW4qP4mrUA0oGVho25y/super/3x_677324.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Abu Dhabi Sport 2" tvg-logo="" group-title=" (DADDY LIVE)",(Abu Dhabi sport 2)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+https://rr.cdn.vodafone.pt/LIVE/sdash/LIVE$152/index.mpd/Manifest.mpd?start=LIVE&end=END&device=DASH_AVC_HD&ck=eylwZDI4ZWRmNGYWNTUOMDIYjEyZDZKMDI2MGlyNml2Yil6ImJmNjlmOGEzM2MzOWMzMWY1ZmYwNmFiNTIwMTJIMjdjIno
+
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA Sport prime" tvg-logo="" group-title=" (DADDY LIVE)",(NOVA sport prima)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+https://s3.dualstack.us-east-2.amazonaws.com/cam.edu//hls/720p/playlist.m3u8?token=1kiu65uhxrb
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA sport start" tvg-logo="" group-title=" (DADDY LIVE)", (NOVA sport start)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+https://cc.screenify.shop:8080/stream/230/index.m3u8?token=T4Nz6WCt2Uwlqma4&headers=eyJyZWZlcmVyIjoiaHR0cHM6Ly9tZWRpYWhvc3Rpbmcuc3BhY2UvIiwib3JpZ2luIjoiaHR0cHM6Ly9tZWRpYWhvc3Rpbmcuc3BhY2UiLCJ1c2VyLWFnZW50IjoiTW96aWxsYS81LjAifQ
+
+#EXTINF:-1 tvg-id="" tvg-name="Cosmote sport
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://dokko1new.newkso.ru/dokko1/premium622/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="SKY SPORT 1 ITA" tvg-logo="" group-title=" (DADDY LIVE)",(SKY SPORT 1 ITA)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://dokko1new.newkso.ru/dokko1/premium538/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 1 GR" tvg-logo="" group-title=" (DADDY LIVE)",(NOVA SP 1 GR)
+https://pjxvijl.5606087801.art:8443/hls/71urpyq.m3u8?s=B29AK7ceRQav0SFsORLdQg&e=1759536054
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 2 GR" tvg-logo="" group-title="(DADDY LIVE)", (NOVA SP 2 GR)
+https://beautifulpeople.lovecdn.ru/NOVASPORTS2/index.fmp4.m3u8?token=7adf47c51b13e80a149849ae9190d1cc2f9e5a8e-4daa4f8a01a2850951289444c7d40331-1748202093-1748191293
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 3 GR" tvg-logo="" group-title=" (DADDY LIVE)", (NOVA SP 3 GR)
+https://beautifulpeople.lovecdn.ru/NOVASPORTS3/index.fmp4.m3u8?token=0cb8dbc8a1bfa35bffe45c730f34d8c0e256e9ce-5f5caf4f9dd25a23e40877c8194c139e-1748202172-1748191372
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 4 GR" tvg-logo="" group-title=" (DADDY LIVE)",(NOVA SP 4 GR)
+https://beautifulpeople.lovecdn.ru/NOVASPORTS4/index.fmp4.m3u8?token=7f36531b50cc3069b1c5e819331532e44aec6800-14d7e8820be1fa40aa6318e0d8d63837-1748202246-1748191446
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 5 GR" tvg-logo="" group-title=" (DADDY LIVE)", (NOVA SP 5 GR)
+https://beautifulpeople.lovecdn.ru/NOVASPORTS5/index.fmp4.m3u8?token=1414fb92d6ccf81c8bdf0abc230ef93c21cd7a2f-c6f41282d16a50511abf436b2a6e1af4-1748202292-1748191492
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP 6 GR" tvg-logo="" group-title="(DADDY LIVE)", (NOVA SP 6 GR)
+https://beautifulpeople.lovecdn.ru/beINSPORTS1TR/tracks-a1/index.fmp4.m3u8?token=4c0a9fa1e730793cc77c4e1fa3a40d189f15e838-cc1d3e78a6f97e574eb7f57af6df3a99-1748199177-1748188377
+
+#EXTINF:-1 tvg-id="" tvg-name="NOVA SP PREMIER LEAGUE GR" tvg-logo="" group-title="(DADDY LIVE)", (NOVA SP PREMIER LEAGUE GR)
+https://beautifulpeople.lovecdn.ru/NOVASPORTSPL/index.fmp4.m3u8?token=f1bd86b47eeedf634d9dff23e53da1d3a5b6e19e-bb3cfa5391e6fe7fa55d1898e934b55f-1748202434-1748191634
+
+#EXTINF:-1 tvg-id="" tvg-name="ARENA SPORT 1 PREMIUM" tvg-logo="" group-title="(DADDY LIVE)",(ARENA SPORT 1 PREMIUM)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://x4new.newkso.ru/x4/arena1premiumserbia/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ARENA SPORT 2 PREMIUM" tvg-logo="" group-title="(DADDY LIVE)", (ARENA SPORT 2 PREMIUM)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://x4new.newkso.ru/x4/arena2premiumserbia/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="SKY SPORT ARENA IT" tvg-logo="" group-title=" (DADDY LIVE)", (SKY SPORT ARENA IT)
+https://beautifulpeople.lovecdn.ru/SkySportArenaIT/tracks-v1/index.fmp4.m3u8?token=4430d162e6c8a6342aec999d7a718719b2d88f0d-4f2116c28bc7cc8e01ac153b975edd4a-1748206407-1748195607
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 2 UK " tvg-logo="" group-title=" (DADDY LIVE)", (DAZN 2 UK)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium427/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ASTRO FOOTBALL" tvg-logo="" group-title=" (DADDY LIVE)", (ASTRO FOOTBALL)
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+https://m4.merichunidya.com:999/hls/do6.m3u8?md5=NJ8Mp1jFA-PD8PSL1sPhkg&expires=1748204917
+
+#EXTINF:-1 tvg-id="" tvg-name="SPORT UNKN" tvg-logo="" group-title=" (DADDY LIVE)", (SKY SPORT UNKN)
+https://a51.azplay11.me/hls/streama237102/index.m3u8?cst=4712b4bc03f55ad53db3b3d37d796403
+
+#EXTINF:-1 tvg-id="" tvg-name="Cosmote sport"
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://nfsnew.newkso.ru/nfs/premium10/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ASTRO ARENA BOLA" tvg-logo="" group-title=" (DADDY LIVE)", (ASTRO ARENA BOLA)
+https://m2.merichunidya.com:999/hls/do9.m3u8?md5=WmE5QSwlY59gIC09fM1ZAA&expires=1748205880
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN ITA" tvg-logo="" group-title=" (DADDY LIVE)", (DAZN ITA)
+https://m3.merichunidya.com:999/hls/do45.m3u8?md5=Q1yluh1hqkJ9MswP7s8a4w&expires=1748206012
+
+#EXTINF:-1 tvg-id="" tvg-name="DIGISPORT RO 1" tvg-logo="" group-title=" (DADDY LIVE)", (DIGISPORT RO 1)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://nfsnew.newkso.ru/nfs/premium400/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="COSMOTE 5 GR" tvg-logo="" group-title=" (DADDY LIVE)", (COSMOTE 1 GR)
+https://m1.merichunidya.com:999/hls/do26.m3u8?md5=fPpfAZhkzmpCXKDrWz-__Q&expires=1748206140
+
+#EXTINF:-1 tvg-id="" tvg-name="DIRETTA GOL DAZN" tvg-logo="" group-title=" (DADDY LIVE)", (DIRETTA GOL DAZN)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://x4-cdnnew.newkso.ru/x4-cdn/mono47/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ASTRO ARENA BOLA 2" tvg-logo="" group-title=" (DADDY LIVE)", (ASTRO ARENA BOLA 2)
+https://m4.merichunidya.com:999/hls/do5.m3u8?md5=7eV6y6NKn18cqokij8cT8A&expires=1748206941
+
+#EXTINF:-1 tvg-id="" tvg-name="COSMOTE SPORT 7 GR" tvg-logo="" group-title=" (DADDY LIVE)", (COSMOTE SPORT 7 GR)
+https://m2.merichunidya.com:999/hls/do28.m3u8?md5=nDxBstmck76XMT7Mrs4vcA&expires=1748207086
+
+#EXTINF:-1 tvg-id="" tvg-name="LA LIGA UK" tvg-logo="" group-title=" (DADDY LIVE)", (LA LIGA UK)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://windnew.newkso.ru/wind/premium276/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 1 UK" tvg-logo="" group-title=" (DADDY LIVE)", (DAZN 1 UK)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://ddy6new.newkso.ru/ddy6/premium426/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="NOW SPORTS 2" tvg-logo="" group-title=" (DADDY LIVE)", (NOW SPORTS 2)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://x4-cdnnew.newkso.ru/x4-cdn/mono10/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DAZN 1 DE" tvg-logo="" group-title=" (DADDY LIVE)", (DAZN 1 DE)
+https://a90.azplay11.me/hls/streama237932/index.m3u8?cst=b48acd4044d531fcc1c92d2ecd4d6ecc
+
+#EXTINF:-1 tvg-id="" tvg-name="MEGOGO 1" tvg-logo="" group-title=" (DADDY LIVE)", (MEGOGO 1)
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:141.0) Gecko/20100101 Firefox/141.0
+#EXTVLCOPT:http-origin=https://fnjplay.xyz
+#EXTVLCOPT:http-referrer=https://fnjplay.xyz/
+http://drewlive24.duckdns.org:4123?url=https://zekonew.newkso.ru/zeko/premium502/mono.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ESPN DEPORTES" tvg-logo="" group-title=" (DADDY LIVE)", (ESPN DEPORTES)
+https://gg.poocloud.in/seriea_hellas-verona/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="ESPN DEPORTES2" tvg-logo="" group-title=" (DADDY LIVE)", (ESPN DEPORTES)
+https://pjxvijl.5606087801.art:8443/hls/71urpyq.m3u8?s=3BDE5ghwGripMPJkdKy4-Q&e=1759538559
